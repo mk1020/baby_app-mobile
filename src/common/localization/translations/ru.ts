@@ -1,5 +1,8 @@
 export const ru = {
   translation: {
-    joinToTentorg: 'Привет!',
+    joinToTentorg: 'Присоединиться к ТенТорг',
+    enterPhone: 'Введите номер телефона',
+    signIn: 'Войти',
+    signInWarning: 'Не сообщайте логин, пароль и код подтверждения, чтобы этим не воспользовались мошенники',
   },
 };
