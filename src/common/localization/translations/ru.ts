@@ -1,5 +1,5 @@
 export const ru = {
   translation: {
-    hello: 'Привет!',
+    joinToTentorg: 'Привет!',
   },
 };

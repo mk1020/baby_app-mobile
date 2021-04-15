@@ -39,12 +39,7 @@ const getUnauthorizedScreens = (fromSignOut: boolean): JSX.Element => {
       <Stack.Screen
         name={NavigationPages.signIn}
         component={SignIn}
-        options={{
-          title: 'Sign in',
-          // When logging out, a pop animation feels intuitive
-          // You can remove this if you want the default 'push' animation
-          //animationTypeForReplace: fromSignOut ? 'pop' : 'push',
-        }}
+        options={NoHeader}
       />
     </>
   );
