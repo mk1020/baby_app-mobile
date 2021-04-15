@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { setInternetCredentials } from 'react-native-keychain';
 
-type TColorScheme = 'light' | 'dark';
+export type TColorScheme = 'light' | 'dark';
 
 export type TAppReducer = {
   colorScheme: TColorScheme;
@@ -24,12 +25,23 @@ const initialState: TAppReducer = {
   isLoading: true,
 };
 
-const signIn = createAsyncThunk(
+export const signIn = createAsyncThunk(
   'signIn/requestStatus',
   async (userCredentials: TUserCredentials, thunkAPI) => {
+    await setInternetCredentials('token', 'token', 'mock-token-123');
+
     return 'mock-token-123';
   },
 );
+
+export const signOut = createAsyncThunk('signOut/requestStatus', async (payload, thunkAPI) => {
+  try {
+    await setInternetCredentials('token', 'token', 'null');
+  } catch (e) {
+    console.warn(e);
+  }
+  return true;
+});
 
 const appSlice = createSlice({
   name: 'app',
@@ -40,12 +52,21 @@ const appSlice = createSlice({
     },
     restoreToken: (state: TAppReducer, action: PayloadAction<string>) => {
       state.userToken = action.payload;
+      //state.isLoading = false;
+    },
+    setLoadingAppStatus: (state: TAppReducer, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
     },
   },
   extraReducers: builder => {
-    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<string>) => {});
+    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<string>) => {
+      state.userToken = action.payload;
+    });
+    builder.addCase(signOut.fulfilled, (state: TAppReducer, action) => {
+      state.userToken = 'null';
+    });
   },
 });
 
 export default appSlice.reducer;
-export const { setColorScheme, restoreToken } = appSlice.actions;
+export const { setColorScheme, restoreToken, setLoadingAppStatus } = appSlice.actions;

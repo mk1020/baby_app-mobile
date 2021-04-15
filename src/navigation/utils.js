@@ -1,7 +1,7 @@
 import { Linking, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const restoreState = async () => {
+export const restoreNavState = async () => {
   const initialUrl = await Linking.getInitialURL();
 
   if (Platform.OS !== 'web' && initialUrl == null) {

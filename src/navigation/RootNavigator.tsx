@@ -1,10 +1,10 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { navigationRef } from '../../services/navigation/navigationService';
-import { Home } from '../home/Home';
 import { RootStackParamsList } from './types';
 import { NavigationPages } from './pages';
+import { NoHeader } from './components/Headers';
+import { Notifications } from '../features/notifications/Notifications';
+import { SignIn } from '../features/signIn/SignIn';
 
 const Stack = createStackNavigator<RootStackParamsList>();
 type TProps = {
@@ -14,8 +14,8 @@ type TProps = {
 export const RootNavigator = (props: TProps): JSX.Element => {
   return (
     <>
-      <Stack.Navigator initialRouteName={NavigationPages.signIn}>
-        {props.isAuthorized ? getAuthorizedScreens() : getUnauthorizedScreens()}
+      <Stack.Navigator>
+        {props.isAuthorized ? getAuthorizedScreens() : getUnauthorizedScreens(true)}
       </Stack.Navigator>
     </>
   );
@@ -24,22 +24,26 @@ export const RootNavigator = (props: TProps): JSX.Element => {
 const getAuthorizedScreens = (): JSX.Element => {
   return (
     <>
-      <Stack.Screen name={NavigationPages.notifications} component={Home} />
+      <Stack.Screen
+        name={NavigationPages.notifications}
+        component={Notifications}
+        options={NoHeader}
+      />
     </>
   );
 };
 
-const getUnauthorizedScreens = (): JSX.Element => {
+const getUnauthorizedScreens = (fromSignOut: boolean): JSX.Element => {
   return (
     <>
       <Stack.Screen
         name={NavigationPages.signIn}
-        component={Home}
+        component={SignIn}
         options={{
           title: 'Sign in',
           // When logging out, a pop animation feels intuitive
           // You can remove this if you want the default 'push' animation
-          animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+          //animationTypeForReplace: fromSignOut ? 'pop' : 'push',
         }}
       />
     </>

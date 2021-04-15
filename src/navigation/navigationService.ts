@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { RootStackParamsList } from '../../features/navigation/Navigator';
 import { CommonActions, StackActions } from '@react-navigation/native';
+import { RootStackParamsList } from './types';
 
 /**
  * Used in {@link Navigator} to keep track of navigation container mounts.
@@ -12,13 +12,9 @@ export const isMountedRef: any = React.createRef();
  */
 export const navigationRef: any = React.createRef();
 
-const ERROR_NOT_INIT =
-  'Navigation Service: attempting to navigate with an unintialized ref.';
+const ERROR_NOT_INIT = 'Navigation Service: attempting to navigate with an unintialized ref.';
 
-export type GetRouteParams<T extends keyof RootStackParamsList> = Pick<
-  RootStackParamsList,
-  T
->[T];
+export type GetRouteParams<T extends keyof RootStackParamsList> = Pick<RootStackParamsList, T>[T];
 
 type Screens = keyof RootStackParamsList;
 
@@ -82,10 +78,7 @@ const replace = <T extends object>(name: Screens, params?: T) => {
  *        { name: "Screen4" },
  *      ], 3)
  */
-const reset = <T extends object>(
-  routes: { name: Screens; params?: T }[],
-  index: number,
-) => {
+const reset = <T extends object>(routes: { name: Screens; params?: T }[], index: number) => {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.dispatch(
       CommonActions.reset({
