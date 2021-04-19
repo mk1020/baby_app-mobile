@@ -1,5 +1,6 @@
 export const ru = {
   translation: {
+    hello: 'Привет',
     joinToTentorg: 'Присоединиться к ТенТорг',
     enterPhone: 'Введите номер телефона',
     signIn: 'Войти',

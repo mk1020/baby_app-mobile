@@ -12,6 +12,8 @@ import { RootStackParamsList } from '../../navigation/types';
 import { NavigationPages } from '../../navigation/pages';
 import { useDispatch } from 'react-redux';
 import { Fonts } from '../../common/theme/fonts';
+import { useTranslation } from 'react-i18next';
+import { signIn, signOut } from '../../storage/redux/appSlice';
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamsList, NavigationPages.notifications>;
@@ -23,7 +25,7 @@ const signInByStep = {
   3: null,
 };
 export const SignIn = ({}: Props) => {
-  // const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentStep, changeCurrentStep] = useState<1 | 2 | 3>(1);
 
   const dispatch = useDispatch();
@@ -43,6 +45,7 @@ export const SignIn = ({}: Props) => {
   }, [currentStep]);
   return (
     <SafeAreaView>
+      <Text onPress={() => dispatch(signIn({ login: '123', password: '12334' }))}>Войти</Text>
       <View style={styles.stepsContainer}>{PaginationRenderItems}</View>
     </SafeAreaView>
   );
