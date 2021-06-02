@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { setInternetCredentials } from 'react-native-keychain';
+import axios from "axios";
+import { httpBaseUrl } from "../common/assistant/others";
 
 export type TColorScheme = 'light' | 'dark';
 
@@ -28,18 +29,13 @@ const initialState: TAppReducer = {
 export const signIn = createAsyncThunk(
   'signIn/requestStatus',
   async (userCredentials: TUserCredentials, thunkAPI) => {
-    await setInternetCredentials('token', 'token', 'mock-token-123');
 
+    await axios.post(httpBaseUrl + 'signin', userCredentials)
     return 'mock-token-123';
   },
 );
 
 export const signOut = createAsyncThunk('signOut/requestStatus', async (payload, thunkAPI) => {
-  try {
-    await setInternetCredentials('token', 'token', 'null');
-  } catch (e) {
-    console.warn(e);
-  }
   return true;
 });
 
@@ -50,10 +46,6 @@ const appSlice = createSlice({
     setColorScheme: (state: TAppReducer, action: PayloadAction<TColorScheme>) => {
       state.colorScheme = action.payload;
     },
-    restoreToken: (state: TAppReducer, action: PayloadAction<string>) => {
-      state.userToken = action.payload;
-      //state.isLoading = false;
-    },
     setLoadingAppStatus: (state: TAppReducer, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
@@ -63,10 +55,10 @@ const appSlice = createSlice({
       state.userToken = action.payload;
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action) => {
-      state.userToken = 'null';
+      state.userToken = null;
     });
   },
 });
 
 export default appSlice.reducer;
-export const { setColorScheme, restoreToken, setLoadingAppStatus } = appSlice.actions;
+export const { setColorScheme, setLoadingAppStatus } = appSlice.actions;

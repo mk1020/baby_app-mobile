@@ -1,20 +1,18 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 /**
  * Boilerplate hook for handling visibility of modals.
  */
-export const useModal = (defaultState?: "OPEN" | "CLOSED") => {
-  const [visible, setIsVisible] = useState(
-    defaultState === "OPEN" ? true : false
-  )
+export const useModal = (defaultState?: 'OPEN' | 'CLOSED') => {
+  const [visible, setIsVisible] = useState(defaultState === 'OPEN' ? true : false);
 
   const openModal = () => {
-    setIsVisible(true)
-  }
+    setIsVisible(true);
+  };
 
   const closeModal = () => {
-    setIsVisible(false)
-  }
+    setIsVisible(false);
+  };
 
-  return { visible, openModal, closeModal }
-}
+  return { visible, openModal, closeModal };
+};

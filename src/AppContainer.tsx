@@ -1,24 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Platform, UIManager, useColorScheme } from 'react-native';
-import { Provider, useSelector } from 'react-redux';
-import store from './storage/redux/store';
-import {
-  ColorSchemes,
-  restoreToken,
-  setColorScheme,
-  setLoadingAppStatus,
-} from './storage/redux/appSlice';
+import { Provider } from 'react-redux';
+import { ColorSchemes, setColorScheme, setLoadingAppStatus } from './redux/appSlice';
 import './common/localization/localization';
-import { NavigationContainer } from '@react-navigation/native';
-import { navigationRef } from './navigation/navigationService';
-import { RootNavigator } from './navigation/RootNavigator';
-import { storeData } from './storage/asyncStorage/utils';
 import { NavigationState } from '@react-navigation/routers';
 import { restoreNavState } from './navigation/utils';
-import { getInternetCredentials } from 'react-native-keychain';
-import { RootStoreType } from './storage/redux/rootReducer';
 import { App } from './App';
-import { ErrorBoundary } from "./common/components/ErrorBoundary";
+import { ErrorBoundary } from './common/components/ErrorBoundary';
+import { store } from './redux/store';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import i18n from './common/localization/localization';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -34,17 +27,13 @@ export const AppContainer = () => {
 
   useEffect(() => {
     store.dispatch(setLoadingAppStatus(true));
-    const restoreData = async () => {
-      const credentials = await getInternetCredentials('token');
-      const userToken = credentials && credentials.password;
-      userToken && store.dispatch(restoreToken(userToken));
-
+    const restoreNav = async () => {
       const navState: NavigationState = await restoreNavState();
       setInitialNavState(navState);
       store.dispatch(setLoadingAppStatus(false));
     };
 
-    restoreData();
+    restoreNav().then();
   }, []);
 
   useEffect(() => {
@@ -54,7 +43,9 @@ export const AppContainer = () => {
   return (
     <ErrorBoundary>
       <Provider store={store}>
-        <App initNavState={initialNavState} />
+        <PersistGate persistor={persistStore(store)}>
+          <App initNavState={initialNavState} />
+        </PersistGate>
       </Provider>
     </ErrorBoundary>
   );

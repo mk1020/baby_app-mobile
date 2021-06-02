@@ -1,23 +1,14 @@
-import React, { memo, useEffect, useState } from 'react';
-import { Platform, UIManager, useColorScheme } from 'react-native';
-import { Provider, useSelector } from 'react-redux';
-import store from './storage/redux/store';
-import {
-  ColorSchemes,
-  restoreToken,
-  setColorScheme,
-  setLoadingAppStatus,
-  TColorScheme,
-} from './storage/redux/appSlice';
+import React, { memo } from 'react';
+import { Platform, UIManager } from 'react-native';
+import { useSelector } from 'react-redux';
+import { TColorScheme } from './redux/appSlice';
 import './common/localization/localization';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './navigation/navigationService';
 import { RootNavigator } from './navigation/RootNavigator';
-import { storeData } from './storage/asyncStorage/utils';
+import { storeData } from './common/assistant/asyncStorage';
 import { NavigationState } from '@react-navigation/routers';
-import { restoreNavState } from './navigation/utils';
-import { getInternetCredentials } from 'react-native-keychain';
-import { RootStoreType } from './storage/redux/rootReducer';
+import { RootStoreType } from './redux/rootReducer';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -40,7 +31,7 @@ export const App = memo((props: TProps) => {
       ref={navigationRef}
       initialState={props.initNavState}
       onStateChange={onStateChangeNav}>
-      <RootNavigator isAuthorized={appState.userToken !== 'null'} />
+      <RootNavigator isAuthorized={!!appState.userToken == false} />
     </NavigationContainer>
   );
 });

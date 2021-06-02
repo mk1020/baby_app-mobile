@@ -1,10 +1,9 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import { RootStackParamsList } from './types';
-import { NavigationPages } from './pages';
-import { NoHeader } from './components/Headers';
-import { Notifications } from '../features/notifications/Notifications';
-import { SignIn } from '../features/signIn/SignIn';
+import {RootStackParamsList} from './types';
+import {NavigationPages} from './pages';
+import {NoHeader} from './components/Headers';
+import {SignIn} from '../components/signIn/SignIn';
 
 const Stack = createStackNavigator<RootStackParamsList>();
 type TProps = {
@@ -15,7 +14,7 @@ export const RootNavigator = (props: TProps): JSX.Element => {
   return (
     <>
       <Stack.Navigator>
-        {props.isAuthorized ? getAuthorizedScreens() : getUnauthorizedScreens(true)}
+        {props.isAuthorized ? getAuthorizedScreens() : getUnauthorizedScreens()}
       </Stack.Navigator>
     </>
   );
@@ -25,22 +24,18 @@ const getAuthorizedScreens = (): JSX.Element => {
   return (
     <>
       <Stack.Screen
-        name={NavigationPages.notifications}
-        component={Notifications}
+        name={NavigationPages.signIn}
+        component={SignIn}
         options={NoHeader}
       />
     </>
   );
 };
 
-const getUnauthorizedScreens = (fromSignOut: boolean): JSX.Element => {
+const getUnauthorizedScreens = (): JSX.Element => {
   return (
     <>
-      <Stack.Screen
-        name={NavigationPages.signIn}
-        component={SignIn}
-        options={NoHeader}
-      />
+      <Stack.Screen name={NavigationPages.signIn} component={SignIn} options={NoHeader} />
     </>
   );
 };
