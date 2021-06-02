@@ -1,14 +1,15 @@
-import React, { memo } from 'react';
-import { Platform, UIManager } from 'react-native';
-import { useSelector } from 'react-redux';
-import { TColorScheme } from './redux/appSlice';
+import React, {memo} from 'react';
+import {Platform, UIManager} from 'react-native';
+import {useSelector} from 'react-redux';
+import {TColorScheme} from './redux/appSlice';
 import './common/localization/localization';
-import { NavigationContainer } from '@react-navigation/native';
-import { navigationRef } from './navigation/navigationService';
-import { RootNavigator } from './navigation/RootNavigator';
-import { storeData } from './common/assistant/asyncStorage';
-import { NavigationState } from '@react-navigation/routers';
-import { RootStoreType } from './redux/rootReducer';
+import {NavigationContainer} from '@react-navigation/native';
+import {navigationRef} from './navigation/navigationService';
+import {storeData} from './common/assistant/asyncStorage';
+import {NavigationState} from '@react-navigation/routers';
+import {RootStoreType} from './redux/rootReducer';
+import {getUnauthorizedScreens} from './navigation/UnauthorizedScreens';
+import {getAuthorizedScreens} from './navigation/AuthorizedScreens';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -30,8 +31,9 @@ export const App = memo((props: TProps) => {
     <NavigationContainer
       ref={navigationRef}
       initialState={props.initNavState}
-      onStateChange={onStateChangeNav}>
-      <RootNavigator isAuthorized={!!appState.userToken == false} />
+      onStateChange={onStateChangeNav}
+    >
+      {!!appState.userToken ? getAuthorizedScreens() : getUnauthorizedScreens()}
     </NavigationContainer>
   );
 });

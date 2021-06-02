@@ -1,7 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
-import {RootStackParamsList} from '../../navigation/types';
 import {NavigationPages} from '../../navigation/pages';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
@@ -10,16 +9,17 @@ import {useForm, Controller} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
+import {Message} from 'react-hook-form/dist/types/errors';
 
-interface Props {
-  navigation: StackNavigationProp<RootStackParamsList, NavigationPages.notifications>;
+interface IProps {
 }
 
 interface IForm {
   email: string,
-  pass: string
+  pass: string,
+  confirmPass: string
 }
-export const SignIn = ({}: Props) => {
+export const SignUp = ({}: IProps) => {
   const {t, i18n} = useTranslation();
   const {
     control,
@@ -64,12 +64,26 @@ export const SignIn = ({}: Props) => {
       />
       {errors.pass && <Text>Validation Error</Text>}
 
-      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSubmit)} style={styles.sign}>
+      <Controller
+        control={control}
+        render={({field: {onChange, onBlur, value}}) => (
+          <TextInput
+            style={styles.input}
+            onBlur={onBlur}
+            onChangeText={value => onChange(value)}
+            value={value}
+          />
+        )}
+        name="confirmPass"
+        rules={{required: true, validate: (formDate: IForm) => {
+          console.warn(formDate);
+          return formDate.pass === formDate.confirmPass;
+        }}}
+        defaultValue=""
+      />
+      {errors.confirmPass && <Text>Password should be equal to Confirm Password</Text>}
+      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSubmit)}>
         <Text>Войти</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.sign} onPress={handleSubmit(onSubmit)}>
-        <Text>Зарегистрироваться</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -82,11 +96,4 @@ const styles = StyleSheet.create({
     color: '#000',
     marginBottom: 10
   },
-  sign: {
-    width: 150,
-    height: 50,
-    borderWidth: 1,
-    backgroundColor: 'orange',
-    marginTop: 10
-  }
 });

@@ -1,6 +1,9 @@
-import { NavigationPages } from './pages';
+import {NavigationPages} from './pages';
 
-export type RootStackParamsList = {
-  [NavigationPages.signIn]: undefined;
-  [NavigationPages.notifications]: undefined;
+export type TAuthPagesList = {
+  [NavigationPages.Main]: undefined,
+};
+export type TUnAuthPagesList = {
+  [NavigationPages.SignIn]: undefined,
+  [NavigationPages.SignUp]: undefined,
 };

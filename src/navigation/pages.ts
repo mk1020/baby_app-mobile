@@ -1,8 +1,8 @@
 export enum NavigationPages {
-  playground = 'playground',
-  inDevelopment = 'inDevelopment',
-  signIn = 'signIn',
-  notifications = 'notifications',
+  Playground = 'Playground',
+  SignIn = 'SignIn',
+  SignUp = 'SignUp',
+  Main = 'Main',
 }
 
 export enum MainTabPages {
