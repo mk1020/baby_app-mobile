@@ -14,11 +14,10 @@ export const getUnauthorizedScreens = (): JSX.Element => {
       <Stack.Screen
         name={NavigationPages.SignIn}
         component={SignIn} options={NoHeader}
+        initialParams={{signUpText: ''}}
         listeners={({navigation, route}) => ({
           blur: () => {
             navigation.setParams({signUpText: ''});
-            console.warn(route.name);
-
           }})
         }
       />
