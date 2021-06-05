@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Platform, UIManager, useColorScheme } from 'react-native';
-import { Provider } from 'react-redux';
-import { ColorSchemes, setColorScheme, setLoadingAppStatus } from './redux/appSlice';
+import React, {useEffect, useState} from 'react';
+import {Platform, UIManager, useColorScheme} from 'react-native';
+import {Provider} from 'react-redux';
+import {ColorSchemes, setColorScheme, setLoadingAppStatus} from './redux/appSlice';
 import './common/localization/localization';
-import { NavigationState } from '@react-navigation/routers';
-import { restoreNavState } from './navigation/utils';
-import { App } from './App';
-import { ErrorBoundary } from './common/components/ErrorBoundary';
-import { store } from './redux/store';
-import { persistStore } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import i18n from './common/localization/localization';
+import {InitialState, NavigationState} from '@react-navigation/routers';
+import {restoreNavState} from './navigation/utils';
+import {App} from './App';
+import {ErrorBoundary} from './common/components/ErrorBoundary';
+import {store} from './redux/store';
+import {persistStore} from 'redux-persist';
+import {PersistGate} from 'redux-persist/integration/react';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -22,7 +20,7 @@ import i18n from './common/localization/localization';
 })();
 
 export const AppContainer = () => {
-  const [initialNavState, setInitialNavState] = useState<NavigationState>();
+  const [initialNavState, setInitialNavState] = useState<InitialState>();
   const scheme = useColorScheme();
 
   useEffect(() => {

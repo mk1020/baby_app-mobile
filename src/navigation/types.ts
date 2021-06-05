@@ -4,6 +4,6 @@ export type TAuthPagesList = {
   [NavigationPages.Main]: undefined,
 };
 export type TUnAuthPagesList = {
-  [NavigationPages.SignIn]: undefined,
+  [NavigationPages.SignIn]: {signUpText: string},
   [NavigationPages.SignUp]: undefined,
 };

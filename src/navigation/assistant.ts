@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { CommonActions, StackActions } from '@react-navigation/native';
-import { RootStackParamsList } from './types';
+import {CommonActions, StackActions} from '@react-navigation/native';
+import {TAuthPagesList, TUnAuthPagesList} from './types';
 
 /**
  * Used in {@link Navigator} to keep track of navigation container mounts.
@@ -14,14 +14,14 @@ export const navigationRef: any = React.createRef();
 
 const ERROR_NOT_INIT = 'Navigation Service: attempting to navigate with an unintialized ref.';
 
-export type GetRouteParams<T extends keyof RootStackParamsList> = Pick<RootStackParamsList, T>[T];
+type Screens = keyof (TAuthPagesList & TUnAuthPagesList);
 
-type Screens = keyof RootStackParamsList;
+export type GetRouteParams<T extends Screens> = Pick<TAuthPagesList & TUnAuthPagesList, T>[T];
 
 /**
  * Go to a screen using .navigate()
  */
-const navigate = <T extends object>(name: Screens, params?: T) => {
+const navigate = <T extends Record<string, unknown>>(name: Screens, params?: T): void => {
   if (isMountedRef.current && navigationRef.current) {
     // Perform navigation if the app has mounted
     navigationRef.current.navigate(name, params);
@@ -33,12 +33,12 @@ const navigate = <T extends object>(name: Screens, params?: T) => {
 /**
  * Go to a screen and remove all other screens in the current stack.
  */
-const navigateAndReset = <T extends object>(name: Screens, params?: T) => {
+const navigateAndReset = <T extends Record<string, unknown>>(name: Screens, params?: T): void => {
   if (isMountedRef.current && navigationRef.current) {
     // Perform navigation if the app has mounted
     navigationRef.current.dispatch(
       CommonActions.reset({
-        routes: [{ name, params }],
+        routes: [{name, params}],
       }),
     );
   } else {
@@ -49,7 +49,7 @@ const navigateAndReset = <T extends object>(name: Screens, params?: T) => {
 /**
  * Pop the current screen.
  */
-const goBack = () => {
+const goBack = (): void => {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.goBack();
   } else {
@@ -60,7 +60,7 @@ const goBack = () => {
 /**
  * Replace the current screen.
  */
-const replace = <T extends object>(name: Screens, params?: T) => {
+const replace = <T extends Record<string, unknown>>(name: Screens, params?: T): void => {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.dispatch(StackActions.replace(name, params));
   } else {
@@ -71,14 +71,14 @@ const replace = <T extends object>(name: Screens, params?: T) => {
 /**
  * Custom navigation stack reset.
  * e.g.
- * navigationService.reset([
+ * assistant.reset([
  *        { name: "Screen1" },
  *        { name: "Screen2" },
  *        { name: "Screen3" },
  *        { name: "Screen4" },
  *      ], 3)
  */
-const reset = <T extends object>(routes: { name: Screens; params?: T }[], index: number) => {
+const reset = <T extends Record<string, unknown>>(routes: { name: Screens; params?: T }[], index: number): void => {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.dispatch(
       CommonActions.reset({
@@ -94,7 +94,7 @@ const reset = <T extends object>(routes: { name: Screens; params?: T }[], index:
 /**
  * Pop the desired number of screens.
  */
-const pop = (count: number) => {
+const pop = (count: number): void => {
   if (isMountedRef.current && navigationRef.current) {
     navigationRef.current.dispatch(StackActions.pop(count));
   } else {
@@ -102,7 +102,7 @@ const pop = (count: number) => {
   }
 };
 
-export const navigationService = {
+export const navAssist = {
   navigate,
   navigateAndReset,
   goBack,

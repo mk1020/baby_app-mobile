@@ -1,9 +1,12 @@
 export const ru = {
   translation: {
-    hello: 'Привет',
-    joinToTentorg: 'Присоединиться к ТенТорг',
-    enterPhone: 'Введите номер телефона',
+    email: 'Email',
+    emailInvalid: 'Введенный email не корректен',
+    passInvalid: 'Введенный пароль не корректен',
     signIn: 'Войти',
-    signInWarning: 'Не сообщайте логин, пароль и код подтверждения, чтобы этим не воспользовались мошенники',
+    signUp: 'Зарегистрироваться',
+    password: 'Пароль',
+    confirmPass: 'Подтвердите пароль',
+    confirmErr: 'Пароли не совпадают'
   },
 };

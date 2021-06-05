@@ -1,37 +1,53 @@
-import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
-import {NavigationPages} from '../../navigation/pages';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
-import {signIn} from '../../redux/appSlice';
-import {useForm, Controller} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, passRegex} from '../../common/consts';
+import {emailRegex, httpBaseUrl, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
-import {Message} from 'react-hook-form/dist/types/errors';
+import axios from 'axios';
+import {ConditionView} from '../../common/components/ConditionView';
+import {useNavigation} from '@react-navigation/native';
+import {NavigationPages} from '../../navigation/pages';
 
-interface IProps {
-}
+type TProps = {}
 
 interface IForm {
   email: string,
-  pass: string,
-  confirmPass: string
+  password: string,
+  confirmPassword: string
 }
-export const SignUp = ({}: IProps) => {
+enum SignUpState {
+  'default'= 'default',
+  'success'= 'success',
+  'error'= 'error',
+}
+
+export const SignUp = (props: TProps) => {
   const {t, i18n} = useTranslation();
   const {
     control,
     handleSubmit,
     formState: {errors},
+    getValues
   } = useForm<IForm>();
+  const [signUpState, changeSignUpState] = useState<SignUpState>(SignUpState.default);
 
-  const dispatch = useDispatch();
-  const onSubmit = (data: UnpackNestedValue<IForm>) => dispatch(signIn({login: data.email, password: data.pass}));
+  const navigation = useNavigation();
+
+  const signUp = (data: UnpackNestedValue<IForm>) => {
+    axios.post(httpBaseUrl + 'signup', data)
+      .then(() => {
+        changeSignUpState(SignUpState.success);
+        navigation.navigate(NavigationPages.SignIn, {signUpText: 'you have successfully registered'});
+      })
+      .catch(() =>  changeSignUpState(SignUpState.error));
+  };
 
   return (
     <SafeAreaView>
+      <Text>{t('email')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -46,8 +62,9 @@ export const SignUp = ({}: IProps) => {
         rules={{required: true, pattern: emailRegex}}
         defaultValue=""
       />
-      {errors.email && <Text>Validation Error</Text>}
+      {errors.email && <Text>{t('emailInvalid')}</Text>}
 
+      <Text>{t('password')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -58,12 +75,13 @@ export const SignUp = ({}: IProps) => {
             value={value}
           />
         )}
-        name="pass"
+        name="password"
         rules={{required: true, pattern: passRegex}}
         defaultValue=""
       />
-      {errors.pass && <Text>Validation Error</Text>}
+      {errors.password && <Text>{t('passInvalid')}</Text>}
 
+      <Text>{t('confirmPassword')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -74,17 +92,18 @@ export const SignUp = ({}: IProps) => {
             value={value}
           />
         )}
-        name="confirmPass"
-        rules={{required: true, validate: (formDate: IForm) => {
-          console.warn(formDate);
-          return formDate.pass === formDate.confirmPass;
-        }}}
+        name="confirmPassword"
+        rules={{required: true, validate: fieldValue => fieldValue === getValues().password}}
         defaultValue=""
       />
-      {errors.confirmPass && <Text>Password should be equal to Confirm Password</Text>}
-      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSubmit)}>
-        <Text>Войти</Text>
+      {errors.confirmPassword && <Text>{t('confirmErr')}</Text>}
+      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(signUp)} style={styles.sign}>
+        <Text>{t('signUp')}</Text>
       </TouchableOpacity>
+
+      <ConditionView showIf={signUpState === SignUpState.error}>
+        <Text>Регистрация не удалась</Text>
+      </ConditionView>
     </SafeAreaView>
   );
 };
@@ -94,6 +113,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 40,
     color: '#000',
-    marginBottom: 10
   },
+  sign: {
+    width: 150,
+    height: 50,
+    borderWidth: 1,
+    backgroundColor: 'orange',
+    marginTop: 10
+  }
 });

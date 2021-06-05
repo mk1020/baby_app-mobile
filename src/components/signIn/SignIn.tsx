@@ -1,25 +1,27 @@
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState} from 'react';
+import React, {memo} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
-import {RootStackParamsList} from '../../navigation/types';
-import {NavigationPages} from '../../navigation/pages';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {signIn} from '../../redux/appSlice';
-import {useForm, Controller} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
+import {navAssist} from '../../navigation/assistant';
+import {NavigationPages} from '../../navigation/pages';
+import {RouteProp, useNavigation} from '@react-navigation/native';
+import {TAuthPagesList, TUnAuthPagesList} from '../../navigation/types';
+import {ConditionView} from '../../common/components/ConditionView';
 
-interface Props {
-  navigation: StackNavigationProp<RootStackParamsList, NavigationPages.notifications>;
+type TProps = {
+  route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
 }
 
 interface IForm {
   email: string,
   pass: string
 }
-export const SignIn = ({}: Props) => {
+export const SignIn = memo((props:TProps) => {
   const {t, i18n} = useTranslation();
   const {
     control,
@@ -27,11 +29,19 @@ export const SignIn = ({}: Props) => {
     formState: {errors},
   } = useForm<IForm>();
 
+  const {params} = props.route;
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+
   const onSubmit = (data: UnpackNestedValue<IForm>) => dispatch(signIn({login: data.email, password: data.pass}));
+  const signUp = () => {
+    navigation.navigate(NavigationPages.SignUp);
+  };
 
   return (
     <SafeAreaView>
+      <Text>{t('email')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -46,8 +56,9 @@ export const SignIn = ({}: Props) => {
         rules={{required: true, pattern: emailRegex}}
         defaultValue=""
       />
-      {errors.email && <Text>Validation Error</Text>}
+      {errors.email && <Text>{t('emailInvalid')}</Text>}
 
+      <Text>{t('password')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -62,25 +73,26 @@ export const SignIn = ({}: Props) => {
         rules={{required: true, pattern: passRegex}}
         defaultValue=""
       />
-      {errors.pass && <Text>Validation Error</Text>}
+      {errors.pass && <Text>{t('passInvalid')}</Text>}
 
       <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSubmit)} style={styles.sign}>
-        <Text>Войти</Text>
+        <Text>{t('signIn')}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.sign} onPress={handleSubmit(onSubmit)}>
-        <Text>Зарегистрироваться</Text>
+      <TouchableOpacity style={styles.sign} onPress={signUp}>
+        <Text>{t('signUp')}</Text>
       </TouchableOpacity>
+
+      {!!params?.signUpText && <Text>{params.signUpText}</Text>}
     </SafeAreaView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     height: 40,
     color: '#000',
-    marginBottom: 10
   },
   sign: {
     width: 150,

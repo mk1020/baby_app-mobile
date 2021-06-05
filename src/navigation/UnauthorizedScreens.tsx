@@ -11,7 +11,17 @@ const Stack = createStackNavigator<TUnAuthPagesList>();
 export const getUnauthorizedScreens = (): JSX.Element => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name={NavigationPages.SignIn} component={SignIn} options={NoHeader} />
+      <Stack.Screen
+        name={NavigationPages.SignIn}
+        component={SignIn} options={NoHeader}
+        listeners={({navigation, route}) => ({
+          blur: () => {
+            navigation.setParams({signUpText: ''});
+            console.warn(route.name);
+
+          }})
+        }
+      />
       <Stack.Screen name={NavigationPages.SignUp} component={SignUp} options={NoHeader} />
     </Stack.Navigator>
   );

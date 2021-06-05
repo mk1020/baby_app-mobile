@@ -1,0 +1,6 @@
+root = true
+
+[*]
+ij_typescript_spaces_within_brackets = false
+ij_typescript_spaces_within_imports = false
+quote_type = single

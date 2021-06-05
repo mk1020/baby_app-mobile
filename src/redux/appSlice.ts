@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import axios from "axios";
-import { httpBaseUrl } from "../common/assistant/others";
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import axios from 'axios';
+import {httpBaseUrl} from '../common/consts';
 
 export type TColorScheme = 'light' | 'dark';
 
@@ -10,9 +10,14 @@ export type TAppReducer = {
   isLoading: boolean;
 };
 
-type TUserCredentials = {
+type TSignIp = {
   login: string;
   password: string;
+};
+type TSignUp = {
+  login: string;
+  password: string;
+  confirmPass: string;
 };
 
 export enum ColorSchemes {
@@ -28,10 +33,18 @@ const initialState: TAppReducer = {
 
 export const signIn = createAsyncThunk(
   'signIn/requestStatus',
-  async (userCredentials: TUserCredentials, thunkAPI) => {
+  async (date: TSignIp, thunkAPI) => {
 
-    await axios.post(httpBaseUrl + 'signin', userCredentials)
+    await axios.post(httpBaseUrl + 'signin', date);
     return 'mock-token-123';
+  },
+);
+const signUp = createAsyncThunk(
+  'signIn/requestStatus',
+  async (data: TSignUp, thunkAPI) => {
+
+    const res = await axios.post(httpBaseUrl + 'signup', data);
+    return !!res;
   },
 );
 
@@ -61,4 +74,4 @@ const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const { setColorScheme, setLoadingAppStatus } = appSlice.actions;
+export const {setColorScheme, setLoadingAppStatus} = appSlice.actions;
