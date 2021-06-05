@@ -50,6 +50,8 @@ export const SignIn = memo((props:TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
+            autoCompleteType={'email'}
+            keyboardType={'email-address'}
           />
         )}
         name="email"
@@ -67,6 +69,8 @@ export const SignIn = memo((props:TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
+            autoCompleteType={'password'}
+            secureTextEntry={true}
           />
         )}
         name="pass"
@@ -83,7 +87,7 @@ export const SignIn = memo((props:TProps) => {
         <Text>{t('signUp')}</Text>
       </TouchableOpacity>
 
-      {!!params?.signUpText && <Text>{params.signUpText}</Text>}
+      {!!params.signUpText && <Text>{params.signUpText}</Text>}
     </SafeAreaView>
   );
 });

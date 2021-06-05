@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {CommonActions, StackActions} from '@react-navigation/native';
-import {TAuthPagesList, TUnAuthPagesList} from './types';
+import {Screens, TAuthPagesList, TUnAuthPagesList} from './types';
 
 /**
  * Used in {@link Navigator} to keep track of navigation container mounts.
@@ -13,10 +13,6 @@ export const isMountedRef: any = React.createRef();
 export const navigationRef: any = React.createRef();
 
 const ERROR_NOT_INIT = 'Navigation Service: attempting to navigate with an unintialized ref.';
-
-type Screens = keyof (TAuthPagesList & TUnAuthPagesList);
-
-export type GetRouteParams<T extends Screens> = Pick<TAuthPagesList & TUnAuthPagesList, T>[T];
 
 /**
  * Go to a screen using .navigate()

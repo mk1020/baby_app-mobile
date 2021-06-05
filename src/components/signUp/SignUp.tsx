@@ -56,6 +56,8 @@ export const SignUp = (props: TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
+            autoCompleteType={'email'}
+            keyboardType={'email-address'}
           />
         )}
         name="email"
@@ -73,6 +75,8 @@ export const SignUp = (props: TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
+            autoCompleteType={'password'}
+            secureTextEntry={true}
           />
         )}
         name="password"
@@ -90,6 +94,8 @@ export const SignUp = (props: TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
+            autoCompleteType={'password'}
+            secureTextEntry={true}
           />
         )}
         name="confirmPassword"
