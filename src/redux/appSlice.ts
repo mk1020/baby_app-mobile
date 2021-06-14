@@ -1,50 +1,26 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
 import {httpBaseUrl} from '../common/consts';
-
-export type TColorScheme = 'light' | 'dark';
-
-export type TAppReducer = {
-  colorScheme: TColorScheme;
-  userToken: string | null;
-  isLoading: boolean;
-};
-
-type TSignIp = {
-  login: string;
-  password: string;
-};
-type TSignUp = {
-  login: string;
-  password: string;
-  confirmPass: string;
-};
-
-export enum ColorSchemes {
-  light = 'light',
-  dark = 'dark',
-}
+import {ColorSchemes, TAppReducer, TColorScheme, TSignIn} from './types';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
   userToken: null,
   isLoading: true,
 };
-
+export type TSignInRes = {
+  userId: number,
+  token: string
+}
 export const signIn = createAsyncThunk(
   'signIn/requestStatus',
-  async (date: TSignIp, thunkAPI) => {
+  async (date: TSignIn, thunkAPI) => {
+    const res = <AxiosResponse<TSignInRes>> await axios.post<TSignInRes>(httpBaseUrl + 'signin', {email: date.login, password: date.password})
+      .catch(err => {
+        console.log(err.response?.data);
+      });
 
-    await axios.post(httpBaseUrl + 'signin', date);
-    return 'mock-token-123';
-  },
-);
-const signUp = createAsyncThunk(
-  'signIn/requestStatus',
-  async (data: TSignUp, thunkAPI) => {
-
-    const res = await axios.post(httpBaseUrl + 'signup', data);
-    return !!res;
+    return res?.data ? res.data.token : null;
   },
 );
 
@@ -64,7 +40,7 @@ const appSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<string>) => {
+    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<string | null>) => {
       state.userToken = action.payload;
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action) => {

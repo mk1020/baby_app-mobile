@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
+import React, {memo, useState} from 'react';
+import {ActivityIndicator, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {Controller, useForm} from 'react-hook-form';
@@ -8,23 +8,29 @@ import {emailRegex, httpBaseUrl, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
 import axios from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';
+import {Spinner} from '../../common/components/Spinner';
+import {TUnAuthPagesList} from '../../navigation/types';
 
-type TProps = {}
+type TProps = {
+  route: RouteProp<TUnAuthPagesList, NavigationPages.NewPassword>
+}
 
 interface IForm {
-  email: string,
+  code: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
 }
-enum SignUpState {
+enum RecoveryState {
   'default'= 'default',
-  'success'= 'success',
+  'reqInProgress' = 'reqInProgress',
+  'success' = 'success',
   'error'= 'error',
 }
 
-export const SignUp = (props: TProps) => {
+export const NewPassword = memo((props: TProps) => {
+  const {params} = props.route;
   const {t, i18n} = useTranslation();
   const {
     control,
@@ -32,22 +38,25 @@ export const SignUp = (props: TProps) => {
     formState: {errors},
     getValues
   } = useForm<IForm>();
-  const [signUpState, changeSignUpState] = useState<SignUpState>(SignUpState.default);
+  const [recoveryState, changeRecoveryState] = useState<RecoveryState>(RecoveryState.default);
 
   const navigation = useNavigation();
 
-  const signUp = (data: UnpackNestedValue<IForm>) => {
-    axios.post(httpBaseUrl + 'signup', data)
+  const changePass = (data: UnpackNestedValue<IForm>) => {
+    changeRecoveryState(RecoveryState.reqInProgress);
+    axios.patch(httpBaseUrl + 'users/password', {...data, email: params.email})
       .then(() => {
-        changeSignUpState(SignUpState.success);
-        navigation.navigate(NavigationPages.SignIn, {title: t('signUpConfirm')});
+        changeRecoveryState(RecoveryState.success);
+        navigation.navigate(NavigationPages.SignIn, {title: t('passChanged')});
       })
-      .catch(() =>  changeSignUpState(SignUpState.error));
+      .catch(() =>  changeRecoveryState(RecoveryState.error));
   };
 
   return (
     <SafeAreaView>
-      <Text>{t('email')}</Text>
+      {!!params?.title && <Text>{params.title}</Text>}
+
+      <Text>{t('code')}</Text>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (
@@ -56,15 +65,13 @@ export const SignUp = (props: TProps) => {
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
             value={value}
-            autoCompleteType={'email'}
-            keyboardType={'email-address'}
           />
         )}
-        name="email"
-        rules={{required: true, pattern: emailRegex}}
+        name="code"
+        rules={{required: true}}
         defaultValue=""
       />
-      {errors.email && <Text>{t('emailInvalid')}</Text>}
+      {errors.code && <Text>{t('emailInvalid')}</Text>}
 
       <Text>{t('password')}</Text>
       <Controller
@@ -103,16 +110,19 @@ export const SignUp = (props: TProps) => {
         defaultValue=""
       />
       {errors.confirmPassword && <Text>{t('confirmErr')}</Text>}
-      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(signUp)} style={styles.sign}>
-        <Text>{t('signUp')}</Text>
+
+      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(changePass)} style={styles.sign}>
+        <Text>{t('send')}</Text>
       </TouchableOpacity>
 
-      <ConditionView showIf={signUpState === SignUpState.error}>
-        <Text>{t('signUpErr')}</Text>
+      <ConditionView showIf={recoveryState === RecoveryState.error}>
+        <Text>{t('oops')}</Text>
       </ConditionView>
+
+      {recoveryState === RecoveryState.reqInProgress && <Spinner/>}
     </SafeAreaView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   input: {

@@ -4,8 +4,10 @@ export type TAuthPagesList = {
   [NavigationPages.Main]: undefined,
 };
 export type TUnAuthPagesList = {
-  [NavigationPages.SignIn]: {signUpText: string},
+  [NavigationPages.SignIn]: {title: string},
   [NavigationPages.SignUp]: undefined,
+  [NavigationPages.PassRecovery]: undefined,
+  [NavigationPages.NewPassword]: {title: string, email: string},
 };
 
 export type Screens = keyof (TAuthPagesList & TUnAuthPagesList);

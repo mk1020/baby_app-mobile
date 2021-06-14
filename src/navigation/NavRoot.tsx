@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from './assistant';
-import {getAuthorizedScreens} from './AuthorizedScreens';
-import {getUnauthorizedScreens} from './UnauthorizedScreens';
+import {AuthorizedScreens} from './AuthorizedScreens';
+import {UnauthorizedScreens} from './UnauthorizedScreens';
 import React from 'react';
 import {InitialState} from '@react-navigation/routers';
 
@@ -13,7 +13,7 @@ export const NavContainer = ({isAuth, initState, onChange}: {isAuth: boolean, in
       initialState={initState}
       onStateChange={onChange}
     >
-      {isAuth ? getAuthorizedScreens() : getUnauthorizedScreens()}
+      {isAuth ? <AuthorizedScreens/> : <UnauthorizedScreens/>}
     </NavigationContainer>
   );
 };

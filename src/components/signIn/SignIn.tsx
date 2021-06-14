@@ -7,11 +7,9 @@ import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
-import {navAssist} from '../../navigation/assistant';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {TAuthPagesList, TUnAuthPagesList} from '../../navigation/types';
-import {ConditionView} from '../../common/components/ConditionView';
+import {TUnAuthPagesList} from '../../navigation/types';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
@@ -33,14 +31,18 @@ export const SignIn = memo((props:TProps) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-
-  const onSubmit = (data: UnpackNestedValue<IForm>) => dispatch(signIn({login: data.email, password: data.pass}));
+  const _signIn = (data: UnpackNestedValue<IForm>) => dispatch(signIn({login: data.email, password: data.pass}));
   const signUp = () => {
     navigation.navigate(NavigationPages.SignUp);
+  };
+  const passRecovery = () => {
+    navigation.navigate(NavigationPages.PassRecovery);
   };
 
   return (
     <SafeAreaView>
+      {!!params?.title && <Text>{params.title}</Text>}
+
       <Text>{t('email')}</Text>
       <Controller
         control={control}
@@ -79,7 +81,7 @@ export const SignIn = memo((props:TProps) => {
       />
       {errors.pass && <Text>{t('passInvalid')}</Text>}
 
-      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSubmit)} style={styles.sign}>
+      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(_signIn)} style={styles.sign}>
         <Text>{t('signIn')}</Text>
       </TouchableOpacity>
 
@@ -87,7 +89,9 @@ export const SignIn = memo((props:TProps) => {
         <Text>{t('signUp')}</Text>
       </TouchableOpacity>
 
-      {!!params.signUpText && <Text>{params.signUpText}</Text>}
+      <TouchableOpacity style={styles.sign} onPress={passRecovery}>
+        <Text>{t('passRecovery')}</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 });

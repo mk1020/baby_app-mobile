@@ -5,7 +5,7 @@ import {TAuthPagesList} from './types';
 import {NavigationPages} from './pages';
 
 const Tab = createBottomTabNavigator<TAuthPagesList>();
-export const getAuthorizedScreens = (): JSX.Element => {
+export const AuthorizedScreens = (): JSX.Element => {
   return (
     <Tab.Navigator>
       <Tab.Screen name={NavigationPages.Main} component={SignIn} />
