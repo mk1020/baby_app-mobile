@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
 import {ActivityIndicator, StyleSheet} from 'react-native';
+import {windowHeight, windowWidth} from '../phone/utils';
 
 export const Spinner = memo(() => {
   return (
@@ -10,8 +11,8 @@ export const Spinner = memo(() => {
 const styles = StyleSheet.create({
   spinner: {
     position: 'absolute',
-    top: '100%',
-    left: '50%',
+    top: windowHeight / 2 - 100,
+    left: windowWidth / 2 - 18,
     zIndex: 100
   },
 });
