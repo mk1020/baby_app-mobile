@@ -19,7 +19,7 @@ export const signIn = createAsyncThunk(
       .catch(err => {
         console.log(err.response?.data);
       });
-
+    console.log(res?.data);
     return res?.data ? res.data.token : null;
   },
 );

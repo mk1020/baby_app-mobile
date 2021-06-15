@@ -10,6 +10,7 @@ import axios from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';
+import {Spinner} from '../../common/components/Spinner';
 
 type TProps = {}
 
@@ -19,9 +20,10 @@ interface IForm {
   confirmPassword: string
 }
 enum SignUpState {
-  'default'= 'default',
-  'success'= 'success',
-  'error'= 'error',
+  default= 'default',
+  reqInProgress = 'reqInProgress',
+  success= 'success',
+  error= 'error',
 }
 
 export const SignUp = (props: TProps) => {
@@ -37,6 +39,7 @@ export const SignUp = (props: TProps) => {
   const navigation = useNavigation();
 
   const signUp = (data: UnpackNestedValue<IForm>) => {
+    changeSignUpState(SignUpState.reqInProgress);
     axios.post(httpBaseUrl + 'signup', data)
       .then(() => {
         changeSignUpState(SignUpState.success);
@@ -110,6 +113,8 @@ export const SignUp = (props: TProps) => {
       <ConditionView showIf={signUpState === SignUpState.error}>
         <Text>{t('signUpErr')}</Text>
       </ConditionView>
+      {signUpState === SignUpState.reqInProgress  && <Spinner/>}
+
     </SafeAreaView>
   );
 };

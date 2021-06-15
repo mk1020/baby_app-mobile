@@ -73,7 +73,7 @@ export const PassRecovery = memo((props: TProps) => {
         <Text>{t('send')}</Text>
       </TouchableOpacity>
 
-      {recoveryState === RecoveryState.emailBeginSent || true && <Spinner/>}
+      {recoveryState === RecoveryState.emailBeginSent && <Spinner/>}
     </SafeAreaView>
   );
 });

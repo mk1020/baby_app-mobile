@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {Platform, UIManager, useColorScheme} from 'react-native';
 import {Provider} from 'react-redux';
-import {ColorSchemes, setColorScheme, setLoadingAppStatus} from './redux/appSlice';
+import {setColorScheme, setLoadingAppStatus} from './redux/appSlice';
 import './common/localization/localization';
 import {InitialState, NavigationState} from '@react-navigation/routers';
 import {restoreNavState} from './navigation/utils';
@@ -10,6 +10,8 @@ import {ErrorBoundary} from './common/components/ErrorBoundary';
 import {store} from './redux/store';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
+import {ColorSchemes} from './redux/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -19,32 +21,15 @@ import {PersistGate} from 'redux-persist/integration/react';
   }
 })();
 
-export const AppContainer = () => {
-  const [initialNavState, setInitialNavState] = useState<InitialState>();
-  const scheme = useColorScheme();
-
-  useEffect(() => {
-    store.dispatch(setLoadingAppStatus(true));
-    const restoreNav = async () => {
-      const navState: NavigationState = await restoreNavState();
-      setInitialNavState(navState);
-      store.dispatch(setLoadingAppStatus(false));
-    };
-
-    restoreNav().then();
-  }, []);
-
-  useEffect(() => {
-    store.dispatch(setColorScheme(scheme || ColorSchemes.light));
-  }, [scheme]);
+export const AppContainer = memo(() => {
 
   return (
     <ErrorBoundary>
       <Provider store={store}>
         <PersistGate persistor={persistStore(store)}>
-          <App initNavState={initialNavState} />
+          <App />
         </PersistGate>
       </Provider>
     </ErrorBoundary>
   );
-};
+});

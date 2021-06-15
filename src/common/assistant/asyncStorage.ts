@@ -6,7 +6,7 @@ export const storeData = async (key: string, value: any) => {
     if (typeof value === 'object') {
       jsonValue = JSON.stringify(value);
     }
-    await AsyncStorage.setItem(`@${key}`, jsonValue || value);
+    await AsyncStorage.setItem(`${key}`, jsonValue || value);
   } catch (e) {
     console.warn(e);
   }
@@ -14,7 +14,7 @@ export const storeData = async (key: string, value: any) => {
 
 export const getStorageData = async (key: string) => {
   try {
-    const value = await AsyncStorage.getItem(`@${key}`);
+    const value = await AsyncStorage.getItem(`${key}`);
     return value;
   } catch (e) {
     console.warn(e);

@@ -5,6 +5,7 @@ export enum NavigationPages {
   PassRecovery = 'PassRecovery',
   NewPassword = 'NewPassword',
   Main = 'Main',
+  Diary = 'Diary',
 }
 
 export enum MainTabPages {
