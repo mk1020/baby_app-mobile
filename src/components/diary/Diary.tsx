@@ -1,12 +1,11 @@
 import React, {memo} from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TAuthPagesList} from '../../navigation/types';
-import {NavigationState} from '@react-navigation/routers';
-import {restoreNavState} from '../../navigation/utils';
+import {signOut} from '../../redux/appSlice';
 
 type TProps = {
   route: RouteProp<TAuthPagesList, NavigationPages.Diary>
@@ -18,24 +17,22 @@ export const Diary = memo((props:TProps) => {
   const {params} = props.route;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const test = async ()=> {
-    const navState: NavigationState = await restoreNavState();
 
-  }
+  const logOut = () => {
+    dispatch(signOut());
+  };
 
   return (
     <SafeAreaView>
-      <Text onPress={test}>THIS IS DIARY!</Text>
+      <Text>THIS IS DIARY!</Text>
+      <TouchableOpacity onPress={logOut} style={styles.sign}>
+        <Text>LOGOUT</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 });
 
 const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    height: 40,
-    color: '#000',
-  },
   sign: {
     width: 150,
     height: 50,

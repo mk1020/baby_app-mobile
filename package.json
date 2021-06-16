@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android:prod": "ENVFILE=.env.production react-native run-android",
+    "android:dev": "ENVFILE=.env.development react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "assemble:android": "cd android && ENVFILE=.env.production ./gradlew assembleRelease",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
@@ -23,6 +25,7 @@
     "react-hook-form": "^7.7.1",
     "react-i18next": "^11.8.13",
     "react-native": "0.64.0",
+    "react-native-config": "^1.4.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-localize": "^2.0.2",
     "react-native-reanimated": "^2.2.0",
