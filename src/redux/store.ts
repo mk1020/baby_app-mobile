@@ -31,5 +31,5 @@ export const store = configureStore({
   ],
   devTools: true,
 });
-
+store.dispatch
 export type AppDispatch = typeof store.dispatch;

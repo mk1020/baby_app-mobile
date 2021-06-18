@@ -2,7 +2,7 @@ export type TColorScheme = 'light' | 'dark';
 
 export type TAppReducer = {
   colorScheme: TColorScheme;
-  userToken: string | null;
+  userToken: TToken | null;
   isLoading: boolean;
 };
 
@@ -18,7 +18,11 @@ export enum ColorSchemes {
 
 export type TSignInRes = {
   userId: number,
-  token: string
+  token: TToken
 }
 
+export type TToken = {
+  token: number,
+  expires: any;
+}
 

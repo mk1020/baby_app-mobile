@@ -1,6 +1,6 @@
-import React, {memo} from 'react';
+import React, {memo, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {signIn} from '../../redux/appSlice';
 import {Controller, useForm} from 'react-hook-form';
@@ -10,6 +10,8 @@ import {isEmptyObj} from '../../common/assistant/others';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TUnAuthPagesList} from '../../navigation/types';
+import {RootStoreType} from '../../redux/rootReducer';
+import {Spinner} from '../../common/components/Spinner';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
@@ -26,12 +28,14 @@ export const SignIn = memo((props:TProps) => {
     handleSubmit,
     formState: {errors},
   } = useForm<IForm>();
-
   const {params} = props.route;
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
 
-  const _signIn = (data: UnpackNestedValue<IForm>) => dispatch(signIn({login: data.email, password: data.pass}));
+  const _signIn = (data: UnpackNestedValue<IForm>) => {
+    dispatch(signIn({login: data.email, password: data.pass}));
+  };
   const signUp = () => {
     navigation.navigate(NavigationPages.SignUp);
   };
@@ -92,6 +96,8 @@ export const SignIn = memo((props:TProps) => {
       <TouchableOpacity style={styles.sign} onPress={passRecovery}>
         <Text>{t('passRecovery')}</Text>
       </TouchableOpacity>
+
+      {isLoading  && <Spinner/>}
     </SafeAreaView>
   );
 });

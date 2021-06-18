@@ -3,13 +3,14 @@ import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react
 import {useTranslation} from 'react-i18next';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, httpBaseUrl} from '../../common/consts';
+import {emailRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
 import axios, {AxiosError} from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';
 import {Spinner} from '../../common/components/Spinner';
+import {req} from '../../common/assistant/api';
 
 type TProps = {}
 
@@ -37,7 +38,7 @@ export const PassRecovery = memo((props: TProps) => {
 
   const sendEmail = (data: UnpackNestedValue<IForm>) => {
     changeRecoveryState(RecoveryState.emailBeginSent);
-    axios.patch(httpBaseUrl + 'password-reset', data)
+    req(null).patch('/password-reset', data)
       .then(() => {
         changeRecoveryState(RecoveryState.emailSent);
         navigation.navigate(NavigationPages.NewPassword, {title: t('sentEmailRecovery'), email: data.email});

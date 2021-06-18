@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, httpBaseUrl, passRegex} from '../../common/consts';
+import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
 import axios from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
@@ -12,6 +12,7 @@ import {RouteProp, useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';
 import {Spinner} from '../../common/components/Spinner';
 import {TUnAuthPagesList} from '../../navigation/types';
+import {req} from '../../common/assistant/api';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.NewPassword>
@@ -44,7 +45,7 @@ export const NewPassword = memo((props: TProps) => {
 
   const changePass = (data: UnpackNestedValue<IForm>) => {
     changeRecoveryState(RecoveryState.reqInProgress);
-    axios.patch(httpBaseUrl + 'users/password', {...data, email: params.email})
+    req(null).patch('/users/password', {...data, email: params.email})
       .then(() => {
         changeRecoveryState(RecoveryState.success);
         navigation.navigate(NavigationPages.SignIn, {title: t('passChanged')});

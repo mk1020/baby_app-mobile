@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {httpBaseUrl} from '../common/consts';
-import {ColorSchemes, TAppReducer, TColorScheme, TSignIn, TSignInRes} from './types';
+import {ColorSchemes, TAppReducer, TColorScheme, TSignIn, TSignInRes, TToken} from './types';
 import {RootStoreType} from './rootReducer';
+import {req} from '../common/assistant/api';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
@@ -13,8 +13,8 @@ const initialState: TAppReducer = {
 export const signIn = createAsyncThunk(
   'signIn/requestStatus',
   async (data: TSignIn, thunkAPI) => {
-    const res = <AxiosResponse<TSignInRes>> await axios.post<TSignInRes>(httpBaseUrl + 'signin', {email: data.login, password: data.password})
-      .catch(err => {
+    const res = <AxiosResponse<TSignInRes>> await req(null).post('/signin', {email: data.login, password: data.password})
+      .catch((err: AxiosError) => {
         console.log(err.response?.data);
       });
     return res?.data ? res.data.token : null;
@@ -23,10 +23,9 @@ export const signIn = createAsyncThunk(
 
 export const signOut = createAsyncThunk<boolean, undefined, {state: RootStoreType }>(
   'signOut/requestStatus', async (payload, thunkAPI) => {
-    const res = <AxiosResponse<boolean>> await axios.delete(httpBaseUrl + 'signOut', {headers: {token: thunkAPI.getState().app.userToken}})
+    const res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}})
       .catch((err: AxiosError) => console.log(err.response));
-
-    return true;
+    return res?.data;
   });
 
 const appSlice = createSlice({
@@ -39,10 +38,17 @@ const appSlice = createSlice({
     setLoadingAppStatus: (state: TAppReducer, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+    refreshToken: (state: TAppReducer, action: PayloadAction<TToken>) => {
+      state.userToken = action.payload;
+    },
   },
   extraReducers: builder => {
-    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<string | null>) => {
+    builder.addCase(signIn.pending, (state: TAppReducer, action: PayloadAction) => {
+      state.isLoading = true;
+    });
+    builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<TToken | null>) => {
       state.userToken = action.payload;
+      state.isLoading = false;
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action: PayloadAction<boolean>) => {
       action.payload && (state.userToken = null);
@@ -51,4 +57,4 @@ const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const {setColorScheme, setLoadingAppStatus} = appSlice.actions;
+export const {setColorScheme, setLoadingAppStatus, refreshToken} = appSlice.actions;

@@ -3,3 +3,4 @@ export const emailRegex = new RegExp('^(([^<>()\\[\\]\\\\.,;:\\s@"]+(\\.[^<>()\\
 export const passRegex = new RegExp('[a-zA-z 0-9]{8,}');
 
 export const PERSISTENCE_NAV_KEY = 'NAVIGATION_STATE';
+

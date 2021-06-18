@@ -4,13 +4,14 @@ import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, httpBaseUrl, passRegex} from '../../common/consts';
+import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';
 import {Spinner} from '../../common/components/Spinner';
+import {req} from '../../common/assistant/api';
 
 type TProps = {}
 
@@ -40,12 +41,15 @@ export const SignUp = (props: TProps) => {
 
   const signUp = (data: UnpackNestedValue<IForm>) => {
     changeSignUpState(SignUpState.reqInProgress);
-    axios.post(httpBaseUrl + 'signup', data)
+    req(null).post('/signup', data)
       .then(() => {
         changeSignUpState(SignUpState.success);
         navigation.navigate(NavigationPages.SignIn, {title: t('signUpConfirm')});
       })
-      .catch(() =>  changeSignUpState(SignUpState.error));
+      .catch((err: AxiosError) => {
+        console.log(err.response?.data);
+        changeSignUpState(SignUpState.error);
+      });
   };
 
   return (
