@@ -7,11 +7,12 @@ import {InitialState, NavigationState} from '@react-navigation/routers';
 import {RootStoreType} from './redux/rootReducer';
 import {NavContainer} from './navigation/NavRoot';
 import {ColorSchemes, TColorScheme} from './redux/types';
-import {PERSISTENCE_NAV_KEY} from './common/consts';
+import {googleOAuthClientId, PERSISTENCE_NAV_KEY} from './common/consts';
 import {Spinner} from './common/components/Spinner';
 import {store} from './redux/store';
 import {setColorScheme, setLoadingAppStatus} from './redux/appSlice';
 import {restoreNavState} from './navigation/utils';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -38,6 +39,10 @@ export const App = memo((props: TProps) => {
       if (navState !== undefined) setInitialNavState(navState);
     };
     restoreNav().finally(() => setIsAppReady(true));
+
+    GoogleSignin.configure({
+      webClientId: googleOAuthClientId
+    });
   }, []);
 
   useEffect(() => {

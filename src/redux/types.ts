@@ -11,6 +11,10 @@ export type TSignIn = {
   password: string;
 };
 
+export type TSignInGoogle = {
+  oAuthIdToken: string;
+};
+
 export enum ColorSchemes {
   light = 'light',
   dark = 'dark',

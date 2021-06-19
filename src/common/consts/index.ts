@@ -4,3 +4,4 @@ export const passRegex = new RegExp('[a-zA-z 0-9]{8,}');
 
 export const PERSISTENCE_NAV_KEY = 'NAVIGATION_STATE';
 
+export const googleOAuthClientId = '383429019755-1g1ffu4bhcr1nm3tdp0ojbenr3ifprej.apps.googleusercontent.com';

@@ -1,17 +1,18 @@
-import React, {memo, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
-import {signIn} from '../../redux/appSlice';
+import {oAuthGoogle, setLoadingAppStatus, signIn} from '../../redux/appSlice';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, passRegex} from '../../common/consts';
+import {emailRegex, googleOAuthClientId, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TUnAuthPagesList} from '../../navigation/types';
 import {RootStoreType} from '../../redux/rootReducer';
 import {Spinner} from '../../common/components/Spinner';
+import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-google-signin/google-signin';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
@@ -21,6 +22,7 @@ interface IForm {
   email: string,
   pass: string
 }
+
 export const SignIn = memo((props:TProps) => {
   const {t, i18n} = useTranslation();
   const {
@@ -28,12 +30,34 @@ export const SignIn = memo((props:TProps) => {
     handleSubmit,
     formState: {errors},
   } = useForm<IForm>();
+
   const {params} = props.route;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
 
-  const _signIn = (data: UnpackNestedValue<IForm>) => {
+  const onOAuthGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      dispatch(setLoadingAppStatus(true));
+      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!}));
+
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        dispatch(setLoadingAppStatus(false));
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        dispatch(setLoadingAppStatus(false));
+      }
+    }
+  };
+
+  const onSignIn = (data: UnpackNestedValue<IForm>) => {
+    dispatch(setLoadingAppStatus(true));
     dispatch(signIn({login: data.email, password: data.pass}));
   };
   const signUp = () => {
@@ -85,7 +109,7 @@ export const SignIn = memo((props:TProps) => {
       />
       {errors.pass && <Text>{t('passInvalid')}</Text>}
 
-      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(_signIn)} style={styles.sign}>
+      <TouchableOpacity disabled={!isEmptyObj(errors)} onPress={handleSubmit(onSignIn)} style={styles.sign}>
         <Text>{t('signIn')}</Text>
       </TouchableOpacity>
 
@@ -97,7 +121,15 @@ export const SignIn = memo((props:TProps) => {
         <Text>{t('passRecovery')}</Text>
       </TouchableOpacity>
 
-      {isLoading  && <Spinner/>}
+      <GoogleSigninButton
+       // style={{width: 192, height: 48}}
+        size={GoogleSigninButton.Size.Icon}
+        color={GoogleSigninButton.Color.Dark}
+        onPress={onOAuthGoogle}
+        //disabled={this.state.isSigninInProgress}
+      />
+
+      {isLoading && <Spinner/>}
     </SafeAreaView>
   );
 });

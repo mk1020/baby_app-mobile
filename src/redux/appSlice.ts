@@ -1,8 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import axios, {AxiosError, AxiosResponse} from 'axios';
-import {ColorSchemes, TAppReducer, TColorScheme, TSignIn, TSignInRes, TToken} from './types';
+import {ColorSchemes, TAppReducer, TColorScheme, TSignIn, TSignInGoogle, TSignInRes, TToken} from './types';
 import {RootStoreType} from './rootReducer';
 import {req} from '../common/assistant/api';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
@@ -13,19 +14,39 @@ const initialState: TAppReducer = {
 export const signIn = createAsyncThunk(
   'signIn/requestStatus',
   async (data: TSignIn, thunkAPI) => {
-    const res = <AxiosResponse<TSignInRes>> await req(null).post('/signin', {email: data.login, password: data.password})
-      .catch((err: AxiosError) => {
-        console.log(err.response?.data);
-      });
-    return res?.data ? res.data.token : null;
+    try {
+      const res =  await req(null).post<TSignInRes>('/signin', {email: data.login, password: data.password});
+      return res.data?.token || null;
+    } catch (err) {
+      console.error(err.response?.data || err.response || err);
+      return null;
+    }
+  },
+);
+export const oAuthGoogle = createAsyncThunk(
+  'oAuthGoogle/requestStatus',
+  async (data: TSignInGoogle, thunkAPI) => {
+    try {
+      const res = await req(null).post<TSignInRes>('/oauth/google', data);
+      return res.data?.token || null;
+    } catch (err) {
+      console.error(err.response?.data || err.response || err);
+      return null;
+    }
   },
 );
 
 export const signOut = createAsyncThunk<boolean, undefined, {state: RootStoreType }>(
   'signOut/requestStatus', async (payload, thunkAPI) => {
-    const res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}})
-      .catch((err: AxiosError) => console.log(err.response));
-    return res?.data;
+    try {
+      const res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      return res?.data;
+    } catch (err) {
+      console.error(err.response?.data || err.response || err);
+      return false;
+    }
   });
 
 const appSlice = createSlice({
@@ -47,6 +68,13 @@ const appSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(signIn.fulfilled, (state: TAppReducer, action: PayloadAction<TToken | null>) => {
+      state.userToken = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(oAuthGoogle.pending, (state: TAppReducer, action: PayloadAction) => {
+      state.isLoading = true;
+    });
+    builder.addCase(oAuthGoogle.fulfilled, (state: TAppReducer, action: PayloadAction<TToken | null>) => {
       state.userToken = action.payload;
       state.isLoading = false;
     });
