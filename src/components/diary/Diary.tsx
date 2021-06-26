@@ -10,6 +10,7 @@ import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {checkUnsyncedChanges, syncDB} from '../../model/sync';
 import {RootStoreType} from '../../redux/rootReducer';
+import {NotesTableName} from '../../model/schema';
 
 const _Diary = memo((props:TProps) => {
   const {t, i18n} = useTranslation();
@@ -44,7 +45,7 @@ const _Diary = memo((props:TProps) => {
 
   const checkChanges = async () => {
     await checkUnsyncedChanges(props.database);
-    await props.database.action(async action => {
+    await props.database.action(async () => {
       await props.database.unsafeResetDatabase();
     });
   };
@@ -55,14 +56,14 @@ const _Diary = memo((props:TProps) => {
   };
   const updateNote = async () => {
     const notesCollection = props.database.get('notes');
-    const note = await notesCollection.find('6zfkddjbtenymeaw');
-    await note.updateNote('food', 'update food');
+    const note = await notesCollection.find('iz4djgo0pnl8aeil');
+    await note.updateNote('food', 'пицца тортом');
+    await note.updateNote('note', 'тест 7');
   };
   const deleteNotes = async () => {
     const notesCollection = props.database.get('notes');
-    const notes = await notesCollection.query().fetch();
-    notes.forEach(async (note: { deleteNote: () => any; }) => await note.deleteNote());
-    console.log(notes);
+    const note = await notesCollection.find('1aikjbi74nn8dtas');
+    await note.deleteNote();
   };
   console.log('rerender', props.notes);
   return (
@@ -103,7 +104,7 @@ interface ObservableProps {
   notes: any
 }
 export const Diary = withDatabase(withObservables<TProps, ObservableProps>(['notes'], ({notes, database}) => ({
-  notes: database.collections.get('notes').query().observe()
+  notes: database.collections.get(NotesTableName).query().observe()
 }))(_Diary));
 
 const styles = StyleSheet.create({

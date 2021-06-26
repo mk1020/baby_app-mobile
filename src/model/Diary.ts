@@ -27,6 +27,19 @@ export class Note extends Model {
   @field('note_type') noteType: number | undefined
   @field('photo') photo: string | undefined
   @field('food') food: string | undefined
+  @field('volume') volume: string | undefined
+  @field('note') note: string | undefined
+  @field('duration') duration: string | undefined
+  @field('milk_volume_left') milkVolumeLeft: string | undefined
+  @field('milk_volume_right') milkVolumeRight: string | undefined
+  @field('type') type: string | undefined
+  @field('achievement') achievement: string | undefined
+  @field('weight') weight: string | undefined
+  @field('growth') growth: string | undefined
+  @field('head_circle') headCircle: string | undefined
+  @field('temp') temp: string | undefined
+  @field('tags') tags: string | undefined
+  @field('pressure') pressure: string | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
 

@@ -3,9 +3,6 @@ export type TNoteType = 1|2|3|4|5|6|7|8|9|10|11|12;
 export interface INote {
   id: string,
   diary_id: number,
-  server_created_at: number,
-  server_updated_at: number,
-  server_deleted_at: number,
   created_at: number,
   updated_at: number,
   note_type:  TNoteType,
