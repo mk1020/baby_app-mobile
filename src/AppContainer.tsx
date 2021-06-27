@@ -10,8 +10,28 @@ import {ErrorBoundary} from './common/components/ErrorBoundary';
 import {store} from './redux/store';
 import {persistStore} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
-import {ColorSchemes} from './redux/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Database} from '@nozbe/watermelondb';
+import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
+import {babyAppSchema} from './model/schema';
+import {Diary, Note} from './model/Diary';
+import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
+import {migrations} from './model/migrations';
+
+const adapter = new SQLiteAdapter({
+  schema: babyAppSchema,
+  migrations,
+  dbName: 'baby_app',
+  // jsi: true, /* Platform.OS === 'ios' */
+  // onSetUpError: error => {
+  // Database failed to load -- offer the user to reload the app or log out
+  // }
+});
+
+const database = new Database({
+  adapter,
+  modelClasses: [Diary, Note],
+  actionsEnabled: true,
+});
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -27,7 +47,9 @@ export const AppContainer = memo(() => {
     <ErrorBoundary>
       <Provider store={store}>
         <PersistGate persistor={persistStore(store)}>
-          <App />
+          <DatabaseProvider database={database}>
+            <App />
+          </DatabaseProvider>
         </PersistGate>
       </Provider>
     </ErrorBoundary>

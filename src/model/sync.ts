@@ -49,7 +49,7 @@ export async function syncDB(database: Database, token: TToken, diaryId: number)
 
       console.log('res', res);
     },
-    //migrationsEnabledAtVersion: 1,
+    migrationsEnabledAtVersion: 1,
   });
 }
 
