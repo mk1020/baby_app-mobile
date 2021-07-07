@@ -38,14 +38,16 @@ export const oAuthGoogle = createAsyncThunk(
 
 export const signOut = createAsyncThunk<boolean, undefined, {state: RootStoreType }>(
   'signOut/requestStatus', async (payload, thunkAPI) => {
+    let res;
     try {
-      const res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
-      await GoogleSignin.revokeAccess();
+      res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
       await GoogleSignin.signOut();
-      return res?.data;
+      //await GoogleSignin.revokeAccess();
     } catch (err) {
       console.error(err.response?.data || err.response || err);
       return false;
+    } finally {
+      return !!res?.data;
     }
   });
 
@@ -53,7 +55,7 @@ const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setColorScheme: (state: TAppReducer, action: PayloadAction<TColorScheme>) => {
+    setColorScheme: (state, action: PayloadAction<TColorScheme>) => {
       state.colorScheme = action.payload;
     },
     setLoadingAppStatus: (state: TAppReducer, action: PayloadAction<boolean>) => {

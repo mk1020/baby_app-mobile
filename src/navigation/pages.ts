@@ -8,6 +8,8 @@ export enum NavigationPages {
   Diary = 'Diary',
 }
 
-export enum MainTabPages {
+export enum NavigationTabs {
+  Diary = 'Diary',
+  Main = 'Main',
 
 }

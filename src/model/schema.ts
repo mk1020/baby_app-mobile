@@ -1,15 +1,16 @@
 import {appSchema, tableSchema} from '@nozbe/watermelondb';
 
 export const NotesTableName = 'notes';
+export const DiaryTableName = 'diaries';
 export const babyAppSchema = appSchema({
   version: 1,
   tables: [
     tableSchema({
-      name: 'diaries',
+      name: DiaryTableName,
       columns: [
-        {name: 'owner', type: 'number'},
         {name: 'user_id', type: 'number'},
         {name: 'name', type: 'string'},
+        {name: 'is_current', type: 'boolean'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]
@@ -17,7 +18,7 @@ export const babyAppSchema = appSchema({
     tableSchema({
       name: NotesTableName,
       columns: [
-        {name: 'diary_id', type: 'number'},
+        {name: 'diary_id', type: 'string'},
         {name: 'note_type', type: 'number'},
         {name: 'photo', type: 'string', isOptional: true},
         {name: 'food', type: 'string', isOptional: true},

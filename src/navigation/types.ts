@@ -2,7 +2,7 @@ import {NavigationPages} from './pages';
 
 export type TAuthPagesList = {
   [NavigationPages.Main]: undefined,
-  [NavigationPages.Diary]: undefined,
+  [NavigationPages.Diary]: {diaryName: string},
 };
 export type TUnAuthPagesList = {
   [NavigationPages.SignIn]: {title: string},

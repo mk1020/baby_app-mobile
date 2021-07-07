@@ -14,8 +14,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['app'], //Things which will not be persisted
-  //blacklist: ['app'], // Only this things will be persisted
+  whitelist: ['app', 'diary'], //Things which will be persisted
+  //blacklist: ['app'], // Only this things will not be persisted
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

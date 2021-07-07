@@ -1,20 +1,27 @@
 import {Model} from '@nozbe/watermelondb';
 import {Associations} from '@nozbe/watermelondb/Model';
 import {action, children, field, relation} from '@nozbe/watermelondb/decorators';
+import {DiaryTableName} from './schema';
 
 export class Diary extends Model {
-  static table = 'diaries'
+  static table = DiaryTableName
   static associations: Associations = {
     notes: {type: 'has_many', foreignKey: 'diary_id'},
   }
 
-  @field('owner') owner: string | undefined
   @field('user_id') userId: number | undefined
   @field('name') name: string | undefined
+  @field('is_current') isCurrent: boolean | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
 
   @children('notes') notes: any
+
+  @action async changeIsCurrentDiary(isCurrent: boolean) {
+    await this.update(diary => {
+      diary['isCurrent'] = isCurrent;
+    });
+  }
 }
 
 export class Note extends Model {

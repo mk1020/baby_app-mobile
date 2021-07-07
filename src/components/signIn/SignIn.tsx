@@ -13,6 +13,8 @@ import {TUnAuthPagesList} from '../../navigation/types';
 import {RootStoreType} from '../../redux/rootReducer';
 import {Spinner} from '../../common/components/Spinner';
 import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-google-signin/google-signin';
+import {DiaryTableName} from '../../model/schema';
+import {database} from '../../AppContainer';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
@@ -36,12 +38,24 @@ export const SignIn = memo((props:TProps) => {
   const navigation = useNavigation();
   const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
 
+  const newDiary = async () => {
+    const notesCollection = database.get(DiaryTableName);
+    await database.action(async () => {
+      await notesCollection.create((note: any) => {
+        note.userId = 27;
+        note.name = 'Test дневник 3';
+        note.isCurrent = true;
+      });
+    });
+  };
+
   const onOAuthGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       dispatch(setLoadingAppStatus(true));
       dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!}));
+      await GoogleSignin.revokeAccess();
 
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -122,7 +136,7 @@ export const SignIn = memo((props:TProps) => {
       </TouchableOpacity>
 
       <GoogleSigninButton
-       // style={{width: 192, height: 48}}
+        // style={{width: 192, height: 48}}
         size={GoogleSigninButton.Size.Icon}
         color={GoogleSigninButton.Color.Dark}
         onPress={onOAuthGoogle}

@@ -52,7 +52,6 @@ export const App = memo((props: TProps) => {
   if (!isAppReady) {
     return <Spinner />;
   }
-
   return (
     <NavContainer
       initState={initialNavState}
