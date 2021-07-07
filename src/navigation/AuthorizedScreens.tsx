@@ -4,10 +4,6 @@ import {TAuthPagesList} from './types';
 import {NavigationPages} from './pages';
 import {Diary} from '../components/diary/Diary';
 import {Main} from '../components/main/Main';
-import {RouteProp} from '@react-navigation/native';
-import {colorsByTheme} from '../common/consts/colorsByTheme';
-import {useSelector} from 'react-redux';
-import {RootStoreType} from '../redux/rootReducer';
 import {createStackNavigator} from '@react-navigation/stack';
 
 const DiaryStack = createStackNavigator();
@@ -18,6 +14,7 @@ const DiaryStackScreen = () => {
       <DiaryStack.Screen
         name={NavigationPages.Diary}
         component={Diary}
+        options={{headerShown: false}}
       />
     </DiaryStack.Navigator>
   );

@@ -1,6 +1,6 @@
-import {ColorSchemes, TColorScheme} from '../../redux/types';
+import {ColorSchemes, TColorScheme} from '../redux/types';
 
-export const colorsByTheme = (theme: TColorScheme) => {
+export const ColorsByTheme = (theme: TColorScheme) => {
   const light = {
     backgroundColor: '#fff',
     headerTitle: '#383838'
