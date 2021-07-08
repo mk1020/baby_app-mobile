@@ -17,6 +17,8 @@ export const ru = {
     newPassword: 'Новый пароль',
     passChanged: 'Пароль был успешно изменен',
     code: 'Код',
-    confirmPassword: 'Подтвердите пароль'
+    confirmPassword: 'Подтвердите пароль',
+    content: 'Содержание',
+    hashtags: '#Хэштеги',
   },
 };

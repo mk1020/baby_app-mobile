@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginHorizontal: 16,
-    marginTop: 16
+    marginTop: 16,
   },
   titleWrapper: {
     flex: 1,

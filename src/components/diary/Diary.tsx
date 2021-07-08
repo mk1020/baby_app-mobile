@@ -1,19 +1,19 @@
-import React, {memo} from 'react';
-import {SafeAreaView, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, {memo, useMemo, useState} from 'react';
+import {Dimensions, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {TAuthPagesList} from '../../navigation/types';
-import {signOut} from '../../redux/appSlice';
-import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
+import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import {checkUnsyncedChanges, syncDB} from '../../model/sync';
 import {RootStoreType} from '../../redux/rootReducer';
 import {DiaryTableName, NotesTableName} from '../../model/schema';
 import {Q} from '@nozbe/watermelondb';
-import {ColorsByTheme} from '../../common/colorsByTheme';
 import {Header} from './Header';
+import {SceneMap, TabView} from 'react-native-tab-view';
+import {ContentTab} from './contentTab/ContentTab';
+import {Tabs} from './Tabs';
 
 type TProps = {
   route: RouteProp<TAuthPagesList, NavigationPages.Diary>
@@ -23,8 +23,8 @@ type TProps = {
   diary: any
 }
 
+
 const Diary_ = memo((props:TProps) => {
-  const {t, i18n} = useTranslation();
 
   const {notes, diary, database} = props;
   const {params} = props.route;
@@ -33,25 +33,25 @@ const Diary_ = memo((props:TProps) => {
   const token = useSelector(((state: RootStoreType) => state.app.userToken));
   const theme = useSelector(((state: RootStoreType) => state.app.colorScheme));
 
+  const [tabIndex, setTabIndex] = useState(0);
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Header title={diary.length ? diary[0].name : ''}/>
+      <Tabs currentTabIndex={tabIndex} onIndexChange={setTabIndex} />
     </SafeAreaView>
   );
 });
 
 //type InputProps = ObservableifyProps<TProps, "notes", "diary">
-export const Diary = withDatabase(withObservables<TProps, {}>([], ({diaryId, database}) => ({
+export const Diary = withDatabase(withObservables<TProps, {}>([], ({database}) => ({
   notes: database.collections.get(NotesTableName).query().observe(),
   diary: database.collections.get(DiaryTableName).query(Q.where('is_current', true)).observe()
 }))(Diary_));
 
 const styles = StyleSheet.create({
-  sign: {
-    width: 150,
-    height: 50,
-    borderWidth: 1,
-    backgroundColor: 'orange',
-    marginTop: 10
+  container: {
+    backgroundColor: '#FFFFFF',
+    flex: 1
   }
 });

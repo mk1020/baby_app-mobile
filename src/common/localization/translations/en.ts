@@ -17,6 +17,8 @@ export const en = {
     newPassword: 'New Password',
     passChanged: 'The password was changed successfully',
     code: 'Code',
-    confirmPassword: 'Confirm Password'
+    confirmPassword: 'Confirm Password',
+    content: 'Content',
+    hashtags: '#Hashtags',
   },
 };

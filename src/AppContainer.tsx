@@ -1,10 +1,7 @@
-import React, {memo, useEffect, useState} from 'react';
-import {Platform, UIManager, useColorScheme} from 'react-native';
+import React, {memo} from 'react';
+import {Platform, UIManager} from 'react-native';
 import {Provider} from 'react-redux';
-import {setColorScheme, setLoadingAppStatus} from './redux/appSlice';
 import './common/localization/localization';
-import {InitialState, NavigationState} from '@react-navigation/routers';
-import {restoreNavState} from './navigation/utils';
 import {App} from './App';
 import {ErrorBoundary} from './common/components/ErrorBoundary';
 import {store} from './redux/store';
