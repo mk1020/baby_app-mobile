@@ -20,5 +20,7 @@ export const ru = {
     confirmPassword: 'Подтвердите пароль',
     content: 'Содержание',
     hashtags: '#Хэштеги',
+    withoutChapter: 'Без главы',
+    createNewChapter: 'Создать новую главу'
   },
 };

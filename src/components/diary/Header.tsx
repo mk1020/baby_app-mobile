@@ -2,13 +2,22 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import {Images} from '../../common/imageResources';
 import {HeaderButton} from '../../common/components/HeaderButton';
 import {Fonts} from '../../common/phone/fonts';
-import React, {memo} from 'react';
+import React, {memo, useState} from 'react';
+import {AddPageModal} from './AddPageModal';
 
 type TProps = {
    title: string
 }
 export const Header = memo((props: TProps) => {
   const {title} = props;
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const onPressAddPage = () => {
+    setModalVisible(true);
+  };
+  const onModalClose = () => {
+    setModalVisible(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -18,10 +27,12 @@ export const Header = memo((props: TProps) => {
       </View>
       <View style={styles.rightButtons}>
         <View style={styles.addIconWrapper}>
-          <HeaderButton icon={Images.add}/>
+          <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
         </View>
         <HeaderButton icon={Images.diary}/>
       </View>
+
+      <AddPageModal visible={modalVisible} onRequestClose={onModalClose}/>
     </View>
   );
 });

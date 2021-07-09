@@ -20,5 +20,7 @@ export const en = {
     confirmPassword: 'Confirm Password',
     content: 'Content',
     hashtags: '#Hashtags',
+    withoutChapter: 'Without a chapter',
+    createNewChapter: 'Create a new chapter'
   },
 };

@@ -39,12 +39,12 @@ export const SignIn = memo((props:TProps) => {
   const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
 
   const newDiary = async () => {
-    const notesCollection = database.get(DiaryTableName);
+    const diaryCollection = database.get(DiaryTableName);
     await database.action(async () => {
-      await notesCollection.create((note: any) => {
-        note.userId = 27;
-        note.name = 'Test дневник 3';
-        note.isCurrent = true;
+      await diaryCollection.create((diary: any) => {
+        diary.userId = 27;
+        diary.name = 'Test дневник 3';
+        diary.isCurrent = true;
       });
     });
   };

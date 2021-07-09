@@ -1,12 +1,12 @@
 import {Model} from '@nozbe/watermelondb';
 import {Associations} from '@nozbe/watermelondb/Model';
 import {action, children, field, relation} from '@nozbe/watermelondb/decorators';
-import {DiaryTableName} from './schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
 
 export class Diary extends Model {
   static table = DiaryTableName
   static associations: Associations = {
-    notes: {type: 'has_many', foreignKey: 'diary_id'},
+    [ChaptersTableName]: {type: 'has_many', foreignKey: 'diary_id'},
   }
 
   @field('user_id') userId: number | undefined
@@ -24,13 +24,40 @@ export class Diary extends Model {
   }
 }
 
-export class Note extends Model {
-  static table = 'notes'
+export class Chapter extends Model {
+  static table = ChaptersTableName
   static associations: Associations = {
-    diaries: {type: 'belongs_to', key: 'diary_id'},
+    [PagesTableName]: {type: 'has_many', foreignKey: 'chapter_id'},
+    [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
   }
 
-  @field('diary_id') diaryId: number | undefined
+  @field('diary_id') diaryId: string | undefined
+  @field('name') name: string | undefined
+  @field('number') number: number | undefined
+  @field('created_at') createdAt: number | undefined
+  @field('updated_at') updatedAt: number | undefined
+}
+
+export class Page extends Model {
+  static table = PagesTableName
+  static associations: Associations = {
+    [NotesTableName]: {type: 'has_many', foreignKey: 'page_id'},
+    [ChaptersTableName]: {type: 'belongs_to', key: 'chapter_id'},
+  }
+
+  @field('chapter_id') chapterId: string | undefined
+  @field('name') name: string | undefined
+  @field('created_at') createdAt: number | undefined
+  @field('updated_at') updatedAt: number | undefined
+}
+
+export class Note extends Model {
+  static table = NotesTableName
+  static associations: Associations = {
+    [PagesTableName]: {type: 'belongs_to', key: 'page_id'},
+  }
+
+  @field('page_id') pageId: number | undefined
   @field('note_type') noteType: number | undefined
   @field('photo') photo: string | undefined
   @field('food') food: string | undefined

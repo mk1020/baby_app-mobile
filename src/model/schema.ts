@@ -2,6 +2,9 @@ import {appSchema, tableSchema} from '@nozbe/watermelondb';
 
 export const NotesTableName = 'notes';
 export const DiaryTableName = 'diaries';
+export const ChaptersTableName = 'chapters';
+export const PagesTableName = 'page';
+
 export const babyAppSchema = appSchema({
   version: 1,
   tables: [
@@ -11,6 +14,26 @@ export const babyAppSchema = appSchema({
         {name: 'user_id', type: 'number'},
         {name: 'name', type: 'string'},
         {name: 'is_current', type: 'boolean'},
+        {name: 'created_at', type: 'number'},
+        {name: 'updated_at', type: 'number'},
+      ]
+    }),
+    tableSchema({
+      name: ChaptersTableName,
+      columns: [
+        {name: 'diary_id', type: 'string'},
+        {name: 'name', type: 'string'},
+        {name: 'number', type: 'number'},
+        {name: 'page_id', type: 'string'},
+        {name: 'created_at', type: 'number'},
+        {name: 'updated_at', type: 'number'},
+      ]
+    }),
+    tableSchema({
+      name: PagesTableName,
+      columns: [
+        {name: 'diary_id', type: 'string'},
+        {name: 'name', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]

@@ -1,20 +1,17 @@
 import React, {memo} from 'react';
 import {Image, ImageURISource, Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Images} from '../../common/imageResources';
-import {ColorsByTheme} from '../colorsByTheme';
-import {isIos} from '../phone/utils';
 
 type TProps = {
   icon: ImageURISource
+  onPress?: ()=> void
 }
 
-
 export const HeaderButton = memo((props: TProps) => {
-  const {icon} = props;
+  const {icon, onPress} = props;
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
         <Image source={icon} style={styles.icon}/>
       </TouchableOpacity>
     </View>
