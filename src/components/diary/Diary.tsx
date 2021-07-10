@@ -8,7 +8,7 @@ import {TAuthPagesList} from '../../navigation/types';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {RootStoreType} from '../../redux/rootReducer';
-import {ChaptersTableName, DiaryTableName, NotesTableName} from '../../model/schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../model/schema';
 import {Q} from '@nozbe/watermelondb';
 import {Header} from './Header';
 import {SceneMap, TabView} from 'react-native-tab-view';
@@ -36,25 +36,14 @@ const Diary_ = memo((props:TProps) => {
   const theme = useSelector(((state: RootStoreType) => state.app.colorScheme));
 
   const [tabIndex, setTabIndex] = useState(0);
-  const [diaryChapters, setDiaryChapters] = useState([]);
-  console.log('diaryChapters', diaryChapters);
 
-  useEffect(() => {
-    const setChapters = async (diaryId: string) => {
-      const chapters = await database.get(ChaptersTableName).query(Q.where('id', diaryId)).fetch();
-      setDiaryChapters(chapters);
-    };
+  const diaryData = diary.length ? diary[0] : null;
+  //todo возможно когда diaryId обновится, pages and chapters не обновятся..
 
-    if (diary.length) {
-      const currentDiaryId = diary[0].id;
-      setChapters(currentDiaryId).catch(err => console.log(err));
-    }
-
-  }, [diary]);
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={diary.length ? diary[0].name : ''}/>
-      <Tabs currentTabIndex={tabIndex} onIndexChange={setTabIndex} />
+      <Header title={diaryData?.name || ''} diaryId={diaryData?.id}/>
+      <Tabs currentTabIndex={tabIndex} onIndexChange={setTabIndex} diaryId={diaryData?.id}/>
     </SafeAreaView>
   );
 });

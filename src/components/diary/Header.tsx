@@ -4,12 +4,14 @@ import {HeaderButton} from '../../common/components/HeaderButton';
 import {Fonts} from '../../common/phone/fonts';
 import React, {memo, useState} from 'react';
 import {AddPageModal} from './AddPageModal';
+import {ConditionView} from '../../common/components/ConditionView';
 
 type TProps = {
    title: string
+   diaryId: string
 }
 export const Header = memo((props: TProps) => {
-  const {title} = props;
+  const {title, diaryId} = props;
   const [modalVisible, setModalVisible] = useState(false);
 
   const onPressAddPage = () => {
@@ -32,7 +34,9 @@ export const Header = memo((props: TProps) => {
         <HeaderButton icon={Images.diary}/>
       </View>
 
-      <AddPageModal visible={modalVisible} onRequestClose={onModalClose}/>
+      <ConditionView showIf={modalVisible}>
+        <AddPageModal onRequestClose={onModalClose} diaryId={diaryId}/>
+      </ConditionView>
     </View>
   );
 });

@@ -1,19 +1,27 @@
 import React from 'react';
-import { View } from 'react-native';
+import {View} from 'react-native';
 
 interface SpaceVerticalProps {
-  s: number;
+  px: number;
 }
-const SpaceVertical = ({ s }: SpaceVerticalProps) => (
+const SpaceVertical = ({px}: SpaceVerticalProps) => (
   <View
     style={{
-      marginVertical: s,
+      marginTop: px,
     }}
   />
 );
 
-const Space = {
+const SpaceHorizontal = ({px}: SpaceVerticalProps) => (
+  <View
+    style={{
+      marginRight: px,
+    }}
+  />
+);
+
+export const Space = {
   V: SpaceVertical,
+  H: SpaceHorizontal,
 };
 
-export default Space;

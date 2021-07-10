@@ -9,15 +9,13 @@ import {Fonts} from '../../common/phone/fonts';
 type TProps = {
    currentTabIndex: number
    onIndexChange: Dispatch<SetStateAction<number>>
+   diaryId: string
 }
 
-const renderScene = SceneMap({
-  first: ContentTab,
-  second: ContentTab,
-});
+
 
 export const Tabs = memo((props: TProps) => {
-  const {currentTabIndex, onIndexChange} = props;
+  const {currentTabIndex, onIndexChange, diaryId} = props;
   const {t, i18n} = useTranslation();
 
   const [routes] = useState([
@@ -27,6 +25,13 @@ export const Tabs = memo((props: TProps) => {
 
   const width =  useMemo(() => Dimensions.get('window').width, []);
   const height =  useMemo(() => Dimensions.get('window').height, []);
+
+  const renderScene = useMemo(() => (
+    SceneMap({
+      first: () => <ContentTab diaryId={diaryId}/>,
+      second: () => <ContentTab diaryId={diaryId}/>,
+    })
+  ), [diaryId]);
 
   return (
     <TabView

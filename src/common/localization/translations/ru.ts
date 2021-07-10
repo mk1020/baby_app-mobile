@@ -21,6 +21,13 @@ export const ru = {
     content: 'Содержание',
     hashtags: '#Хэштеги',
     withoutChapter: 'Без главы',
-    createNewChapter: 'Создать новую главу'
+    createNewChapter: 'Создать новую главу',
+    common: 'Общая',
+    photosByMonth: 'Фото по месяцам',
+    food: 'Питание',
+    health: 'Здоровье',
+    pageType: 'Тип страницы',
+    done: 'Готово',
+    cancel: 'Отмена',
   },
 };

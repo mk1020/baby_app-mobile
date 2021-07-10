@@ -38,17 +38,6 @@ export const SignIn = memo((props:TProps) => {
   const navigation = useNavigation();
   const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
 
-  const newDiary = async () => {
-    const diaryCollection = database.get(DiaryTableName);
-    await database.action(async () => {
-      await diaryCollection.create((diary: any) => {
-        diary.userId = 27;
-        diary.name = 'Test дневник 3';
-        diary.isCurrent = true;
-      });
-    });
-  };
-
   const onOAuthGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();

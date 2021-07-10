@@ -1,6 +1,9 @@
 import {ChangesByEvents, PullResponse} from './sync';
-import {NotesTableName} from './schema';
+import {ChaptersTableName, NotesTableName, PagesTableName} from './schema';
 import {INote} from './types';
+import {IFormCretePage} from '../components/diary/AddPageModal';
+import {Database} from '@nozbe/watermelondb';
+import {romanize} from '../components/diary/assist';
 
 enum ChangesEvents {
   created='created',
@@ -67,4 +70,34 @@ export const pulledNotesAdapter = (res: PullResponse): AdapterRes => {
     },
     timestamp: new Date(res.timestamp).getTime()
   };
+};
+
+
+export const createPageAndChapter = async  (database: Database, data: IFormCretePage, diaryId: string, chapterNumber: number) => {
+  const chapters = database?.get(ChaptersTableName);
+  const pages = database?.get(PagesTableName);
+
+  await database.action(async () => {
+    await database.batch(
+      pages.prepareCreate((page: any) => {
+        page.diaryId = diaryId;
+        page.name = data.pageName;
+      }),
+      await chapters.prepareCreate((page: any) => {
+        page.diaryId = diaryId;
+        page.name = data.newChapter;
+        page.number = romanize(chapterNumber);
+      })
+    );
+  });
+};
+
+export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string) => {
+  const pages = database?.get(PagesTableName);
+  await database.action(async () => {
+    pages.create((page: any) => {
+      page.diaryId = diaryId;
+      page.name = data.pageName;
+    });
+  });
 };

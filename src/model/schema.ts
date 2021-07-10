@@ -3,7 +3,7 @@ import {appSchema, tableSchema} from '@nozbe/watermelondb';
 export const NotesTableName = 'notes';
 export const DiaryTableName = 'diaries';
 export const ChaptersTableName = 'chapters';
-export const PagesTableName = 'page';
+export const PagesTableName = 'pages';
 
 export const babyAppSchema = appSchema({
   version: 1,
@@ -23,7 +23,7 @@ export const babyAppSchema = appSchema({
       columns: [
         {name: 'diary_id', type: 'string'},
         {name: 'name', type: 'string'},
-        {name: 'number', type: 'number'},
+        {name: 'number', type: 'string'},
         {name: 'page_id', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
@@ -33,7 +33,9 @@ export const babyAppSchema = appSchema({
       name: PagesTableName,
       columns: [
         {name: 'diary_id', type: 'string'},
+        {name: 'chapter_id', type: 'string'},
         {name: 'name', type: 'string'},
+        {name: 'page_type', type: 'number'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]

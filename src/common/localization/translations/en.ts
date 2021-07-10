@@ -21,6 +21,13 @@ export const en = {
     content: 'Content',
     hashtags: '#Hashtags',
     withoutChapter: 'Without a chapter',
-    createNewChapter: 'Create a new chapter'
+    createNewChapter: 'Create a new chapter',
+    common: 'Common',
+    photosByMonth: 'Photos by month',
+    food: 'Food',
+    health: 'Health',
+    pageType: 'Page type',
+    done: 'Done',
+    cancel: 'Cancel',
   },
 };
