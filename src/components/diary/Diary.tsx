@@ -22,13 +22,13 @@ type TProps = {
   diaryId: string
   notes: any
   diary: any
-  diaryChapters: any
+  chapters: any
 }
 
 
 const Diary_ = memo((props:TProps) => {
 
-  const {notes, diary, database} = props;
+  const {notes, diary, database, chapters} = props;
   const {params} = props.route;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -39,10 +39,9 @@ const Diary_ = memo((props:TProps) => {
 
   const diaryData = diary.length ? diary[0] : null;
   //todo возможно когда diaryId обновится, pages and chapters не обновятся..
-
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={diaryData?.name || ''} diaryId={diaryData?.id}/>
+      <Header title={diaryData?.name || ''} diaryId={diaryData?.id} chapters={chapters}/>
       <Tabs currentTabIndex={tabIndex} onIndexChange={setTabIndex} diaryId={diaryData?.id}/>
     </SafeAreaView>
   );
@@ -53,7 +52,7 @@ export const Diary = withDatabase(withObservables<TProps, {}>([], ({database}) =
   return {
     notes: database.collections.get(NotesTableName).query().observe(),
     diary: database.collections.get(DiaryTableName).query(Q.where('is_current', true)).observe(),
-    //diaryChapters: database.collections.get(ChaptersTableName).query(Q.where('id', currentDiaryId)).observe()
+    chapters: database.collections.get(ChaptersTableName).query().observe()
   };
 })(Diary_));
 

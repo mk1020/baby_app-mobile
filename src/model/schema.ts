@@ -24,7 +24,6 @@ export const babyAppSchema = appSchema({
         {name: 'diary_id', type: 'string'},
         {name: 'name', type: 'string'},
         {name: 'number', type: 'string'},
-        {name: 'page_id', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]

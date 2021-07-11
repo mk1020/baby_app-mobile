@@ -9,9 +9,10 @@ import {ConditionView} from '../../common/components/ConditionView';
 type TProps = {
    title: string
    diaryId: string
+   chapters: any[]
 }
 export const Header = memo((props: TProps) => {
-  const {title, diaryId} = props;
+  const {title, diaryId, chapters} = props;
   const [modalVisible, setModalVisible] = useState(false);
 
   const onPressAddPage = () => {
@@ -35,7 +36,7 @@ export const Header = memo((props: TProps) => {
       </View>
 
       <ConditionView showIf={modalVisible}>
-        <AddPageModal onRequestClose={onModalClose} diaryId={diaryId}/>
+        <AddPageModal onRequestClose={onModalClose} diaryId={diaryId} chapters={chapters}/>
       </ConditionView>
     </View>
   );

@@ -47,6 +47,7 @@ export class Page extends Model {
     [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
   }
 
+  @field('diary_id') diaryId: string | undefined
   @field('chapter_id') chapterId: string | undefined
   @field('name') name: string | undefined
   @field('created_at') createdAt: number | undefined

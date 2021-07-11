@@ -1,10 +1,10 @@
 import React, {Dispatch, memo, SetStateAction, useMemo, useState} from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {ContentTab} from './contentTab/ContentTab';
 import {useTranslation} from 'react-i18next';
-import {NavigationState, SceneRendererProps} from 'react-native-tab-view/lib/typescript/src/types';
 import {Fonts} from '../../common/phone/fonts';
+import {HashtagTab} from './hashtagTab/HashtagTab';
 
 type TProps = {
    currentTabIndex: number
@@ -22,14 +22,13 @@ export const Tabs = memo((props: TProps) => {
     {key: 'first', title: t('content')},
     {key: 'second', title: t('hashtags')},
   ]);
-
   const width =  useMemo(() => Dimensions.get('window').width, []);
   const height =  useMemo(() => Dimensions.get('window').height, []);
 
   const renderScene = useMemo(() => (
     SceneMap({
       first: () => <ContentTab diaryId={diaryId}/>,
-      second: () => <ContentTab diaryId={diaryId}/>,
+      second: () => <HashtagTab diaryId={diaryId}/>,
     })
   ), [diaryId]);
 

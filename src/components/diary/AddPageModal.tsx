@@ -17,14 +17,14 @@ import {createPage, createPageAndChapter} from '../../model/assist';
 type TProps = {
   onRequestClose: ()=> void
   diaryId: string
-  chapters?: {diaryId: string, name: string, number: number, createdAt: number, updatedAt: number}[]
+  chapters?: {diaryId: string, id: string, name: string, number: number, createdAt: number, updatedAt: number}[]
 }
 
 export interface IFormCretePage {
   pageType: number,
   pageName: string,
   newChapter: string
-  selectedChapter: number
+  selectedChapter: number | string
 }
 
 
@@ -37,9 +37,8 @@ export const AddPageModal = memo((props: TProps) => {
     {label: t('withoutChapter'), value: 1} //1 - без главы
   ];
   const chaptersPikerItems = chapters.map(chapter => ({
-    label: chapter.name, value: chapter.name
+    label: chapter.name, value: chapter.id
   }));
-
   const {
     control,
     handleSubmit,
@@ -62,7 +61,7 @@ export const AddPageModal = memo((props: TProps) => {
       if (data.selectedChapter === 0) { // 0 - значение стандартного элемента в выпадающем списке. Означает "Создать главу"
         createPageAndChapter(database, data, diaryId, chaptersCount + 1).then();
       } else {
-        createPage(database, data, diaryId).then();
+        createPage(database, data, diaryId, typeof data.selectedChapter === 'string' ? data.selectedChapter : '').then();
       }
 
     } catch (e) {
@@ -70,7 +69,6 @@ export const AddPageModal = memo((props: TProps) => {
     }
   };
 
-  console.log(errors);
   return (
     <Modal
       isVisible={true}

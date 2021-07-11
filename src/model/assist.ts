@@ -76,28 +76,33 @@ export const pulledNotesAdapter = (res: PullResponse): AdapterRes => {
 export const createPageAndChapter = async  (database: Database, data: IFormCretePage, diaryId: string, chapterNumber: number) => {
   const chapters = database?.get(ChaptersTableName);
   const pages = database?.get(PagesTableName);
-
   await database.action(async () => {
+
+    const prepareCreateChapter = chapters.prepareCreate((page: any) => {
+      page.diaryId = diaryId;
+      page.name = data.newChapter;
+      page.number = romanize(chapterNumber);
+    });
+
+    const prepareCreatePage = pages.prepareCreate((page: any) => {
+      page.diaryId = diaryId;
+      page.name = data.pageName;
+      page.chapterId = prepareCreateChapter.id;
+    });
     await database.batch(
-      pages.prepareCreate((page: any) => {
-        page.diaryId = diaryId;
-        page.name = data.pageName;
-      }),
-      await chapters.prepareCreate((page: any) => {
-        page.diaryId = diaryId;
-        page.name = data.newChapter;
-        page.number = romanize(chapterNumber);
-      })
+      prepareCreateChapter,
+      prepareCreatePage
     );
   });
 };
 
-export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string) => {
+export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string, chapterId?: string) => {
   const pages = database?.get(PagesTableName);
   await database.action(async () => {
     pages.create((page: any) => {
       page.diaryId = diaryId;
       page.name = data.pageName;
+      page.chapterId = chapterId || '';
     });
   });
 };

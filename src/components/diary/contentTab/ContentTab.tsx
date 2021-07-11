@@ -1,5 +1,5 @@
-import React, {memo, useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {memo, useEffect, useMemo, useRef, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {signOut} from '../../../redux/appSlice';
 import {useDispatch} from 'react-redux';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
@@ -8,6 +8,8 @@ import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from 
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
+import {PageItem} from './PageItem';
+import {ChapterItem} from './ChapterItem';
 
 type TProps = {
   database?: Database
@@ -21,58 +23,55 @@ export const ContentTab_ = memo((props: TProps) => {
 
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
   const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
+  const [pressedPage, setPressedPage] = useState();
+  const [pressedChapter, setPressedChapter] = useState();
 
   useEffect(() => {
     const chapters_ = chapters?.filter(chapter => chapter.diaryId === diaryId);
     chapters_ && setCurrentDiaryChapters(chapters_);
 
     const pages_ = pages?.filter(page => page.diaryId === diaryId);
+
     pages_ && setCurrentDiaryPages(pages_);
   }, [chapters, pages]);
 
-  const logOut = () => {
-    dispatch(signOut());
-  };
-
-  console.log('updated chapters', chapters);
-  console.log('updated pages', pages);
+  console.log('chapters', chapters);
+  console.log('pages', pages);
   console.log('diaryId', diaryId);
 
-  const resetDB = async () => {
-    await database?.action(async () => {
-      await database?.unsafeResetDatabase();
-    });
+  const onPressPage = (item: any) => {
+    setPressedPage(item);
   };
 
-  const a = async () => {
-    const diaryCollection = database?.get(PagesTableName);
-    const allPosts = await diaryCollection?.query().fetch();
-    console.log(allPosts);
+  const onPressChapter = (item: any) => {
+    //setPressedPage(item);
   };
-  const createDiary = async () => {
-    const diaryCollection = database?.get(DiaryTableName);
-    await database?.action(async () => {
-      await diaryCollection?.create((diary: any) => {
-        diary.userId = 27;
-        diary.name = 'Test дневник 3';
-        diary.isCurrent = true;
-      });
-    });
+
+  const renderItem = ({item}: any) => {
+    if (item?.table === PagesTableName && item?.chapterId !== '') return null;
+    const currentChapterId = item?.id;
+
+    return (
+      item?.table === PagesTableName ? (
+        <PageItem name={item?.name} onPress={() => onPressPage(item)}/>
+      ) : (
+        <ChapterItem
+          chapterNum={item?.number}
+          name={item?.name}
+          onPress={() => onPressChapter}
+          pages={currentDiaryPages.filter(page => page.chapterId === currentChapterId)}
+        />
+      ));
   };
+
+  const flatListData = useMemo(() => [...currentDiaryPages, ...currentDiaryChapters], [currentDiaryChapters, currentDiaryPages]);
   return (
-    <View>
-      <Text>text text</Text>
-      <TouchableOpacity onPress={logOut} style={styles.sign}>
-        <Text>LOGOUT</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={resetDB} style={styles.sign}>
-        <Text>RESET DB</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={createDiary} style={styles.sign}>
-        <Text>CREATE DIARY</Text>
-      </TouchableOpacity>
-    </View>
+    <FlatList
+      data={flatListData}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      //extraData={pre}
+    />
   );
 });
 
@@ -81,7 +80,6 @@ export const ContentTab = withDatabase(withObservables(['diaryId'], ({database, 
   return {
     chapters: database?.collections?.get(ChaptersTableName).query().observe(),
     pages: database?.collections?.get(PagesTableName).query().observe()
-    //pages: database?.collections?.get(PagesTableName)?.query(Q.where('id', diaryId))?.observe()
   };
 })(ContentTab_));
 const styles = StyleSheet.create({
