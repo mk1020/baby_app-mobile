@@ -29,5 +29,8 @@ export const en = {
     pageType: 'Page type',
     done: 'Done',
     cancel: 'Cancel',
+    newChapterFieldErr: 'Fill in the "new chapter" field',
+    namePageFieldErr: 'Fill in the "Page Title" field',
+    pageTypeFieldErr: 'Select page type',
   },
 };

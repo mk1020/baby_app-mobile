@@ -29,5 +29,8 @@ export const ru = {
     pageType: 'Тип страницы',
     done: 'Готово',
     cancel: 'Отмена',
+    newChapterFieldErr: 'Заполните поле "Название главы"',
+    namePageFieldErr: 'Заполните поле "Название страницы"',
+    pageTypeFieldErr: 'Выберите тип страницы',
   },
 };

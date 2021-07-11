@@ -57,7 +57,8 @@ export const AddPageModal = memo((props: TProps) => {
 
   const onPressAdd = async (data: UnpackNestedValue<IFormCretePage>) => {
     try {
-      const chaptersCount = await database?.get(DiaryTableName).query().fetchCount();
+      onRequestClose();
+      const chaptersCount = await database?.get(ChaptersTableName).query().fetchCount();
       if (data.selectedChapter === 0) { // 0 - значение стандартного элемента в выпадающем списке. Означает "Создать главу"
         createPageAndChapter(database, data, diaryId, chaptersCount + 1).then();
       } else {
@@ -68,6 +69,7 @@ export const AddPageModal = memo((props: TProps) => {
       console.error(e);
     }
   };
+
   console.log(errors);
   return (
     <Modal
@@ -107,7 +109,7 @@ export const AddPageModal = memo((props: TProps) => {
               <Controller
                 control={control}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View style={styles.inputWrapper}>
+                  <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
                     <TextInput
                       placeholder={'Название главы'}
                       onChangeText={value => onChange(value)}
@@ -128,7 +130,7 @@ export const AddPageModal = memo((props: TProps) => {
           <Controller
             control={control}
             render={({field: {onChange, onBlur, value}}) => (
-              <View style={styles.inputWrapper}>
+              <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
                 <TextInput
                   placeholder={'Название страницы'}
                   onChangeText={value => onChange(value)}
@@ -154,7 +156,7 @@ export const AddPageModal = memo((props: TProps) => {
                 setOpen={setOpenPageTypePicker}
                 setValue={callback => onChange(callback(value))}
                 setItems={setPageTypeItems}
-                style={styles.picker}
+                style={[styles.picker, errors.pageType && styles.fieldErrView]}
                 textStyle={styles.pickerTextStyle}
                 placeholder={t('pageType')}
                 listMode={'MODAL'}
@@ -171,11 +173,11 @@ export const AddPageModal = memo((props: TProps) => {
           <Space.V px={16} />
 
           <View style={styles.buttonsWrapper}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={onRequestClose}>
               <Text style={styles.buttonCancelText}>{t('cancel')}</Text>
             </TouchableOpacity>
             <Space.H px={24}/>
-            <TouchableOpacity  onPress={handleSubmit(onPressAdd)}>
+            <TouchableOpacity onPress={handleSubmit(onPressAdd)}>
               <Text style={styles.buttonAddText}>{t('done')}</Text>
             </TouchableOpacity>
           </View>
@@ -252,5 +254,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 21,
     fontFamily: Fonts.regular,
+  },
+  validationErr: {
+    color: 'red',
+    fontFamily: Fonts.regular,
+    fontSize: 14
+  },
+  fieldErrView: {
+    borderColor: 'red',
   }
 });
