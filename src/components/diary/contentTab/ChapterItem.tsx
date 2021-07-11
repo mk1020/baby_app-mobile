@@ -20,10 +20,10 @@ export const ChapterItem = memo((props: TProps) => {
     setIsOpen(!isOpen);
   };
 
-  const renderItem = ({item}: any) => {
+  const renderItem = ({item, index}: any) => {
     if (item?.chapterId === '') return null;
     return (
-      <PageItem name={item?.name} onPress={() => ({})} asItemChapter={true}/>
+      <PageItem name={item?.name} onPress={() => ({})} asItemChapter={true} />
     );
   };
 

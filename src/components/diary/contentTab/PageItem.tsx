@@ -7,13 +7,14 @@ type TProps = {
   name: string
   onPress: ()=> void
   asItemChapter?: boolean
+  withSeparator?: boolean
 }
 export const PageItem = memo((props: TProps) => {
-  const {name, onPress, asItemChapter} = props;
+  const {name, onPress, asItemChapter, withSeparator = true} = props;
 
   return (
     <TouchableHighlight onPress={onPress} underlayColor={'#E5E5E5'}>
-      <View style={styles.containerWrapper}>
+      <View style={[withSeparator && styles.separator]}>
         <View style={[styles.container, asItemChapter && styles.marginLeft]}>
           <Image style={styles.pageIcon} source={Images.page} />
           <Text
@@ -29,7 +30,7 @@ export const PageItem = memo((props: TProps) => {
   );
 });
 const styles = StyleSheet.create({
-  containerWrapper: {
+  separator: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(186, 192, 207, 0.4)',
   },
