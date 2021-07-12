@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {TAuthPagesList} from '../../navigation/types';
+import {AuthTabList} from '../../navigation/types';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {RootStoreType} from '../../redux/rootReducer';
@@ -17,7 +17,7 @@ import {Tabs} from './Tabs';
 import {checkUnsyncedChanges} from '../../model/sync';
 
 type TProps = {
-  route: RouteProp<TAuthPagesList, NavigationPages.Diary>
+  route: RouteProp<AuthTabList, NavigationPages.Diary>
   database: any
   diaryId: string
   notes: any
@@ -30,8 +30,6 @@ const Diary_ = memo((props:TProps) => {
 
   const {notes, diary, database, chapters} = props;
   const {params} = props.route;
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
   const token = useSelector(((state: RootStoreType) => state.app.userToken));
   const theme = useSelector(((state: RootStoreType) => state.app.colorScheme));
 

@@ -2,17 +2,15 @@ import React, {memo, useState} from 'react';
 import {FlatList, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {Images} from '../../../common/imageResources';
-import {PageItem} from './PageItem';
 import {ConditionView} from '../../../common/components/ConditionView';
+import {NoteItem} from './NoteItem';
 
 type TProps = {
-   chapterNum: string
-   name: string
-   pages: any[]
-   onPressPage: ()=> void
+  period: string
+  notes: any[]
 }
-export const ChapterItem = memo((props: TProps) => {
-  const {chapterNum, name, pages, onPressPage} = props;
+export const PageItem = memo((props: TProps) => {
+  const {period, notes} = props;
   const [isOpen, setIsOpen] = useState(false);
 
   const onPress = () => {
@@ -20,9 +18,12 @@ export const ChapterItem = memo((props: TProps) => {
   };
 
   const renderItem = ({item, index}: any) => {
-    if (item?.chapterId === '') return null;
     return (
-      <PageItem name={item?.name} onPress={onPressPage} asItemChapter={true} />
+      <NoteItem
+        date={12312312}
+        title={'Тест заголовок'}
+        text={'И по этому поводу нас вчера было просто  И по этому поводу нас вчера было просто '}
+      />
     );
   };
 
@@ -33,25 +34,25 @@ export const ChapterItem = memo((props: TProps) => {
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
-            style={styles.name}
+            style={styles.period}
           >
-            <Text style={{fontFamily: Fonts.bold}}>{chapterNum}. </Text>
-            {name}
+            {period}
           </Text>
           <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowUp : styles.arrowDown]}/>
         </View>
       </TouchableHighlight>
       <ConditionView showIf={isOpen}>
         <FlatList
-          data={pages}
+          data={notes}
           renderItem={renderItem}
           keyExtractor={item => item.id}
-          //extraData={pre}
         />
       </ConditionView>
+
     </>
   );
 });
+
 const styles = StyleSheet.create({
   containerParent: {
     flexDirection: 'row',
@@ -59,14 +60,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 52,
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(186, 192, 207, 0.4)',
   },
-  name: {
+  period: {
     fontFamily: Fonts.regular,
     fontSize: 16,
     lineHeight: 18,
-    color: '#383838',
+    color: '#41C3CD',
     marginLeft: 8
   },
   arrow: {

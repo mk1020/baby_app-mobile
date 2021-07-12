@@ -10,6 +10,8 @@ enum ChangesEvents {
   updated = 'updated',
   deleted = 'deleted'
 }
+
+//todo я изменил поля записи в базе и интерфейс INote... привести в порядок все тут и на беке, в связи с этим
 /* eslint-disable camelcase */
 const noteAdapter = (note: INote) => {
   return {
@@ -24,14 +26,6 @@ const noteAdapter = (note: INote) => {
     food: note.food || null,
     volume: note.volume || null,
     note: note.note || null,
-    duration: note.duration || null,
-    milk_volume_left: note.milk_volume_left || null,
-    milk_volume_right: note.milk_volume_right || null,
-    type: note.type || null,
-    achievement: note.achievement || null,
-    weight: note.weight || null,
-    growth: note.growth || null,
-    head_circle: note.head_circle || null,
     temp: note.temp || null,
     tags: note.tags || null,
     pressure: note.pressure || null

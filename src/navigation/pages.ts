@@ -6,10 +6,11 @@ export enum NavigationPages {
   NewPassword = 'NewPassword',
   Main = 'Main',
   Diary = 'Diary',
+  DiaryPage = 'DiaryPage',
+  CreateNote = 'CreateNote'
 }
 
 export enum NavigationTabs {
   Diary = 'Diary',
   Main = 'Main',
-
 }

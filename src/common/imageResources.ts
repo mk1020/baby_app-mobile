@@ -6,4 +6,5 @@ export const Images = {
   diary: <ImageURISource>require('../../assets/images/diary.png'),
   page: <ImageURISource>require('../../assets/images/newspapaper.png'),
   arrowDown: <ImageURISource>require('../../assets/images/arrowDown.png'),
+  arrowBack: <ImageURISource>require('../../assets/images/arrowBack.png'),
 };

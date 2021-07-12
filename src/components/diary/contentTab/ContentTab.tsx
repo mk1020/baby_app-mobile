@@ -10,6 +10,9 @@ import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {PageItem} from './PageItem';
 import {ChapterItem} from './ChapterItem';
+import {AuthTabList, PageType} from '../../../navigation/types';
+import {useNavigation} from '@react-navigation/native';
+import {NavigationPages} from '../../../navigation/pages';
 
 type TProps = {
   database?: Database
@@ -19,11 +22,10 @@ type TProps = {
 }
 export const ContentTab_ = memo((props: TProps) => {
   const {diaryId, database, chapters, pages} = props;
-  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
   const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
-  const [pressedPage, setPressedPage] = useState();
   const [pressedChapter, setPressedChapter] = useState();
 
   useEffect(() => {
@@ -37,14 +39,19 @@ export const ContentTab_ = memo((props: TProps) => {
 
   console.log('chapters', chapters);
   console.log('pages', pages);
-  console.log('diaryId', diaryId);
 
   const onPressPage = (item: any) => {
-    setPressedPage(item);
-  };
+    const pageDataAdapted: PageType = {
+      id: item?.id,
+      name: item?.name,
+      diaryId: item?.diaryId,
+      pageType: item?.pageType,
+      chapterId: item?.chapterId,
+      createdAt: item?.createdAt,
+      updatedAt: item?.updatedAt
+    };
 
-  const onPressChapter = (item: any) => {
-    //setPressedPage(item);
+    navigation.navigate(NavigationPages.DiaryPage, {pageData: pageDataAdapted});
   };
 
   const renderItem = ({item}: any) => {
@@ -58,8 +65,8 @@ export const ContentTab_ = memo((props: TProps) => {
         <ChapterItem
           chapterNum={item?.number}
           name={item?.name}
-          onPress={() => onPressChapter}
           pages={currentDiaryPages.filter(page => page.chapterId === currentChapterId)}
+          onPressPage={() => onPressPage(item)}
         />
       ));
   };

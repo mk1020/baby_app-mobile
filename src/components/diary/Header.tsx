@@ -23,13 +23,13 @@ export const Header = memo((props: TProps) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={stylesHeader.container}>
       <HeaderButton icon={Images.bell}/>
-      <View style={styles.titleWrapper}>
-        <Text style={styles.title} numberOfLines={3} ellipsizeMode={'tail'}>{title}</Text>
+      <View style={stylesHeader.titleWrapper}>
+        <Text style={stylesHeader.title} numberOfLines={3} ellipsizeMode={'tail'}>{title}</Text>
       </View>
-      <View style={styles.rightButtons}>
-        <View style={styles.addIconWrapper}>
+      <View style={stylesHeader.rightButtons}>
+        <View style={stylesHeader.addIconWrapper}>
           <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
         </View>
         <HeaderButton icon={Images.diary}/>
@@ -42,7 +42,7 @@ export const Header = memo((props: TProps) => {
   );
 });
 
-const styles = StyleSheet.create({
+export const stylesHeader = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'flex-start',

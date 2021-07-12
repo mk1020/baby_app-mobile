@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {CommonActions, StackActions} from '@react-navigation/native';
-import {Screens, TAuthPagesList, TUnAuthPagesList} from './types';
+import {Screens} from './types';
 
 /**
  * Used in {@link Navigator} to keep track of navigation container mounts.

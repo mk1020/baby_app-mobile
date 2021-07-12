@@ -4,14 +4,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {TAuthPagesList} from '../../navigation/types';
+import {AuthTabList} from '../../navigation/types';
 import {req} from '../../common/assistant/api';
 import {RootStoreType} from '../../redux/rootReducer';
 import {AxiosError} from 'axios';
 import {isEmptyObj} from '../../common/assistant/others';
 
 type TProps = {
-  route: RouteProp<TAuthPagesList, NavigationPages.Diary>
+  route: RouteProp<AuthTabList, NavigationPages.Diary>
 }
 
 export const Main = memo((props:TProps) => {

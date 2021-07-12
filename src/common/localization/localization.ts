@@ -21,5 +21,4 @@ i18n.use(initReactI18next).init({
   },
   cleanCode: true,
 });
-
 export default i18n;

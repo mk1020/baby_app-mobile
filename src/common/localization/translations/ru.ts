@@ -32,5 +32,17 @@ export const ru = {
     newChapterFieldErr: 'Заполните поле "Название главы"',
     namePageFieldErr: 'Заполните поле "Название страницы"',
     pageTypeFieldErr: 'Выберите тип страницы',
+    december: 'Декабрь',
+    january: 'Январь',
+    february: 'Февраль',
+    march: 'Март',
+    april: 'Апрель',
+    may: 'Май',
+    june: 'Июнь',
+    july: 'Июль',
+    august: 'Август',
+    september: 'Сентябрь',
+    october: 'Октябрь',
+    november: 'Ноябрь'
   },
 };

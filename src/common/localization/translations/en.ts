@@ -32,5 +32,17 @@ export const en = {
     newChapterFieldErr: 'Fill in the "new chapter" field',
     namePageFieldErr: 'Fill in the "Page Title" field',
     pageTypeFieldErr: 'Select page type',
+    december: 'December',
+    january: 'January',
+    february: 'February',
+    march: 'March',
+    april: 'April',
+    may: 'May',
+    june: 'June',
+    july: 'July',
+    august: 'August',
+    september: 'September',
+    october: 'October',
+    november: 'November'
   },
 };
