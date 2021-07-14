@@ -21,38 +21,50 @@ export function romanize(num: number) {
   return Array(+digits.join('') + 1).join('M') + roman;
 }
 
-export const monthByNum = (t: TFunction, num: number) => ({
-  0: t('december'),
-  1: t('january'),
-  2: t('february'),
-  3: t('march'),
-  4: t('april'),
-  5: t('may'),
-  6: t('june'),
-  7: t('july'),
-  8: t('august'),
-  9: t('september'),
-  10: t('october'),
-  11: t('november'),
+export const monthByNum = (t: TFunction) => ({
+  0: t('january'),
+  1: t('february'),
+  2: t('march'),
+  3: t('april'),
+  4: t('may'),
+  5: t('june'),
+  6: t('july'),
+  7: t('august'),
+  8: t('september'),
+  9: t('october'),
+  10: t('november'),
+  11: t('december'),
 });
 
-export const notesAdapter = (notes: any[]): INoteJS[] => {
-  return notes.map(note => ({
-    id: note.id,
-    title: note.title,
-    note: note.note,
-    photo: note.photo,
-    tags: note.tags,
-    food: note.food,
-    temp: note.temp,
-    volume: note.volume,
-    pressure: note.pressure,
-    pageId: note.pageId,
-    pageType: note.pageType,
-    createdAt: note.createdAt,
-    updatedAt: note.updatedAt,
-    eventDateStart: note.eventDateStart,
-    eventDateEnd: note.eventDateEnd,
+interface IRecord {
+  createdAt: number
+}
+export interface IResult {
+  [year: number]: {
+    [month: number]: INoteJS[]
   }
-  ));
+}
+export const getRecordsByYearsAndMonth = (records: (Required<IRecord> & INoteJS)[]): IResult => {
+  let year: number;
+  let month: number;
+
+  const result: IResult = {};
+  records.forEach(record => {
+    year = new Date(record?.createdAt).getFullYear();
+    month = new Date(record?.createdAt).getMonth();
+    const recordsInMonth = result[year]?.[month];
+
+    result[year] = {
+      ...result[year],
+      [month]: Array.isArray(recordsInMonth) ? [...recordsInMonth, record] : [record]
+    };
+  });
+  return result;
+};
+
+export const dateFormat = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+  const month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
+  return `${day}.${month}.${date.getFullYear()}`;
 };

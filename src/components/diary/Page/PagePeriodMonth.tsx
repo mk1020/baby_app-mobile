@@ -1,28 +1,37 @@
-import React, {memo, useState} from 'react';
-import {FlatList, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import React, {memo, useEffect, useState} from 'react';
+import {FlatList, Image, ListRenderItem, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {Images} from '../../../common/imageResources';
 import {ConditionView} from '../../../common/components/ConditionView';
 import {NoteItem} from './NoteItem';
+import {INoteJS} from '../../../model/types';
+import {useTranslation} from 'react-i18next';
+import {monthByNum} from '../assist';
 
+export type Months = 0|1|2|3|4|5|6|7|8|9|10|11;
 type TProps = {
-  period: string
-  notes: any[]
+  year: number
+  month: Months
+  notesInMonth:  INoteJS[]
+  asItemPastYears?: boolean
+  open: boolean
 }
-export const PageItem = memo((props: TProps) => {
-  const {period, notes} = props;
-  const [isOpen, setIsOpen] = useState(false);
+export const PagePeriodMonth = memo((props: TProps) => {
+  const {year, notesInMonth, month, asItemPastYears = false, open} = props;
+
+  const [isOpen, setIsOpen] = useState(open);
+  const {t, i18n} = useTranslation();
 
   const onPress = () => {
     setIsOpen(!isOpen);
   };
 
-  const renderItem = ({item, index}: any) => {
+  const renderItem = ({item, index}: ListRenderItemInfo<INoteJS>) => {
     return (
       <NoteItem
-        date={12312312}
-        title={'Тест заголовок'}
-        text={'И по этому поводу нас вчера было просто  И по этому поводу нас вчера было просто '}
+        date={item.createdAt}
+        title={item.title}
+        text={item.note}
       />
     );
   };
@@ -30,25 +39,24 @@ export const PageItem = memo((props: TProps) => {
   return (
     <>
       <TouchableHighlight onPress={onPress} underlayColor={'#E5E5E5'}>
-        <View style={styles.containerParent}>
+        <View style={[styles.containerParent, asItemPastYears && styles.marginLeft]}>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={styles.period}
           >
-            {period}
+            {monthByNum(t)[month]} {year}
           </Text>
-          <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowUp : styles.arrowDown]}/>
+          <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowDown : styles.arrowRight]}/>
         </View>
       </TouchableHighlight>
       <ConditionView showIf={isOpen}>
         <FlatList
-          data={notes}
+          data={notesInMonth}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
       </ConditionView>
-
     </>
   );
 });
@@ -60,6 +68,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 52,
     alignItems: 'center',
+  },
+  marginLeft: {
+    marginLeft: 16
   },
   period: {
     fontFamily: Fonts.regular,
@@ -75,7 +86,7 @@ const styles = StyleSheet.create({
   arrowDown: {
     transform: [{rotateZ: '0deg'}],
   },
-  arrowUp: {
-    transform: [{rotateZ: '180deg'}],
+  arrowRight: {
+    transform: [{rotateZ: '-90deg'}],
   },
 });

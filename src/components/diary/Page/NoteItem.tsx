@@ -1,6 +1,7 @@
 import React, {memo} from 'react';
 import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
+import {dateFormat} from '../assist';
 
 type TProps = {
   title: string
@@ -14,7 +15,7 @@ export const NoteItem = memo((props: TProps) => {
     <TouchableOpacity style={styles.container}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.noteText} numberOfLines={3} ellipsizeMode={'tail'}>{text}</Text>
-      <Text style={styles.date}>{date}</Text>
+      <Text style={styles.date}>{dateFormat(date)}</Text>
     </TouchableOpacity>
   );
 });
@@ -42,14 +43,15 @@ const styles = StyleSheet.create({
   },
   noteText: {
     textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+    textDecorationColor: 'red',
     fontFamily: Fonts.regular,
     fontSize: 14,
     lineHeight: 17,
-    color: '#383838'
+    color: '#716e6e'
   },
   title: {
-    fontFamily: Fonts.regular,
-    fontWeight: '600',
+    fontFamily: Fonts.bold,
     fontSize: 16,
     lineHeight: 19,
     color: '#41C3CD',
@@ -60,5 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#BAC0CF',
+    alignSelf: 'flex-end',
+    marginTop: 6
   }
 });
