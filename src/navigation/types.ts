@@ -13,6 +13,7 @@ export type PageType = {
 export type AuthDiaryStackScreenList = {
   [NavigationPages.DiaryPage]: {pageData: PageType},
   [NavigationPages.Diary]: {diaryName: string},
+  [NavigationPages.CreateNote]: undefined,
 }
 
 export type AuthTabList = {

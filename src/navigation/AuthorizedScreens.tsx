@@ -9,6 +9,7 @@ import {Page} from '../components/diary/Page/Page';
 import {HeaderButton} from '../common/components/HeaderButton';
 import {Images} from '../common/imageResources';
 import {stylesHeader} from '../components/diary/Header';
+import {CreateNote} from '../components/diary/contentTab/CreateNote';
 
 const DiaryStack = createStackNavigator<AuthDiaryStackScreenList>();
 
@@ -31,6 +32,11 @@ const DiaryStackScreen = () => {
           headerLeftContainerStyle: {marginHorizontal: 16, marginTop: 16},
           headerRightContainerStyle: {marginHorizontal: 16, marginTop: 16}
         })}
+      />
+      <DiaryStack.Screen
+        name={NavigationPages.CreateNote}
+        component={CreateNote}
+        options={{headerShown: false}}
       />
     </DiaryStack.Navigator>
   );

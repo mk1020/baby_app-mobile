@@ -7,12 +7,13 @@ type TProps = {
   title: string
   text: string
   date: number
+  onPress: ()=> void
 }
 export const NoteItem = memo((props: TProps) => {
-  const {title, text, date} = props;
+  const {title, text, date, onPress} = props;
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.noteText} numberOfLines={3} ellipsizeMode={'tail'}>{text}</Text>
       <Text style={styles.date}>{dateFormat(date)}</Text>

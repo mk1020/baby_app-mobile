@@ -29,7 +29,6 @@ export const Page_ = memo((props: TProps) => {
   const [adaptedNotes, setAdaptedNotes] = useState<IResult>({});
 
   useEffect(() => {
-
     setAdaptedNotes(getRecordsByYearsAndMonth(mock));
   }, [notes]);
 

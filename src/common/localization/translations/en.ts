@@ -43,6 +43,7 @@ export const en = {
     august: 'August',
     september: 'September',
     october: 'October',
-    november: 'November'
+    november: 'November',
+    createNote: 'Create note',
   },
 };
