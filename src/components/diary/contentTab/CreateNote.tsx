@@ -1,7 +1,8 @@
 import React, {memo} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {CreateNoteHeader} from './CreateNoteHeader';
+import {StyleSheet} from 'react-native';
+import {NoteHeader, NoteHeaderType} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
+import {CreateNoteCard} from './CreateNoteCard';
 
 type TProps = {
 
@@ -12,7 +13,11 @@ export const CreateNote = memo((props: TProps) => {
 
   return (
     <>
-      <CreateNoteHeader title={t('createNote')}/>
+      <NoteHeader
+        title={t('createNote')}
+        headerFor={NoteHeaderType.Create}
+      />
+      <CreateNoteCard/>
     </>
   );
 });

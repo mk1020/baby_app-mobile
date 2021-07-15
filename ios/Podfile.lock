@@ -272,6 +272,8 @@ PODS:
     - react-native-config/App (= 1.4.2)
   - react-native-config/App (1.4.2):
     - React-Core
+  - react-native-image-picker (4.0.6):
+    - React-Core
   - react-native-pager-view (5.2.1):
     - React-Core
   - react-native-safe-area-context (3.2.0):
@@ -344,8 +346,6 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNCPicker (1.16.3):
-    - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNGoogleSignin (6.0.1):
@@ -431,6 +431,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-config (from `../node_modules/react-native-config`)
+  - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -447,7 +448,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
-  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNLocalize (from `../node_modules/react-native-localize`)
@@ -510,6 +510,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-config:
     :path: "../node_modules/react-native-config"
+  react-native-image-picker:
+    :path: "../node_modules/react-native-image-picker"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
@@ -542,8 +544,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
-  RNCPicker:
-    :path: "../node_modules/@react-native-picker/picker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -593,6 +593,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
   react-native-config: c98128a72bc2c3a1ca72caec0b021f0fa944aa29
+  react-native-image-picker: 7bda3c7297c3ea16f4f504ad6174aa7e548192ef
   react-native-pager-view: c1a20ccec98ee4960fcfb67cb31660a0fa98d898
   react-native-safe-area-context: e471852c5ed67eea4b10c5d9d43c1cebae3b231d
   React-perflogger: 9c547d8f06b9bf00cb447f2b75e8d7f19b7e02af
@@ -609,7 +610,6 @@ SPEC CHECKSUMS:
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
   RNCAsyncStorage: 502fbf425b9ee2d73ca6fa4b299dce0be411b422
   RNCMaskedView: f127cd9652acfa31b91dcff613e07ba18b774db6
-  RNCPicker: 6724ab5fcca83c34fe1f18a89baa13e9885f0393
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNGoogleSignin: e64616a4080cf7d83f4b292fad82d174587444e2
   RNLocalize: 47e22ef8c36df1d572e42a87c8ae22e3fcf551dd

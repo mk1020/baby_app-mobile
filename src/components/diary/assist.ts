@@ -1,5 +1,6 @@
 import {TFunction} from 'i18next';
-import {INote, INoteJS} from '../../model/types';
+import {INoteJS} from '../../model/types';
+import {PermissionsAndroid} from 'react-native';
 
 export const getItemsPageType = (t: TFunction) => ([
   {label: t('common'), value: 1},
@@ -67,4 +68,19 @@ export const dateFormat = (timestamp: number) => {
   const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
   const month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
   return `${day}.${month}.${date.getFullYear()}`;
+};
+
+export const requestSavePhotoPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    console.warn(err);
+  }
 };

@@ -44,6 +44,8 @@ export const ru = {
     september: 'Сентябрь',
     october: 'Октябрь',
     november: 'Ноябрь',
-    createNote: 'Создать запись'
+    createNote: 'Новая запись',
+    noteTitle: 'Заголовок записи',
+    typeText: 'Наберите текст'
   },
 };

@@ -44,6 +44,8 @@ export const en = {
     september: 'September',
     october: 'October',
     november: 'November',
-    createNote: 'Create note',
+    createNote: 'New note',
+    noteTitle: 'Post title',
+    typeText: 'Type text'
   },
 };
