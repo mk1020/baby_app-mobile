@@ -11,7 +11,7 @@ export const HeaderButton = memo((props: TProps) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity style={styles.button} onPress={onPress} >
         <Image source={icon} style={styles.icon}/>
       </TouchableOpacity>
     </View>
@@ -20,8 +20,6 @@ export const HeaderButton = memo((props: TProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 40,
-    height: 40,
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     ...Platform.select({
@@ -37,6 +35,11 @@ const styles = StyleSheet.create({
         elevation: 3,
       }
     }),
+
+  },
+  button: {
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },

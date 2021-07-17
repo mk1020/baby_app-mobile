@@ -5,14 +5,13 @@ import {ContentTab} from './contentTab/ContentTab';
 import {useTranslation} from 'react-i18next';
 import {Fonts} from '../../common/phone/fonts';
 import {HashtagTab} from './hashtagTab/HashtagTab';
+import {Route} from 'react-native-tab-view/lib/typescript/src/types';
 
 type TProps = {
    currentTabIndex: number
    onIndexChange: Dispatch<SetStateAction<number>>
    diaryId: string
 }
-
-
 
 export const Tabs = memo((props: TProps) => {
   const {currentTabIndex, onIndexChange, diaryId} = props;
@@ -25,12 +24,16 @@ export const Tabs = memo((props: TProps) => {
   const width =  useMemo(() => Dimensions.get('window').width, []);
   const height =  useMemo(() => Dimensions.get('window').height, []);
 
-  const renderScene = useMemo(() => (
-    SceneMap({
-      first: () => <ContentTab diaryId={diaryId}/>,
-      second: () => <HashtagTab diaryId={diaryId}/>,
-    })
-  ), [diaryId]);
+  const renderScene = ({route}: any) => {
+    switch (route.key) {
+    case 'first':
+      return <ContentTab diaryId={diaryId}/>;
+    case 'second':
+      return <HashtagTab diaryId={diaryId}/>;
+    default:
+      return null;
+    }
+  };
 
   return (
     <TabView

@@ -46,6 +46,8 @@ export const en = {
     november: 'November',
     createNote: 'New note',
     noteTitle: 'Post title',
-    typeText: 'Type text'
+    typeText: 'Type text',
+    gallery: 'Gallery',
+    camera: 'Camera'
   },
 };

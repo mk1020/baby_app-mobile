@@ -1,19 +1,22 @@
-import React, {memo} from 'react';
-import {Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, {memo, useMemo} from 'react';
+import {Image, ImageSourcePropType, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {dateFormat} from '../assist';
 import {Controller, useForm} from 'react-hook-form';
 import {emailRegex} from '../../../common/consts';
 import {useTranslation} from 'react-i18next';
+import {ImagesSlider} from '../../../common/components/ImagesSlider/ImagesSlider';
+import {ConditionView} from '../../../common/components/ConditionView';
 
 interface IForm {
   title: string
   note: string
 }
 type TProps = {
+  imagesUri: string[]
 }
 export const CreateNoteCard = memo((props: TProps) => {
-  const {} = props;
+  const {imagesUri = []} = props;
   const {t, i18n} = useTranslation();
 
   const {
@@ -40,7 +43,11 @@ export const CreateNoteCard = memo((props: TProps) => {
         rules={{required: true}}
         defaultValue=""
       />
-
+      <ConditionView showIf={imagesUri.length > 0}>
+        <ImagesSlider
+          imagesUri={imagesUri}
+        />
+      </ConditionView>
       <Controller
         control={control}
         render={({field: {onChange, onBlur, value}}) => (

@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import React, {memo, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import {Images} from '../../../common/imageResources';
 import {Fonts} from '../../../common/phone/fonts';
 import {HeaderButton} from '../../../common/components/HeaderButton';
@@ -9,6 +9,8 @@ import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ImagePickerResponse} from 'react-native-image-picker/src/types';
 import {requestSavePhotoPermission} from '../assist';
+import {DropdownMenu} from '../../../common/components/DropdownMenu';
+import {useTranslation} from 'react-i18next';
 
 export enum NoteHeaderType {
   Create = 'Create',
@@ -17,21 +19,28 @@ export enum NoteHeaderType {
 type TProps = {
    title: string
    headerFor: NoteHeaderType
+   setModalVisible: Dispatch<SetStateAction<boolean>>
+   modalVisible: boolean
+   onLoadImage: (imageUri: string)=> void
 }
 export const NoteHeader = memo((props: TProps) => {
-  const {title, headerFor} = props;
+  const {title, headerFor, setModalVisible, modalVisible, onLoadImage} = props;
   const navigation = useNavigation();
-
-  const [showPhotoMenu, setShowPhotoMenu] = useState(false);
+  const {t, i18n} = useTranslation();
 
   const onPressBack = () => {
     navigation.goBack();
   };
   const launchCallback = (response: ImagePickerResponse) => {
     console.log(response.assets);
+    if (response.assets?.length) {
+      onLoadImage(response.assets[0].uri as string);
+    }
   };
 
   const onPressCamera = async () => {
+    setModalVisible(false);
+
     if (await requestSavePhotoPermission()) {
       launchCamera({
         mediaType: 'photo',
@@ -42,6 +51,8 @@ export const NoteHeader = memo((props: TProps) => {
   };
 
   const onPressGallery = () => {
+    setModalVisible(false);
+
     launchImageLibrary({
       mediaType: 'photo',
       quality: 1,
@@ -49,8 +60,19 @@ export const NoteHeader = memo((props: TProps) => {
   };
 
   const onPressPhoto = () => {
-    setShowPhotoMenu(!showPhotoMenu);
+    setModalVisible(!modalVisible);
   };
+
+  const dropdownMenuData = [
+    {
+      title: t('gallery'),
+      onPress: onPressGallery
+    },
+    {
+      title: t('camera'),
+      onPress: onPressCamera
+    }
+  ];
 
   return (
     <View style={stylesHeader.container}>
@@ -66,15 +88,8 @@ export const NoteHeader = memo((props: TProps) => {
           </View>
         </ConditionView>
       </View>
-      <ConditionView showIf={showPhotoMenu}>
-        <View style={stylesHeader.photoMenu}>
-          <TouchableHighlight underlayColor={'#E5E5E5'} onPress={onPressGallery}>
-            <Text>Галерея</Text>
-          </TouchableHighlight>
-          <TouchableHighlight underlayColor={'#E5E5E5'} onPress={onPressCamera}>
-            <Text>Камера</Text>
-          </TouchableHighlight>
-        </View>
+      <ConditionView showIf={modalVisible}>
+        <DropdownMenu renderData={dropdownMenuData}/>
       </ConditionView>
     </View>
   );
@@ -108,11 +123,4 @@ export const stylesHeader = StyleSheet.create({
   deleteIconWrapper: {
     marginLeft: 16
   },
-  photoMenu: {
-    position: 'absolute',
-    top: 40,
-    right: 0,
-    zIndex: 999,
-    elevation: 10
-  }
 });

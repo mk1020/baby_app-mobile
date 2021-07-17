@@ -46,6 +46,8 @@ export const ru = {
     november: 'Ноябрь',
     createNote: 'Новая запись',
     noteTitle: 'Заголовок записи',
-    typeText: 'Наберите текст'
+    typeText: 'Наберите текст',
+    gallery: 'Галерея',
+    camera: 'Камера'
   },
 };
