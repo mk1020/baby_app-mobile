@@ -32,7 +32,7 @@ export const NoteHeader = memo((props: TProps) => {
   const launchCallback = (response: ImagePickerResponse) => {
     console.log(response.assets);
     if (response.assets?.length) {
-      onLoadImage(response.assets[0].uri as string);
+      onLoadImage && onLoadImage(response.assets[0].uri as string);
     }
   };
 

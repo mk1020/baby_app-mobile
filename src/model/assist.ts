@@ -93,7 +93,7 @@ export const createPageAndChapter = async  (database: Database, data: IFormCrete
 export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string, chapterId?: string) => {
   const pages = database?.get(PagesTableName);
   await database.action(async () => {
-    pages.create((page: any) => {
+    await pages.create((page: any) => {
       page.diaryId = diaryId;
       page.name = data.pageName;
       page.chapterId = chapterId || '';

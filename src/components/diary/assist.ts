@@ -1,6 +1,8 @@
 import {TFunction} from 'i18next';
 import {INote, INoteJS} from '../../model/types';
 import {PermissionsAndroid} from 'react-native';
+import {Database, Q} from '@nozbe/watermelondb';
+import {NotesTableName} from '../../model/schema';
 
 export const getItemsPageType = (t: TFunction) => ([
   {label: t('common'), value: 1},
@@ -42,7 +44,7 @@ export const notesAdapter = (notes: any[]): INoteJS[] => {
     id: note.id,
     title: note.title,
     note: note.note,
-    photo: note.photo?.split(';'),
+    photo: typeof note.photo === 'string' ? note.photo.split(';') : note.photo,
     tags: note.tags,
     food: note.food,
     temp: note.temp,
@@ -103,4 +105,28 @@ export const requestSavePhotoPermission = async () => {
   } catch (err) {
     console.warn(err);
   }
+};
+
+export const createNoteDB = async (database: Database, data: Partial<INoteJS>) => {
+  const notes = database?.get(NotesTableName);
+  await database.action(async () => {
+    await notes.create((note: any) => {
+      note.title = data?.title;
+      note.note = data?.note;
+      note.photo = data?.photo;
+    });
+  });
+};
+
+export const updateNoteDB = async (database: Database, data?: Partial<INoteJS>) => {
+  const notes = database?.get(NotesTableName);
+  const targetNote = await notes.find(data?.id || '');
+
+  await database.action(async () => {
+    await targetNote.update((note: any) => {
+      note.title = data?.title;
+      note.note = data?.note;
+      note.photo = data?.photo;
+    });
+  });
 };

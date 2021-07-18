@@ -1,80 +1,42 @@
-import React, {memo, useMemo, useState} from 'react';
-import {
-  KeyboardAvoidingView,
-  NativeSyntheticEvent,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputContentSizeChangeEventData,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
+import React, {memo, useState} from 'react';
+import {Platform, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
 import {dateFormat} from '../../assist';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {ImagesSlider, SliderMode} from '../../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../../common/components/ConditionView';
 import {NavigationPages} from '../../../../navigation/pages';
 import {useNavigation} from '@react-navigation/native';
-import {INoteJS} from '../../../../model/types';
+import {Control} from 'react-hook-form/dist/types/form';
+import {IFormNote} from './NotePage';
 
-interface IForm {
-  title: string
-  note: string
-}
+
 type TProps = {
-  imagesUri: string[]
-  noteData?: INoteJS
+  formControl: Control<IFormNote>
+  noteData: IFormNote
 }
 
 const textNoteLineHeight = 24;
 export const NoteCard = memo((props: TProps) => {
-  const {imagesUri = [], noteData} = props;
+  const {formControl, noteData} = props;
   const {t, i18n} = useTranslation();
   const navigation = useNavigation();
 
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<IForm>();
   const [slideIndex, changeSlideIndex] = useState(0);
-  //const [textNoteCountLines, changeTextNoteCountLines] = useState(0);
-  //const [textNoteHeight, changeTextNoteHeight] = useState(0);
+  const formErrors = formControl.formStateRef?.current?.errors;
 
   const onPressImage = () => {
-    const counter = {total: imagesUri.length, currentIndex: slideIndex};
-    navigation.navigate(NavigationPages.ImagesFullScreenEdit, {counter, imagesUri});
+    const counter = {total: noteData.imagesUri?.length, currentIndex: slideIndex};
+    navigation.navigate(NavigationPages.ImagesFullScreenEdit, {counter, imagesUri: noteData.imagesUri});
   };
 
-  /*const separatorsRenderItems = useMemo(() => {
-    const renderItems = [];
-    for (let i = 1; i <= textNoteCountLines + 2; i++) {
-      renderItems.push(<View key={`separator- ${i}`} style={styles.separator}></View>);
-    }
-    return renderItems;
-  }, [textNoteCountLines]);*/
-
-  /*const onContentSizeChange = (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
-    const {width, height} = e.nativeEvent.contentSize;
-    if (Math.abs(textNoteHeight - height) > textNoteLineHeight - 1) {
-      if (height > textNoteHeight) {
-        changeTextNoteCountLines(textNoteCountLines + 1);
-        changeTextNoteHeight(height);
-      } else {
-        changeTextNoteCountLines(textNoteCountLines - 1);
-        changeTextNoteHeight(height);
-      }
-    }
-  };*/
-const currentDate = new Date().getTime();
+  const currentDate = new Date().getTime();
 
   return (
     <View style={styles.container}>
       <Controller
-        control={control}
+        control={formControl}
         render={({field: {onChange, onBlur, value}}) => (
           <TextInput
             style={styles.title}
@@ -82,7 +44,7 @@ const currentDate = new Date().getTime();
             onChangeText={value => onChange(value)}
             value={value}
             placeholder={t('noteTitle')}
-            placeholderTextColor={'rgba(144,133,133,0.5)'}
+            placeholderTextColor={formErrors?.title ? 'orange' : 'rgba(144,133,133,0.5)'}
             defaultValue={noteData?.title}
           />
         )}
@@ -90,11 +52,11 @@ const currentDate = new Date().getTime();
         rules={{required: true}}
         defaultValue=""
       />
-      <ConditionView showIf={imagesUri.length > 0}>
+      <ConditionView showIf={noteData.imagesUri?.length > 0}>
         <TouchableWithoutFeedback onPress={onPressImage}>
           <View>
             <ImagesSlider
-              imagesUri={imagesUri}
+              imagesUri={noteData.imagesUri}
               mode={SliderMode.Preview}
               onSlideChange={changeSlideIndex}
             />
@@ -102,7 +64,7 @@ const currentDate = new Date().getTime();
         </TouchableWithoutFeedback>
       </ConditionView>
       <Controller
-        control={control}
+        control={formControl}
         render={({field: {onChange, onBlur, value}}) => (
           <TextInput
             style={styles.noteText}
@@ -110,7 +72,7 @@ const currentDate = new Date().getTime();
             onChangeText={value => onChange(value)}
             value={value}
             placeholder={t('typeText')}
-            placeholderTextColor={'rgba(144,133,133,0.5)'}
+            placeholderTextColor={formErrors?.note ? 'orange' : 'rgba(144,133,133,0.5)'}
             multiline={true}
             textAlign={'left'}
             defaultValue={noteData?.note}
