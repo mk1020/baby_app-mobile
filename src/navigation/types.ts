@@ -1,5 +1,7 @@
 import {NavigationPages} from './pages';
 import {NavigatorScreenParams} from '@react-navigation/native';
+import {NotePageMode} from '../components/diary/contentTab/NotePage/NotePage';
+import {INoteJS} from '../model/types';
 
 export type PageType = {
   id: string
@@ -10,10 +12,22 @@ export type PageType = {
   createdAt: number
   updatedAt: number
 }
+
 export type AuthDiaryStackScreenList = {
   [NavigationPages.DiaryPage]: {pageData: PageType},
   [NavigationPages.Diary]: {diaryName: string},
-  [NavigationPages.CreateNote]: undefined,
+  [NavigationPages.NotePage]: {
+    imagesUri: string[],
+    mode: NotePageMode,
+    noteData?: INoteJS
+  },
+  [NavigationPages.ImagesFullScreenEdit]: {
+    counter: {
+      currentIndex: number,
+      total: number
+    },
+    imagesUri: string[],
+  },
 }
 
 export type AuthTabList = {

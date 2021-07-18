@@ -1,21 +1,25 @@
-import React, {Dispatch, memo, SetStateAction, useEffect, useMemo, useRef, useState} from 'react';
-import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
-import {TabBar, TabView} from 'react-native-tab-view';
-import {useTranslation} from 'react-i18next';
+import React, {memo, useEffect, useMemo, useState} from 'react';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {TabView} from 'react-native-tab-view';
 import {Fonts} from '../../phone/fonts';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
 import {ImagePreview} from './ImagePreview';
-import {current} from '@reduxjs/toolkit';
 
+export enum SliderMode {
+  FullScreen = 'FullScreen',
+  Preview = 'Preview',
+}
 type TProps = {
   imagesUri: string[]
+  slideIndex?: number
+  mode: SliderMode
+  onSlideChange?: (index: number)=> void
 }
 
 export const ImagesSlider = memo((props: TProps) => {
-  const {imagesUri} = props;
-  const {t, i18n} = useTranslation();
+  const {imagesUri, mode, slideIndex = 0, onSlideChange} = props;
 
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(slideIndex);
   const [routes, setRoutes] = useState<{key: string}[]>([]);
 
   useEffect(() => {
@@ -26,19 +30,27 @@ export const ImagesSlider = memo((props: TProps) => {
   const height =  useMemo(() => Dimensions.get('window').height, []);
 
   const renderScene = ({route}: {route: Route}) => {
-    return <ImagePreview uri={route.key} />;
+    return (
+      <ImagePreview
+        uri={route.key}
+      />
+    );
+  };
+
+  const onChangeIndex = (index: number) => {
+    onSlideChange && onSlideChange(index);
+    setIndex(index);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[mode === SliderMode.Preview ? styles.containerModePreview : styles.containerModeFull]}>
       <TabView
         renderTabBar={props => null}
         navigationState={{index, routes}}
         renderScene={renderScene}
-        onIndexChange={setIndex}
+        onIndexChange={onChangeIndex}
         initialLayout={{width, height}}
-        style={{height: 185}}
-
+        style={[mode === SliderMode.Preview ? styles.tabViewPreview : {}]}
       />
       <View style={styles.counter}>
         <Text style={styles.counterText}>{index + 1}/{routes.length}</Text>
@@ -48,8 +60,11 @@ export const ImagesSlider = memo((props: TProps) => {
 });
 
 const styles = StyleSheet.create({
-  container: {
+  containerModePreview: {
     flexDirection: 'row'
+  },
+  containerModeFull: {
+    flex: 1
   },
   counter: {
     width: 34,
@@ -67,5 +82,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#ffffff'
+  },
+  tabViewPreview: {
+    height: 185
   }
 });

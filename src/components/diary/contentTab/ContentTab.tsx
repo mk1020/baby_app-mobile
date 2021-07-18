@@ -37,9 +37,6 @@ export const ContentTab_ = memo((props: TProps) => {
     pages_ && setCurrentDiaryPages(pages_);
   }, [chapters, pages]);
 
-  console.log('chapters', chapters);
-  console.log('pages', pages);
-
   const onPressPage = (item: any) => {
     const pageDataAdapted: PageType = {
       id: item?.id,

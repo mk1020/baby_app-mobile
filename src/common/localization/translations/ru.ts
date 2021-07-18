@@ -45,6 +45,7 @@ export const ru = {
     october: 'Октябрь',
     november: 'Ноябрь',
     createNote: 'Новая запись',
+    editNote: 'Редактировать',
     noteTitle: 'Заголовок записи',
     typeText: 'Наберите текст',
     gallery: 'Галерея',

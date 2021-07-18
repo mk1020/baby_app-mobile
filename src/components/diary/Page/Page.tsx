@@ -7,7 +7,7 @@ import {NavigationPages} from '../../../navigation/pages';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Q} from '@nozbe/watermelondb';
-import {getRecordsByYearsAndMonth, IResult} from '../assist';
+import {getRecordsByYearsAndMonth, IResult, notesAdapter} from '../assist';
 import {PagePeriodYear} from './PagePeriodYear';
 import {Months, PagePeriodMonth} from './PagePeriodMonth';
 import {INoteJS} from '../../../model/types';
@@ -23,12 +23,13 @@ type TPeriod = {
   month?: number
 }
 export const Page_ = memo((props: TProps) => {
-  const {route, notes} = props;
+  const {route} = props;
 
   const [periods, setPeriods] = useState<TPeriod[]>([]);
   const [adaptedNotes, setAdaptedNotes] = useState<IResult>({});
 
   useEffect(() => {
+    const notes = notesAdapter(props)
     setAdaptedNotes(getRecordsByYearsAndMonth(mock));
   }, [notes]);
 

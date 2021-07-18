@@ -1,5 +1,5 @@
 import {TFunction} from 'i18next';
-import {INoteJS} from '../../model/types';
+import {INote, INoteJS} from '../../model/types';
 import {PermissionsAndroid} from 'react-native';
 
 export const getItemsPageType = (t: TFunction) => ([
@@ -36,6 +36,26 @@ export const monthByNum = (t: TFunction) => ({
   10: t('november'),
   11: t('december'),
 });
+
+export const notesAdapter = (notes: any[]): INoteJS[] => {
+  return notes.map(note => ({
+    id: note.id,
+    title: note.title,
+    note: note.note,
+    photo: note.photo?.split(';'),
+    tags: note.tags,
+    food: note.food,
+    temp: note.temp,
+    volume: note.volume,
+    pressure: note.pressure,
+    pageId: note.pageId,
+    pageType: note.pageType,
+    createdAt: note.createdAt,
+    updatedAt: note.updatedAt,
+    eventDateStart: note.eventDateStart,
+    eventDateEnd: note.eventDateEnd,
+  }));
+};
 
 interface IRecord {
   createdAt: number

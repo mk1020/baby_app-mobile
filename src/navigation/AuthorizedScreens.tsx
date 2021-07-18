@@ -9,7 +9,8 @@ import {Page} from '../components/diary/Page/Page';
 import {HeaderButton} from '../common/components/HeaderButton';
 import {Images} from '../common/imageResources';
 import {stylesHeader} from '../components/diary/Header';
-import {CreateNote} from '../components/diary/contentTab/CreateNote';
+import {NotePage, NotePageMode} from '../components/diary/contentTab/NotePage/NotePage';
+import {ImagesFullScreenEdit} from '../components/diary/contentTab/NotePage/ImagesFullScreenEdit';
 
 const DiaryStack = createStackNavigator<AuthDiaryStackScreenList>();
 
@@ -28,14 +29,21 @@ const DiaryStackScreen = () => {
           title: route?.params?.pageData?.name,
           headerLeft: () => <HeaderButton icon={Images.arrowBack} onPress={() => navigation.goBack()}/>,
           headerTitleStyle: stylesHeader.title,
-          headerRight: () =>  <HeaderButton icon={Images.add} onPress={() => navigation.navigate(NavigationPages.CreateNote)}/>,
+          headerRight: () =>  <HeaderButton icon={Images.add} onPress={() => navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Create})}/>,
           headerLeftContainerStyle: {marginHorizontal: 16, marginTop: 16},
           headerRightContainerStyle: {marginHorizontal: 16, marginTop: 16}
         })}
       />
       <DiaryStack.Screen
-        name={NavigationPages.CreateNote}
-        component={CreateNote}
+        name={NavigationPages.NotePage}
+        component={NotePage}
+        options={({route, navigation}) => ({
+          headerShown: false
+        })}
+      />
+      <DiaryStack.Screen
+        name={NavigationPages.ImagesFullScreenEdit}
+        component={ImagesFullScreenEdit}
         options={{headerShown: false}}
       />
     </DiaryStack.Navigator>

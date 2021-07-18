@@ -9,6 +9,7 @@ import {useTranslation} from 'react-i18next';
 import {monthByNum} from '../assist';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../navigation/pages';
+import {NotePageMode} from '../contentTab/NotePage/NotePage';
 
 export type Months = 0|1|2|3|4|5|6|7|8|9|10|11;
 type TProps = {
@@ -16,7 +17,7 @@ type TProps = {
   month: Months
   notesInMonth:  INoteJS[]
   asItemPastYears?: boolean
-  open: boolean
+  open?: boolean
 }
 export const PagePeriodMonth = memo((props: TProps) => {
   const {year, notesInMonth, month, asItemPastYears = false, open} = props;
@@ -28,16 +29,17 @@ export const PagePeriodMonth = memo((props: TProps) => {
   const onPress = () => {
     setIsOpen(!isOpen);
   };
-  const onPressNote = () => {
-    navigation.navigate(NavigationPages.CreateNote);
+  const onPressNote = (note: INoteJS) => {
+    navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Edit, noteData: note});
   };
+
   const renderItem = ({item, index}: ListRenderItemInfo<INoteJS>) => {
     return (
       <NoteItem
         date={item.createdAt}
         title={item.title}
         text={item.note}
-        onPress={onPressNote}
+        onPress={() => onPressNote(item)}
       />
     );
   };
@@ -56,7 +58,7 @@ export const PagePeriodMonth = memo((props: TProps) => {
           <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowDown : styles.arrowRight]}/>
         </View>
       </TouchableHighlight>
-      <ConditionView showIf={isOpen}>
+      <ConditionView showIf={!!isOpen}>
         <FlatList
           data={notesInMonth}
           renderItem={renderItem}

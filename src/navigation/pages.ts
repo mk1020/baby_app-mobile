@@ -7,7 +7,8 @@ export enum NavigationPages {
   Main = 'Main',
   Diary = 'Diary',
   DiaryPage = 'DiaryPage',
-  CreateNote = 'CreateNote'
+  NotePage = 'NotePage',
+  ImagesFullScreenEdit = 'ImagesFullScreenEdit'
 }
 
 export enum NavigationTabs {

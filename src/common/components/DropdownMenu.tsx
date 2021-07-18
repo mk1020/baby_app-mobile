@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {stylesHeader} from '../../components/diary/contentTab/NoteHeader';
+import {stylesHeader} from '../../components/diary/contentTab/NotePage/NoteHeader';
 import {Fonts} from '../phone/fonts';
 
 type TProps = {

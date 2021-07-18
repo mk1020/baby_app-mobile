@@ -45,6 +45,7 @@ export const en = {
     october: 'October',
     november: 'November',
     createNote: 'New note',
+    editNote: 'Edit',
     noteTitle: 'Post title',
     typeText: 'Type text',
     gallery: 'Gallery',

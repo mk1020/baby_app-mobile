@@ -1,30 +1,28 @@
 import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import React, {Dispatch, memo, SetStateAction, useState} from 'react';
-import {Images} from '../../../common/imageResources';
-import {Fonts} from '../../../common/phone/fonts';
-import {HeaderButton} from '../../../common/components/HeaderButton';
-import {ConditionView} from '../../../common/components/ConditionView';
-import {AddPageModal} from '../AddPageModal';
+import {Images} from '../../../../common/imageResources';
+import {Fonts} from '../../../../common/phone/fonts';
+import {HeaderButton} from '../../../../common/components/HeaderButton';
+import {ConditionView} from '../../../../common/components/ConditionView';
+import {AddPageModal} from '../../AddPageModal';
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ImagePickerResponse} from 'react-native-image-picker/src/types';
-import {requestSavePhotoPermission} from '../assist';
-import {DropdownMenu} from '../../../common/components/DropdownMenu';
+import {requestSavePhotoPermission} from '../../assist';
+import {DropdownMenu} from '../../../../common/components/DropdownMenu';
 import {useTranslation} from 'react-i18next';
+import {NotePageMode} from './NotePage';
 
-export enum NoteHeaderType {
-  Create = 'Create',
-  Edit = 'Edit'
-}
+
 type TProps = {
    title: string
-   headerFor: NoteHeaderType
+   mode: NotePageMode
    setModalVisible: Dispatch<SetStateAction<boolean>>
    modalVisible: boolean
    onLoadImage: (imageUri: string)=> void
 }
 export const NoteHeader = memo((props: TProps) => {
-  const {title, headerFor, setModalVisible, modalVisible, onLoadImage} = props;
+  const {title, mode, setModalVisible, modalVisible, onLoadImage} = props;
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
 
@@ -82,7 +80,7 @@ export const NoteHeader = memo((props: TProps) => {
       </View>
       <View style={stylesHeader.rightButtons}>
         <HeaderButton icon={Images.photo} onPress={onPressPhoto}/>
-        <ConditionView showIf={headerFor === NoteHeaderType.Edit}>
+        <ConditionView showIf={mode === NotePageMode.Edit}>
           <View style={stylesHeader.deleteIconWrapper}>
             <HeaderButton icon={Images.delete}/>
           </View>
@@ -98,7 +96,7 @@ export const NoteHeader = memo((props: TProps) => {
 export const stylesHeader = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 16,
     marginTop: 16,
