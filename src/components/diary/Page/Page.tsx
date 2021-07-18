@@ -29,9 +29,11 @@ export const Page_ = memo((props: TProps) => {
   const [adaptedNotes, setAdaptedNotes] = useState<IResult>({});
 
   useEffect(() => {
-    const notes = notesAdapter(props)
-    setAdaptedNotes(getRecordsByYearsAndMonth(mock));
-  }, [notes]);
+    if (props.notes) {
+      const notes = notesAdapter(props.notes);
+      setAdaptedNotes(getRecordsByYearsAndMonth(notes));
+    }
+  }, [props.notes]);
 
   useEffect(() => {
     const preparingPeriods: TPeriod[] = [];

@@ -26,12 +26,12 @@ interface IForm {
 }
 type TProps = {
   imagesUri: string[]
-  d: INoteJS
+  noteData?: INoteJS
 }
 
 const textNoteLineHeight = 24;
-export const CreateNoteCard = memo((props: TProps) => {
-  const {imagesUri = []} = props;
+export const NoteCard = memo((props: TProps) => {
+  const {imagesUri = [], noteData} = props;
   const {t, i18n} = useTranslation();
   const navigation = useNavigation();
 
@@ -69,6 +69,7 @@ export const CreateNoteCard = memo((props: TProps) => {
       }
     }
   };*/
+const currentDate = new Date().getTime();
 
   return (
     <View style={styles.container}>
@@ -82,6 +83,7 @@ export const CreateNoteCard = memo((props: TProps) => {
             value={value}
             placeholder={t('noteTitle')}
             placeholderTextColor={'rgba(144,133,133,0.5)'}
+            defaultValue={noteData?.title}
           />
         )}
         name="title"
@@ -111,13 +113,14 @@ export const CreateNoteCard = memo((props: TProps) => {
             placeholderTextColor={'rgba(144,133,133,0.5)'}
             multiline={true}
             textAlign={'left'}
+            defaultValue={noteData?.note}
           />
         )}
         name="note"
         rules={{required: true}}
         defaultValue=""
       />
-      <Text style={styles.date}>{dateFormat(new Date().getTime())}</Text>
+      <Text style={styles.date}>{noteData?.createdAt ? dateFormat(noteData.createdAt) : dateFormat(currentDate)}</Text>
     </View>
   );
 });

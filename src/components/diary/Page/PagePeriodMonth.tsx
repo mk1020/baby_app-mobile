@@ -10,6 +10,7 @@ import {monthByNum} from '../assist';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../navigation/pages';
 import {NotePageMode} from '../contentTab/NotePage/NotePage';
+import {NoteCard} from '../contentTab/NotePage/NoteCard';
 
 export type Months = 0|1|2|3|4|5|6|7|8|9|10|11;
 type TProps = {
@@ -35,12 +36,7 @@ export const PagePeriodMonth = memo((props: TProps) => {
 
   const renderItem = ({item, index}: ListRenderItemInfo<INoteJS>) => {
     return (
-      <NoteItem
-        date={item.createdAt}
-        title={item.title}
-        text={item.note}
-        onPress={() => onPressNote(item)}
-      />
+      <NoteCard imagesUri={item.photo} noteData={item}/>
     );
   };
 

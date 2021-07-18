@@ -1,9 +1,9 @@
-import React, {memo, useEffect, useLayoutEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
-import {CreateNoteCard} from './CreateNoteCard';
-import {RouteProp, useNavigation} from '@react-navigation/native';
+import {NoteCard} from './NoteCard';
+import {RouteProp} from '@react-navigation/native';
 import {AuthDiaryStackScreenList} from '../../../../navigation/types';
 import {NavigationPages} from '../../../../navigation/pages';
 import {Fonts} from '../../../../common/phone/fonts';
@@ -54,7 +54,7 @@ export const NotePage = memo((props: TProps) => {
             modalVisible={modalVisible}
             onLoadImage={onLoadImage}
           />
-          <CreateNoteCard imagesUri={imagesUri}/>
+          <NoteCard imagesUri={imagesUri}/>
         </View>
         <TouchableHighlight>
           <View style={styles.buttonDone}>

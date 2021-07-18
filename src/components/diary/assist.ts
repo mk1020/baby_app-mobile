@@ -38,7 +38,7 @@ export const monthByNum = (t: TFunction) => ({
 });
 
 export const notesAdapter = (notes: any[]): INoteJS[] => {
-  return notes.map(note => ({
+  return notes?.map(note => ({
     id: note.id,
     title: note.title,
     note: note.note,

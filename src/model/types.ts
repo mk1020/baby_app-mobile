@@ -24,7 +24,7 @@ export interface INoteJS {
   pageType: number,
   title: string
   note: string,
-  photo: string,
+  photo: string[],
   food: string,
   volume: string,
   temp: number,

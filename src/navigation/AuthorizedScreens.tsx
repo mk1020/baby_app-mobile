@@ -31,7 +31,8 @@ const DiaryStackScreen = () => {
           headerTitleStyle: stylesHeader.title,
           headerRight: () =>  <HeaderButton icon={Images.add} onPress={() => navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Create})}/>,
           headerLeftContainerStyle: {marginHorizontal: 16, marginTop: 16},
-          headerRightContainerStyle: {marginHorizontal: 16, marginTop: 16}
+          headerRightContainerStyle: {marginHorizontal: 16, marginTop: 16},
+          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0}
         })}
       />
       <DiaryStack.Screen
