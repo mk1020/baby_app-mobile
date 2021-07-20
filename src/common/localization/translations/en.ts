@@ -49,6 +49,9 @@ export const en = {
     noteTitle: 'Post title',
     typeText: 'Type text',
     gallery: 'Gallery',
-    camera: 'Camera'
+    camera: 'Camera',
+    deleteNoteTitle: 'Delete note',
+    deleteNoteMessage: 'Are you sure you want to delete the note?',
+    ok: 'OK',
   },
 };

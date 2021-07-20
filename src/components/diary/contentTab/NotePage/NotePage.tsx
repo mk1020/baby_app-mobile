@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View} from 'react-native';
+import {Alert, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View} from 'react-native';
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
 import {NoteCard} from './NoteCard';
@@ -9,7 +9,7 @@ import {NavigationPages} from '../../../../navigation/pages';
 import {Fonts} from '../../../../common/phone/fonts';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {INoteJS} from '../../../../model/types';
-import {createNoteDB, updateNoteDB} from '../../assist';
+import {createNoteDB, deleteNote, updateNoteDB} from '../../assist';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {Controller, useForm} from 'react-hook-form';
 
@@ -46,8 +46,7 @@ export const NotePage = memo((props: TProps) => {
       setValue('imagesUri', imagesUri);
     }
   }, [imagesUri]);
-  console.log('getValues', getValues());
-  console.log('imagesUri', imagesUri);
+
   const onPressOutside = () => {
     setModalVisible(false);
     return false;
@@ -68,9 +67,6 @@ export const NotePage = memo((props: TProps) => {
         await createNoteDB(database, _noteData, pageId);
         navigation.goBack();
       } else {
-        setTimeout(() => {
-          updateNoteDB(database, _noteData);
-        }, 1000);
         await updateNoteDB(database, _noteData);
         navigation.goBack();
       }
@@ -79,6 +75,14 @@ export const NotePage = memo((props: TProps) => {
     }
   };
 
+  const onPressDelete = async () => {
+    try {
+      await deleteNote(getValues('id'), database);
+      navigation.goBack();
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <SafeAreaView
       style={styles.containerWrapper}
@@ -92,6 +96,7 @@ export const NotePage = memo((props: TProps) => {
             setModalVisible={setModalVisible}
             modalVisible={modalVisible}
             onLoadImage={onLoadImage}
+            onPressDelete={onPressDelete}
           />
           <NoteCard formControl={control} noteData={getValues()} />
         </View>

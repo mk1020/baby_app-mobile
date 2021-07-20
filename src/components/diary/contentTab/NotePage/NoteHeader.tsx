@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {Alert, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import {Images} from '../../../../common/imageResources';
 import {Fonts} from '../../../../common/phone/fonts';
@@ -20,9 +20,10 @@ type TProps = {
    setModalVisible: Dispatch<SetStateAction<boolean>>
    modalVisible: boolean
    onLoadImage: (imageUri: string)=> void
+   onPressDelete: () => void
 }
 export const NoteHeader = memo((props: TProps) => {
-  const {title, mode, setModalVisible, modalVisible, onLoadImage} = props;
+  const {title, mode, setModalVisible, modalVisible, onLoadImage, onPressDelete} = props;
   const navigation = useNavigation();
   const {t, i18n} = useTranslation();
 
@@ -72,6 +73,21 @@ export const NoteHeader = memo((props: TProps) => {
     }
   ];
 
+  const deleteAlert = () =>
+    Alert.alert(
+      t('deleteNoteTitle'),
+      t('deleteNoteMessage'),
+      [
+        {
+          text: t('cancel'),
+          style: 'cancel',
+        },
+        {text: t('ok'), onPress: onPressDelete}
+      ], {
+        cancelable: true,
+      }
+    );
+
   return (
     <View style={stylesHeader.container}>
       <HeaderButton icon={Images.arrowBack} onPress={onPressBack}/>
@@ -82,7 +98,7 @@ export const NoteHeader = memo((props: TProps) => {
         <HeaderButton icon={Images.photo} onPress={onPressPhoto}/>
         <ConditionView showIf={mode === NotePageMode.Edit}>
           <View style={stylesHeader.deleteIconWrapper}>
-            <HeaderButton icon={Images.delete}/>
+            <HeaderButton icon={Images.delete} onPress={deleteAlert}/>
           </View>
         </ConditionView>
       </View>

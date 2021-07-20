@@ -141,3 +141,9 @@ export const getNotesByPageDB = async (pageId: string, db: Database) => {
   );
   return notes;
 };
+
+export const deleteNote = async (id: string, db: any) => {
+  const notes = db.get(NotesTableName);
+  const targetNote = await notes.find(id || '');
+  await targetNote.deleteNote();
+};

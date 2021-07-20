@@ -49,6 +49,9 @@ export const ru = {
     noteTitle: 'Заголовок записи',
     typeText: 'Наберите текст',
     gallery: 'Галерея',
-    camera: 'Камера'
+    camera: 'Камера',
+    deleteNoteTitle: 'Удалить запись',
+    deleteNoteMessage: 'Вы действительно хотите удалить запись?',
+    ok: 'ОК',
   },
 };
