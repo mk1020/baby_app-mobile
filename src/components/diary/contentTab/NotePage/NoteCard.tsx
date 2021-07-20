@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Platform, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
 import {dateFormat} from '../../assist';
 import {Controller} from 'react-hook-form';
@@ -24,15 +24,16 @@ export const NoteCard = memo((props: TProps) => {
   const navigation = useNavigation();
 
   const [slideIndex, changeSlideIndex] = useState(0);
+  const [moveCount, changeMoveCount] = useState(0);
   const formErrors = formControl.formStateRef?.current?.errors;
 
   const onPressImage = () => {
     const counter = {total: noteData.imagesUri?.length, currentIndex: slideIndex};
     navigation.navigate(NavigationPages.ImagesFullScreenEdit, {counter, imagesUri: noteData.imagesUri});
+    return true;
   };
 
   const currentDate = new Date().getTime();
-
   return (
     <View style={styles.container}>
       <Controller
@@ -53,15 +54,12 @@ export const NoteCard = memo((props: TProps) => {
         defaultValue=""
       />
       <ConditionView showIf={noteData.imagesUri?.length > 0}>
-        <TouchableWithoutFeedback onPress={onPressImage}>
-          <View>
-            <ImagesSlider
-              imagesUri={noteData.imagesUri}
-              mode={SliderMode.Preview}
-              onSlideChange={changeSlideIndex}
-            />
-          </View>
-        </TouchableWithoutFeedback>
+        <ImagesSlider
+          imagesUri={noteData.imagesUri}
+          mode={SliderMode.Preview}
+          onSlideChange={changeSlideIndex}
+          onPressImage={onPressImage}
+        />
       </ConditionView>
       <Controller
         control={formControl}

@@ -1,16 +1,17 @@
-import React, {memo, useEffect, useState} from 'react';
-import {FlatList, ListRenderItemInfo, StyleSheet} from 'react-native';
+import React, {memo, useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {NotesTableName} from '../../../model/schema';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useFocusEffect} from '@react-navigation/native';
 import {AuthDiaryStackScreenList} from '../../../navigation/types';
 import {NavigationPages} from '../../../navigation/pages';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Q} from '@nozbe/watermelondb';
-import {getRecordsByYearsAndMonth, IResult, notesAdapter} from '../assist';
+import {getNotesByPageDB, getRecordsByYearsAndMonth, IResult, notesAdapter} from '../assist';
 import {PagePeriodYear} from './PagePeriodYear';
 import {Months, PagePeriodMonth} from './PagePeriodMonth';
 import {INoteJS} from '../../../model/types';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
 
 type TProps = {
   route: RouteProp<AuthDiaryStackScreenList, NavigationPages.DiaryPage>
@@ -23,17 +24,33 @@ type TPeriod = {
   month?: number
 }
 export const Page_ = memo((props: TProps) => {
-  const {route} = props;
+  const {route, database} = props;
+  const pageId = route.params?.pageData?.id;
 
   const [periods, setPeriods] = useState<TPeriod[]>([]);
   const [adaptedNotes, setAdaptedNotes] = useState<IResult>({});
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
+    console.log('renderr');
+    if (database) {
+      (async function() {
+        const notesDB = await getNotesByPageDB(pageId, database);
+        console.log('notesDB', notesDB);
+        if (notesDB) {
+          const notes = notesAdapter(notesDB);
+          setAdaptedNotes(getRecordsByYearsAndMonth(notes));
+        }
+      })();
+    }
+  }, [database, pageId])
+  );
+
+  /*useEffect(() => {
     if (props.notes) {
       const notes = notesAdapter(props.notes);
       setAdaptedNotes(getRecordsByYearsAndMonth(notes));
     }
-  }, [props.notes]);
+  }, [props.notes]);*/
 
   useEffect(() => {
     const preparingPeriods: TPeriod[] = [];
@@ -72,91 +89,28 @@ export const Page_ = memo((props: TProps) => {
   };
 
   return (
-    <FlatList
-      data={periods}
-      renderItem={renderItem}
-      style={styles.container}
-      keyExtractor={item => `year ${item.year} month ${item.month}`}
-    />
+    <View style={styles.containerWrapper}>
+      <FlatList
+        data={periods}
+        renderItem={renderItem}
+        style={styles.container}
+        keyExtractor={item => `year ${item.year} month ${item.month}`}
+        //contentContainerStyle={{marginTop: 8}}
+      />
+    </View>
   );
 });
 
-const mock = [
-  {
-    id: '21312312',
-    pageId: '123',
-    pageType: 1,
-    photo: 'photo',
-    title: 'Title Note #1',
-    note: 'Текст записи тестирую',
-    createdAt: 1594665483916,
-  },
-  {
-    id: '21311231312',
-    pageId: '123',
-    pageType: 1,
-    photo: 'photo',
-    title: 'Title Note #2',
-    note: 'Текст записи тестирую тестирую тестирую тестирую тестирую тестирую тестирую тестирую',
-    createdAt: 1586803083916,
-  },
-  {
-    id: '213123123242',
-    pageId: '123',
-    pageType: 3,
-    photo: 'photo',
-    title: 'Title Note #3',
-    note: 'Текст записи тестирую',
-    createdAt: 1592073483916,
-  },
-  {
-    id: '213123121232',
-    pageId: '123',
-    pageType: 9,
-    photo: 'photo',
-    title: 'Title Note #1',
-    note: 'Текст записи тестирую',
-    createdAt: 1592073483916,
-  },
-  {
-    id: '21222311231312',
-    pageId: '123',
-    pageType: 1,
-    photo: 'photo',
-    title: 'Title Note #2',
-    note: 'Текст записи тестирую тестирую тестирую тестирую тестирую тестирую тестирую тестирую',
-    createdAt: 1626266770852,
-  },
-  {
-    id: '213123423123242',
-    pageId: '123',
-    pageType: 3,
-    photo: 'photo',
-    title: 'Title Note #3',
-    note: 'Текст записи тестирую',
-    createdAt: 1618404404243,
-  },
-  {
-    id: '213122131212232',
-    pageId: '123',
-    pageType: 9,
-    photo: 'photo',
-    title: 'Title Note #1',
-    note: 'Текст записи тестирую',
-    createdAt: 1613310423517,
-  },
-];
-
-export const Page = withDatabase(withObservables(['route'], ({database, route}: TProps) => {
-  return {
-    notess: database?.collections?.get(NotesTableName).query(
-      Q.where('page_id', route?.params?.pageData?.id),
-    ).observe(),
-  };
-})(Page_));
+export const Page = withDatabase(Page_);
 
 const styles = StyleSheet.create({
+  containerWrapper: {
+    backgroundColor: '#ffffff',
+    flex: 1
+  },
   container: {
-    backgroundColor: '#ffffff'
-  }
+    backgroundColor: '#ffffff',
+    marginTop: 16,
+    flex: 1
+  },
 });

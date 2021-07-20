@@ -1,16 +1,17 @@
 import React, {memo} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableWithoutFeedback, View} from 'react-native';
 
 type TProps = {
    uri: string
+   onPressImage?: ()=> void
 }
 export const ImagePreview = memo((props: TProps) => {
-  const {uri} = props;
+  const {uri, onPressImage} = props;
 
   return (
-    <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={onPressImage} style={styles.container}>
       <Image source={{uri}} style={styles.image}/>
-    </View>
+    </TouchableWithoutFeedback>
   );
 });
 const styles = StyleSheet.create({

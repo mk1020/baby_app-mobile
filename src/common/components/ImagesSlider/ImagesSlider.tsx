@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useMemo, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {TabView} from 'react-native-tab-view';
 import {Fonts} from '../../phone/fonts';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
@@ -13,11 +13,12 @@ type TProps = {
   imagesUri: string[]
   slideIndex?: number
   mode: SliderMode
-  onSlideChange?: (index: number)=> void
+  onSlideChange?: (index: number) => void
+  onPressImage?: () => void
 }
 
 export const ImagesSlider = memo((props: TProps) => {
-  const {imagesUri, mode, slideIndex = 0, onSlideChange} = props;
+  const {imagesUri, mode, slideIndex = 0, onSlideChange, onPressImage} = props;
 
   const [index, setIndex] = useState(slideIndex);
   const [routes, setRoutes] = useState<{key: string}[]>([]);
@@ -33,6 +34,7 @@ export const ImagesSlider = memo((props: TProps) => {
     return (
       <ImagePreview
         uri={route.key}
+        onPressImage={onPressImage}
       />
     );
   };

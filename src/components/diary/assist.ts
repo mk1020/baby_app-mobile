@@ -38,13 +38,16 @@ export const monthByNum = (t: TFunction) => ({
   10: t('november'),
   11: t('december'),
 });
-
-export const notesAdapter = (notes: any[]): INoteJS[] => {
-  return notes?.map(note => ({
+export interface INoteJSEnhanced extends INoteJS{
+  imagesUri: string[]
+}
+export const notesAdapter = (notes: any): INoteJSEnhanced[] => {
+  return notes?.map((note: INoteJS) => ({
     id: note.id,
     title: note.title,
     note: note.note,
-    photo: typeof note.photo === 'string' ? note.photo.split(';') : note.photo,
+    photo: note.photo,
+    imagesUri: note.photo ? note.photo?.split(';') : [],
     tags: note.tags,
     food: note.food,
     temp: note.temp,
@@ -64,10 +67,10 @@ interface IRecord {
 }
 export interface IResult {
   [year: number]: {
-    [month: number]: INoteJS[]
+    [month: number]: INoteJSEnhanced[]
   }
 }
-export const getRecordsByYearsAndMonth = (records: (Required<IRecord> & INoteJS)[]): IResult => {
+export const getRecordsByYearsAndMonth = (records: (Required<IRecord> & INoteJSEnhanced)[]): IResult => {
   let year: number;
   let month: number;
 
@@ -107,10 +110,11 @@ export const requestSavePhotoPermission = async () => {
   }
 };
 
-export const createNoteDB = async (database: Database, data: Partial<INoteJS>) => {
+export const createNoteDB = async (database: Database, data: Partial<INoteJS>, pageId: string) => {
   const notes = database?.get(NotesTableName);
   await database.action(async () => {
     await notes.create((note: any) => {
+      note.pageId = pageId;
       note.title = data?.title;
       note.note = data?.note;
       note.photo = data?.photo;
@@ -129,4 +133,11 @@ export const updateNoteDB = async (database: Database, data?: Partial<INoteJS>) 
       note.photo = data?.photo;
     });
   });
+};
+
+export const getNotesByPageDB = async (pageId: string, db: Database) => {
+  const notes = await db.collections.get(NotesTableName).query(
+    Q.where('page_id', pageId),
+  );
+  return notes;
 };

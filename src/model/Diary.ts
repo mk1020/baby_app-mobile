@@ -86,15 +86,7 @@ export class Note extends Model {
 
   @relation(PagesTableName, 'page_id') page: any
 
-  @action async updateNote(key: keyof Note, value: string) {
-    await this.update(note => {
-      note[key] = value;
-    });
-  }
   @action async deleteNote() {
     await this.markAsDeleted();
-  }
-  @action async resetDB() {
-    //await this.unsafeResetDatabase();
   }
 }

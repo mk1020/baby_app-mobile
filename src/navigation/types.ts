@@ -19,9 +19,17 @@ export type AuthDiaryStackScreenList = {
   [NavigationPages.NotePage]: {
     imagesUri: string[],
     mode: NotePageMode,
-    noteData?: INoteJS
+    noteData?: INoteJS,
+    pageId: string
   },
   [NavigationPages.ImagesFullScreenEdit]: {
+    counter: {
+      currentIndex: number,
+      total: number
+    },
+    imagesUri: string[],
+  },
+  [NavigationPages.ImagesFullScreen]: {
     counter: {
       currentIndex: number,
       total: number

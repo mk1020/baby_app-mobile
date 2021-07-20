@@ -3,7 +3,7 @@ import {Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, Touchab
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
 import {NoteCard} from './NoteCard';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {AuthDiaryStackScreenList} from '../../../../navigation/types';
 import {NavigationPages} from '../../../../navigation/pages';
 import {Fonts} from '../../../../common/phone/fonts';
@@ -26,10 +26,11 @@ type TProps = {
 }
 export const NotePage = memo((props: TProps) => {
   const {route} = props;
-  const {noteData, imagesUri = [], mode} = route.params;
+  const {noteData, imagesUri = [], mode, pageId} = route.params;
 
   const {t, i18n} = useTranslation();
   const database = useDatabase();
+  const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
   const {
@@ -38,7 +39,7 @@ export const NotePage = memo((props: TProps) => {
     formState: {errors},
     setValue,
     getValues,
-  } = useForm<IFormNote>({defaultValues: {...noteData, imagesUri}});
+  } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
 
   useEffect(() => {
     if (imagesUri) {
@@ -63,10 +64,15 @@ export const NotePage = memo((props: TProps) => {
         ...data,
         photo: data.imagesUri?.join(';'),
       };
-      if (mode === NotePageMode.Create && _noteData) {
-        await createNoteDB(database, _noteData);
+      if (mode === NotePageMode.Create && pageId) {
+        await createNoteDB(database, _noteData, pageId);
+        navigation.goBack();
       } else {
+        setTimeout(() => {
+          updateNoteDB(database, _noteData);
+        }, 1000);
         await updateNoteDB(database, _noteData);
+        navigation.goBack();
       }
     } catch (e) {
       console.log(e);
@@ -89,7 +95,11 @@ export const NotePage = memo((props: TProps) => {
           />
           <NoteCard formControl={control} noteData={getValues()} />
         </View>
-        <TouchableHighlight onPress={handleSubmit(onPressDone)}>
+        <TouchableHighlight
+          onPress={handleSubmit(onPressDone)}
+          underlayColor={'#c67200'}
+          style={styles.buttonDoneWrapper}
+        >
           <View style={styles.buttonDone}>
             <Text style={styles.buttonDoneText}>{t('done')}</Text>
           </View>
@@ -111,9 +121,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'red',
   },
-  buttonDone: {
+  buttonDoneWrapper: {
     marginHorizontal: 16,
     marginBottom: 20,
+    borderRadius: 28,
+  },
+  buttonDone: {
     backgroundColor: '#FFA100',
     borderRadius: 28,
     alignItems: 'center',
