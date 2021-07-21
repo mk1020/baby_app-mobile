@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Alert, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View} from 'react-native';
+import {Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
 import {NoteCard} from './NoteCard';
@@ -9,9 +9,9 @@ import {NavigationPages} from '../../../../navigation/pages';
 import {Fonts} from '../../../../common/phone/fonts';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {INoteJS} from '../../../../model/types';
-import {createNoteDB, deleteNote, updateNoteDB} from '../../assist';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {Controller, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
+import {createNoteDB, deleteNote, updateNoteDB} from '../../../../model/assist';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]

@@ -30,8 +30,6 @@ const Diary_ = memo((props:TProps) => {
 
   const {notes, diary, database, chapters} = props;
   const {params} = props.route;
-  const token = useSelector(((state: RootStoreType) => state.app.userToken));
-  const theme = useSelector(((state: RootStoreType) => state.app.colorScheme));
 
   const [tabIndex, setTabIndex] = useState(0);
 

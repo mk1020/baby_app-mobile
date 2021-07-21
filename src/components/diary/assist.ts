@@ -110,40 +110,4 @@ export const requestSavePhotoPermission = async () => {
   }
 };
 
-export const createNoteDB = async (database: Database, data: Partial<INoteJS>, pageId: string) => {
-  const notes = database?.get(NotesTableName);
-  await database.action(async () => {
-    await notes.create((note: any) => {
-      note.pageId = pageId;
-      note.title = data?.title;
-      note.note = data?.note;
-      note.photo = data?.photo;
-    });
-  });
-};
 
-export const updateNoteDB = async (database: Database, data?: Partial<INoteJS>) => {
-  const notes = database?.get(NotesTableName);
-  const targetNote = await notes.find(data?.id || '');
-
-  await database.action(async () => {
-    await targetNote.update((note: any) => {
-      note.title = data?.title;
-      note.note = data?.note;
-      note.photo = data?.photo;
-    });
-  });
-};
-
-export const getNotesByPageDB = async (pageId: string, db: Database) => {
-  const notes = await db.collections.get(NotesTableName).query(
-    Q.where('page_id', pageId),
-  );
-  return notes;
-};
-
-export const deleteNote = async (id: string, db: any) => {
-  const notes = db.get(NotesTableName);
-  const targetNote = await notes.find(id || '');
-  await targetNote.deleteNote();
-};
