@@ -1,16 +1,14 @@
-import React, {memo, useEffect, useState} from 'react';
-import {FlatList, Image, ListRenderItem, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import React, {memo, useState} from 'react';
+import {FlatList, Image, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {Images} from '../../../common/imageResources';
 import {ConditionView} from '../../../common/components/ConditionView';
 import {NoteItem} from './NoteItem';
-import {INoteJS} from '../../../model/types';
 import {useTranslation} from 'react-i18next';
 import {INoteJSEnhanced, monthByNum} from '../assist';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../navigation/pages';
 import {NotePageMode} from '../contentTab/NotePage/NotePage';
-import {NoteCard} from '../contentTab/NotePage/NoteCard';
 
 export type Months = 0|1|2|3|4|5|6|7|8|9|10|11;
 type TProps = {

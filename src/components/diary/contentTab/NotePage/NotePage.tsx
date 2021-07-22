@@ -1,10 +1,9 @@
-import React, {memo, useEffect, useState} from 'react';
-import {Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import React, {memo, useEffect, useRef, useState} from 'react';
+import {Keyboard, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
 import {NoteCard} from './NoteCard';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {AuthDiaryStackScreenList} from '../../../../navigation/types';
 import {NavigationPages} from '../../../../navigation/pages';
 import {Fonts} from '../../../../common/phone/fonts';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
@@ -12,6 +11,9 @@ import {INoteJS} from '../../../../model/types';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {useForm} from 'react-hook-form';
 import {createNoteDB, deleteNote, updateNoteDB} from '../../../../model/assist';
+import {RootStackList} from '../../../../navigation/types';
+import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
+import {ConditionView} from '../../../../common/components/ConditionView';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]
@@ -22,7 +24,7 @@ export enum NotePageMode {
   Create = 'Create'
 }
 type TProps = {
-  route: RouteProp<AuthDiaryStackScreenList, NavigationPages.NotePage>
+  route: RouteProp<RootStackList, NavigationPages.NotePage>
 }
 export const NotePage = memo((props: TProps) => {
   const {route} = props;
@@ -40,6 +42,29 @@ export const NotePage = memo((props: TProps) => {
     setValue,
     getValues,
   } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
+  const editorRef = useRef<RichEditor>(null);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  console.log(getValues())
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (imagesUri) {
@@ -83,12 +108,26 @@ export const NotePage = memo((props: TProps) => {
       console.log(e);
     }
   };
+  const scrollRef = useRef<ScrollView>(null);
+
+  const onCursorPosition = (offsetY: number) => {
+    scrollRef?.current?.scrollTo({y: offsetY - 30, animated: true});
+  };
+
+  const getEditor = (): RichEditor => {
+    return editorRef?.current as RichEditor;
+  };
+
   return (
     <SafeAreaView
       style={styles.containerWrapper}
       onStartShouldSetResponder={onPressOutside}
     >
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
         <View>
           <NoteHeader
             title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
@@ -98,7 +137,12 @@ export const NotePage = memo((props: TProps) => {
             onLoadImage={onLoadImage}
             onPressDelete={onPressDelete}
           />
-          <NoteCard formControl={control} noteData={getValues()} />
+          <NoteCard
+            formControl={control}
+            noteData={getValues()}
+            onCursorPosition={onCursorPosition}
+            editorRef={editorRef}
+          />
         </View>
         <TouchableHighlight
           onPress={handleSubmit(onPressDone)}
@@ -110,6 +154,23 @@ export const NotePage = memo((props: TProps) => {
           </View>
         </TouchableHighlight>
       </ScrollView>
+      <ConditionView showIf={isKeyboardVisible}>
+        <RichToolbar
+          editor={editorRef}
+          actions={[
+            actions.undo,
+            actions.setBold,
+            actions.setItalic,
+            actions.setStrikethrough,
+            actions.line,
+            actions.redo,
+          ]}
+          getEditor={getEditor() ? getEditor : undefined}
+          selectedIconTint={'red'}
+          style={{backgroundColor: '#fff', alignItems: 'center'}}
+
+        />
+      </ConditionView>
     </SafeAreaView>
   );
 });
@@ -119,7 +180,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container: {
-    flex: 1,
     justifyContent: 'space-between'
   },
   buttonDoneContainer: {

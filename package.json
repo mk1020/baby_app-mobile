@@ -35,10 +35,12 @@
     "react-native-localize": "^2.0.2",
     "react-native-modal": "^12.0.2",
     "react-native-pager-view": "^5.2.1",
+    "react-native-pell-rich-editor": "^1.8.5",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "^3.2.0",
     "react-native-screens": "^3.3.0",
     "react-native-tab-view": "^3.0.1",
+    "react-native-webview": "^11.6.5",
     "react-redux": "^7.2.3",
     "redux-persist": "^6.0.0"
   },

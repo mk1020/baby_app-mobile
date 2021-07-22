@@ -3,13 +3,13 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
 import {Images} from '../../../../common/imageResources';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {AuthDiaryStackScreenList} from '../../../../navigation/types';
 import {NavigationPages} from '../../../../navigation/pages';
 import {ImagesSlider, SliderMode} from '../../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../../common/components/ConditionView';
+import {RootStackList} from '../../../../navigation/types';
 
 type TProps = {
-  route: RouteProp<AuthDiaryStackScreenList, NavigationPages.ImagesFullScreenEdit>
+  route: RouteProp<RootStackList, NavigationPages.ImagesFullScreenEdit>
 }
 export const ImagesFullScreenEdit = memo((props: TProps) => {
   const {route} = props;

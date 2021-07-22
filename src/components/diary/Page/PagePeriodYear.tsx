@@ -1,15 +1,14 @@
 import React, {memo, useEffect, useState} from 'react';
-import {FlatList, Image, ListRenderItem, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {FlatList, Image, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {Images} from '../../../common/imageResources';
 import {ConditionView} from '../../../common/components/ConditionView';
-import {NoteItem} from './NoteItem';
-import {INoteJS} from '../../../model/types';
 import {Months, PagePeriodMonth} from './PagePeriodMonth';
+import {INoteJSEnhanced} from '../assist';
 
 type TProps = {
   year: number
-  notesByMonths: {[month: string]: INoteJS[]}
+  notesByMonths: {[month: string]: INoteJSEnhanced[]}
 }
 export const PagePeriodYear = memo((props: TProps) => {
   const {year, notesByMonths} = props;

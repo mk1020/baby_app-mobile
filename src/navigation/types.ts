@@ -1,4 +1,4 @@
-import {NavigationPages} from './pages';
+import {NavigationPages, NavigationTabs, TabsName} from './pages';
 import {NavigatorScreenParams} from '@react-navigation/native';
 import {NotePageMode} from '../components/diary/contentTab/NotePage/NotePage';
 import {INoteJS} from '../model/types';
@@ -13,9 +13,17 @@ export type PageType = {
   updatedAt: number
 }
 
-export type AuthDiaryStackScreenList = {
+//NavigatorScreenParams<AuthDiaryStackScreenList>
+
+export type TUnAuthPagesList = {
+  [NavigationPages.SignIn]: {title: string},
+  [NavigationPages.SignUp]: undefined,
+  [NavigationPages.PassRecovery]: undefined,
+  [NavigationPages.NewPassword]: {title: string, email: string},
+};
+
+export type RootStackList = {
   [NavigationPages.DiaryPage]: {pageData: PageType},
-  [NavigationPages.Diary]: {diaryName: string},
   [NavigationPages.NotePage]: {
     imagesUri: string[],
     mode: NotePageMode,
@@ -36,20 +44,13 @@ export type AuthDiaryStackScreenList = {
     },
     imagesUri: string[],
   },
+  [TabsName]: NavigatorScreenParams<TabsList>,
+};
+export type TabsList = {
+  [NavigationTabs.Diary]: {diaryName: string}
+  [NavigationTabs.Settings]: undefined,
 }
 
-export type AuthTabList = {
-  [NavigationPages.Main]: undefined,
-  [NavigationPages.Diary]: NavigatorScreenParams<AuthDiaryStackScreenList>,
-};
+export type Screens = keyof (RootStackList & TUnAuthPagesList);
 
-export type TUnAuthPagesList = {
-  [NavigationPages.SignIn]: {title: string},
-  [NavigationPages.SignUp]: undefined,
-  [NavigationPages.PassRecovery]: undefined,
-  [NavigationPages.NewPassword]: {title: string, email: string},
-};
-
-export type Screens = keyof (AuthTabList & TUnAuthPagesList);
-
-export type GetRouteParams<T extends Screens> = Pick<AuthTabList & TUnAuthPagesList, T>[T]
+export type GetRouteParams<T extends Screens> = Pick<RootStackList & TUnAuthPagesList, T>[T]

@@ -1,23 +1,17 @@
-import React, {memo, useEffect, useMemo, useState} from 'react';
-import {Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {useTranslation} from 'react-i18next';
-import {NavigationPages} from '../../navigation/pages';
-import {RouteProp, useNavigation} from '@react-navigation/native';
-import {AuthTabList} from '../../navigation/types';
+import React, {memo, useState} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import {NavigationPages, NavigationTabs} from '../../navigation/pages';
+import {RouteProp} from '@react-navigation/native';
+import {RootStackList, TabsList} from '../../navigation/types';
 import withObservables from '@nozbe/with-observables';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import {RootStoreType} from '../../redux/rootReducer';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../model/schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName} from '../../model/schema';
 import {Q} from '@nozbe/watermelondb';
 import {Header} from './Header';
-import {SceneMap, TabView} from 'react-native-tab-view';
-import {ContentTab} from './contentTab/ContentTab';
 import {Tabs} from './Tabs';
-import {checkUnsyncedChanges} from '../../model/sync';
 
 type TProps = {
-  route: RouteProp<AuthTabList, NavigationPages.Diary>
+  route: RouteProp<TabsList, NavigationTabs.Diary>
   database: any
   diaryId: string
   notes: any
@@ -32,7 +26,6 @@ const Diary_ = memo((props:TProps) => {
   const {params} = props.route;
 
   const [tabIndex, setTabIndex] = useState(0);
-
   const diaryData = diary.length ? diary[0] : null;
   //todo возможно когда diaryId обновится, pages and chapters не обновятся..
   return (

@@ -21,7 +21,6 @@ type TProps = {
 }
 
 export interface IFormCretePage {
-  pageType: number,
   pageName: string,
   newChapter: string
   selectedChapter: number | string
@@ -49,8 +48,8 @@ export const AddPageModal = memo((props: TProps) => {
   const [openChapterPicker, setOpenChapterPicker] = useState(false);
   const [chapterItems, setChapterItems] = useState([...defaultItemsChapters, ...chaptersPikerItems]);
 
-  const [openPageTypePicker, setOpenPageTypePicker] = useState(false);
-  const [pageTypeItems, setPageTypeItems] = useState(getItemsPageType(t));
+  //const [openPageTypePicker, setOpenPageTypePicker] = useState(false);
+  //const [pageTypeItems, setPageTypeItems] = useState(getItemsPageType(t));
 
   const database = useDatabase();
 
@@ -142,9 +141,8 @@ export const AddPageModal = memo((props: TProps) => {
             rules={{required: true, pattern: inputsRegex}}
             defaultValue=""
           />
-          <Space.V px={16} />
 
-          <Controller
+          {/*<Controller
             control={control}
             render={({field: {onChange, onBlur, value}}) => (
               <DropDownPicker
@@ -168,7 +166,7 @@ export const AddPageModal = memo((props: TProps) => {
             rules={{required: true}}
             defaultValue={null}
           />
-          <Space.V px={16} />
+          <Space.V px={16} />*/}
 
           <View style={styles.buttonsWrapper}>
             <TouchableOpacity onPress={onRequestClose}>
@@ -237,7 +235,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   buttonsWrapper: {
-    marginTop: 50,
+    marginTop: 20,
     flexDirection: 'row',
     alignSelf: 'flex-end'
   },

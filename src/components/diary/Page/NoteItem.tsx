@@ -1,11 +1,12 @@
 import React, {memo, useState} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {dateFormat} from '../assist';
 import {ImagesSlider, SliderMode} from '../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../common/components/ConditionView';
 import {NavigationPages} from '../../../navigation/pages';
 import {useNavigation} from '@react-navigation/native';
+import {parseHTML} from '../../../common/assistant/others';
 
 type TProps = {
   title: string
@@ -29,14 +30,16 @@ export const NoteItem = memo((props: TProps) => {
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.85}>
       <Text style={styles.title}>{title}</Text>
       <ConditionView showIf={imagesUri?.length > 0}>
-        <ImagesSlider
-          imagesUri={imagesUri}
-          mode={SliderMode.Preview}
-          onSlideChange={changeSlideIndex}
-          onPressImage={onPressImage}
-        />
+        <View style={styles.sliderWrapper}>
+          <ImagesSlider
+            imagesUri={imagesUri}
+            mode={SliderMode.Preview}
+            onSlideChange={changeSlideIndex}
+            onPressImage={onPressImage}
+          />
+        </View>
       </ConditionView>
-      <Text style={styles.noteText} numberOfLines={3} ellipsizeMode={'tail'}>{text}</Text>
+      <Text style={styles.noteText} numberOfLines={3} ellipsizeMode={'tail'}>{parseHTML(text)}</Text>
       <Text style={styles.date}>{dateFormat(date)}</Text>
     </TouchableOpacity>
   );
@@ -63,6 +66,9 @@ const styles = StyleSheet.create({
         elevation: 3,
       }
     }),
+  },
+  sliderWrapper: {
+    marginBottom: 8
   },
   noteText: {
     fontFamily: Fonts.regular,

@@ -11,8 +11,10 @@ export enum NavigationPages {
   ImagesFullScreen = 'ImagesFullScreen',
   ImagesFullScreenEdit = 'ImagesFullScreenEdit',
 }
-
 export enum NavigationTabs {
   Diary = 'Diary',
-  Main = 'Main',
+  Settings = 'Settings',
+  Tabs= 'Tabs'
 }
+
+export const TabsName = 'Tabs';

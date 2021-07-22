@@ -1,7 +1,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {AuthDiaryStackScreenList, AuthTabList} from './types';
-import {NavigationPages} from './pages';
+import {NavigationPages, NavigationTabs, TabsName} from './pages';
 import {Diary} from '../components/diary/Diary';
 import {Main} from '../components/main/Main';
 import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
@@ -12,18 +11,31 @@ import {stylesHeader} from '../components/diary/Header';
 import {NotePage, NotePageMode} from '../components/diary/contentTab/NotePage/NotePage';
 import {ImagesFullScreenEdit} from '../components/diary/contentTab/NotePage/ImagesFullScreenEdit';
 import {ImagesFullScreen} from '../components/diary/Page/ImagesFullScreen';
+import {RootStackList, TabsList} from './types';
 
-const DiaryStack = createStackNavigator<AuthDiaryStackScreenList>();
-
-const DiaryStackScreen = () => {
+const Tabs = createBottomTabNavigator<TabsList>();
+const TabsNav = () => {
   return (
-    <DiaryStack.Navigator>
-      <DiaryStack.Screen
-        name={NavigationPages.Diary}
+    <Tabs.Navigator>
+      <Tabs.Screen
+        name={NavigationTabs.Diary}
         component={Diary}
+      />
+      <Tabs.Screen name={NavigationTabs.Settings} component={Main} />
+    </Tabs.Navigator>
+  );
+};
+
+const RootStack = createStackNavigator<RootStackList>();
+export const AuthorizedScreens = (): JSX.Element => {
+  return (
+    <RootStack.Navigator>
+      <RootStack.Screen
+        name={TabsName}
+        component={TabsNav}
         options={{headerShown: false}}
       />
-      <DiaryStack.Screen
+      <RootStack.Screen
         name={NavigationPages.DiaryPage}
         component={Page}
         options={({route, navigation}) => ({
@@ -41,38 +53,25 @@ const DiaryStackScreen = () => {
           headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0},
         })}
       />
-      <DiaryStack.Screen
+      <RootStack.Screen
         name={NavigationPages.NotePage}
         component={NotePage}
         options={({route, navigation}) => ({
           headerShown: false
         })}
       />
-      <DiaryStack.Screen
+      <RootStack.Screen
         name={NavigationPages.ImagesFullScreenEdit}
         component={ImagesFullScreenEdit}
         options={{headerShown: false}}
       />
-      <DiaryStack.Screen
+      <RootStack.Screen
         name={NavigationPages.ImagesFullScreen}
         component={ImagesFullScreen}
         options={{headerShown: false}}
       />
-    </DiaryStack.Navigator>
-  );
-};
 
-const Tab = createBottomTabNavigator<AuthTabList>();
-export const AuthorizedScreens = (): JSX.Element => {
-
-  return (
-    <Tab.Navigator >
-      <Tab.Screen
-        name={NavigationPages.Diary}
-        component={DiaryStackScreen}
-      />
-      <Tab.Screen name={NavigationPages.Main} component={Main} />
-    </Tab.Navigator>
+    </RootStack.Navigator>
   );
 };
 

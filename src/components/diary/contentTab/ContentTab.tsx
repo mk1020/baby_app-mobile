@@ -10,7 +10,7 @@ import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {PageItem} from './PageItem';
 import {ChapterItem} from './ChapterItem';
-import {AuthTabList, PageType} from '../../../navigation/types';
+import {PageType} from '../../../navigation/types';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../navigation/pages';
 

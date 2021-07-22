@@ -1,7 +1,6 @@
 import React, {memo, useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {RouteProp, useFocusEffect} from '@react-navigation/native';
-import {AuthDiaryStackScreenList} from '../../../navigation/types';
 import {NavigationPages} from '../../../navigation/pages';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import {getRecordsByYearsAndMonth, IResult, notesAdapter} from '../assist';
@@ -9,9 +8,10 @@ import {PagePeriodYear} from './PagePeriodYear';
 import {Months, PagePeriodMonth} from './PagePeriodMonth';
 import {INoteJS} from '../../../model/types';
 import {getNotesByPageDB} from '../../../model/assist';
+import {RootStackList} from '../../../navigation/types';
 
 type TProps = {
-  route: RouteProp<AuthDiaryStackScreenList, NavigationPages.DiaryPage>
+  route: RouteProp<RootStackList, NavigationPages.DiaryPage>
   database: any
   notes: INoteJS[]
 }

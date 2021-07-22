@@ -19,16 +19,16 @@ const noteAdapter = (note: INote) => {
     diary_id: Number(note.diary_id),
     created_at: new Date(note.created_at).getTime(),
     updated_at: new Date(note.updated_at).getTime(),
-    note_type: note.note_type,
-    date_event_start: note.date_event_start || null,
-    date_event_end: note.date_event_end || null,
+    //note_type: note.note_type,
+    // date_event_start: note.date_event_start || null,
+    // date_event_end: note.date_event_end || null,
     photo: note.photo || null,
-    food: note.food || null,
-    volume: note.volume || null,
+    //food: note.food || null,
+    //volume: note.volume || null,
     note: note.note || null,
-    temp: note.temp || null,
+    //temp: note.temp || null,
     tags: note.tags || null,
-    pressure: note.pressure || null
+    //pressure: note.pressure || null
   };
 };
 type AdapterRes = {

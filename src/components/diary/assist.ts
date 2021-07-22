@@ -1,6 +1,6 @@
 import {TFunction} from 'i18next';
 import {INote, INoteJS} from '../../model/types';
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import {Database, Q} from '@nozbe/watermelondb';
 import {NotesTableName} from '../../model/schema';
 

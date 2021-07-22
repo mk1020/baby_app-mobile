@@ -70,17 +70,18 @@ export class Note extends Model {
   }
 
   @field('page_id') pageId: number | undefined
-  @field('page_type') noteType: number | undefined
+  //@field('page_type') noteType: number | undefined
   @field('title') title: string | undefined
+  @field('bookmarked') bookmarked: boolean | undefined
   @field('note') note: string | undefined
   @field('photo') photo: string | undefined
-  @field('food') food: string | undefined
-  @field('event_date_start') eventDateStart: string | undefined
-  @field('event_date_end') eventDateEnd: string | undefined
-  @field('volume') volume: string | undefined
-  @field('temp') temp: string | undefined
+  // @field('food') food: string | undefined
+  // @field('event_date_start') eventDateStart: string | undefined
+  // @field('event_date_end') eventDateEnd: string | undefined
+  //@field('volume') volume: string | undefined
+  // @field('temp') temp: string | undefined
   @field('tags') tags: string | undefined
-  @field('pressure') pressure: string | undefined
+  // @field('pressure') pressure: string | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
 

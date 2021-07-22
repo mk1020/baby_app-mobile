@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
 import {dateFormat} from '../../assist';
 import {Controller} from 'react-hook-form';
@@ -10,21 +10,24 @@ import {NavigationPages} from '../../../../navigation/pages';
 import {useNavigation} from '@react-navigation/native';
 import {Control} from 'react-hook-form/dist/types/form';
 import {IFormNote} from './NotePage';
+import {RichEditor} from 'react-native-pell-rich-editor';
+import {generateAssetsFontCss, getHTML} from '../../Page/assiat';
 
 
 type TProps = {
   formControl: Control<IFormNote>
   noteData: IFormNote
+  onCursorPosition?: (offsetY: number)=> void
+  editorRef?: React.RefObject<RichEditor>
 }
 
 const textNoteLineHeight = 24;
 export const NoteCard = memo((props: TProps) => {
-  const {formControl, noteData} = props;
+  const {formControl, noteData, onCursorPosition, editorRef} = props;
   const {t, i18n} = useTranslation();
   const navigation = useNavigation();
 
   const [slideIndex, changeSlideIndex] = useState(0);
-  const [moveCount, changeMoveCount] = useState(0);
   const formErrors = formControl.formStateRef?.current?.errors;
 
   const onPressImage = () => {
@@ -34,6 +37,12 @@ export const NoteCard = memo((props: TProps) => {
   };
 
   const currentDate = new Date().getTime();
+  const editorStyle = {
+    color: '#5a5757',
+    placeholderColor: formErrors?.note ? 'orange' : 'rgba(144,133,133,0.5)',
+    contentCSSText: `font-size: 18px; ${generateAssetsFontCss(Fonts.regular, 'ttf')}`
+  };
+
   return (
     <View style={styles.container}>
       <Controller
@@ -64,7 +73,7 @@ export const NoteCard = memo((props: TProps) => {
       <Controller
         control={formControl}
         render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
+          /*<TextInput
             style={styles.noteText}
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
@@ -74,6 +83,16 @@ export const NoteCard = memo((props: TProps) => {
             multiline={true}
             textAlign={'left'}
             defaultValue={noteData?.note}
+          />*/
+          <RichEditor
+            onChange={text => onChange(text)}
+            placeholder={t('typeText')}
+            ref={editorRef}
+            initialContentHTML={noteData?.note}
+            contentMode={'mobile'}
+            useContainer={true}
+            onCursorPosition={onCursorPosition}
+            editorStyle={editorStyle}
           />
         )}
         name="note"
@@ -84,12 +103,13 @@ export const NoteCard = memo((props: TProps) => {
     </View>
   );
 });
+
+
 const styles = StyleSheet.create({
   container: {
     marginBottom: 8,
     marginTop: 16,
     paddingHorizontal: 8,
-    paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: '#ffffff',
     borderRadius: 8,
