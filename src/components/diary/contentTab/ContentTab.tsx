@@ -74,7 +74,6 @@ export const ContentTab_ = memo((props: TProps) => {
       data={flatListData}
       renderItem={renderItem}
       keyExtractor={item => item.id}
-      //extraData={pre}
     />
   );
 });

@@ -28,18 +28,24 @@ export const PagePeriodMonth = memo((props: TProps) => {
   const onPress = () => {
     setIsOpen(!isOpen);
   };
-  const onPressNote = (note: INoteJSEnhanced) => {
-    navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Edit, noteData: note});
+  const onPressNote = (note: INoteJSEnhanced, bookmarked: boolean) => {
+    const noteData = {
+      ...note,
+      bookmarked
+    };
+    navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Edit, noteData});
   };
 
   const renderItem = ({item, index}: ListRenderItemInfo<INoteJSEnhanced>) => {
     return (
       <NoteItem
+        id={item.id}
+        bookmarked={item.bookmarked}
         title={item.title}
         text={item.note}
         date={item.createdAt}
         imagesUri={item.imagesUri}
-        onPress={() => onPressNote(item)}
+        onPress={(bookmarked: boolean) => onPressNote(item, bookmarked)}
       />
     );
   };

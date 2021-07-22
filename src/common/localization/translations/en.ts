@@ -53,5 +53,6 @@ export const en = {
     deleteNoteTitle: 'Delete note',
     deleteNoteMessage: 'Are you sure you want to delete the note?',
     ok: 'OK',
+    bookmarks: 'Bookmarks',
   },
 };

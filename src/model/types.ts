@@ -3,6 +3,7 @@ export type TNoteType = 1|2|3|4|5|6|7|8|9|10|11|12;
 export interface INote {
   id: string,
   page_id: string,
+  diary_id: string,
   //page_type: number,
   title: string
   note: string,
@@ -21,8 +22,10 @@ export interface INote {
 export interface INoteJS {
   id: string,
   pageId: string,
+  diaryId: string,
   //pageType: number,
   title: string
+  bookmarked: boolean
   note: string,
   photo: string,
   //food: string,

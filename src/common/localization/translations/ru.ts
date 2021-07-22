@@ -53,5 +53,6 @@ export const ru = {
     deleteNoteTitle: 'Удалить запись',
     deleteNoteMessage: 'Вы действительно хотите удалить запись?',
     ok: 'ОК',
+    bookmarks: 'Закладки',
   },
 };

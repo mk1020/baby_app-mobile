@@ -4,7 +4,7 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {ContentTab} from './contentTab/ContentTab';
 import {useTranslation} from 'react-i18next';
 import {Fonts} from '../../common/phone/fonts';
-import {HashtagTab} from './hashtagTab/HashtagTab';
+import {BookmarksTab} from './bookmarksTab/BookmarksTab';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
 
 type TProps = {
@@ -19,7 +19,7 @@ export const Tabs = memo((props: TProps) => {
 
   const [routes] = useState([
     {key: 'first', title: t('content')},
-    {key: 'second', title: t('hashtags')},
+    {key: 'second', title: t('bookmarks')},
   ]);
   const width =  useMemo(() => Dimensions.get('window').width, []);
   const height =  useMemo(() => Dimensions.get('window').height, []);
@@ -29,7 +29,7 @@ export const Tabs = memo((props: TProps) => {
     case 'first':
       return <ContentTab diaryId={diaryId}/>;
     case 'second':
-      return <HashtagTab diaryId={diaryId}/>;
+      return <BookmarksTab diaryId={diaryId}/>;
     default:
       return null;
     }

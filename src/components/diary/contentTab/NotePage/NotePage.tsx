@@ -14,6 +14,7 @@ import {createNoteDB, deleteNote, updateNoteDB} from '../../../../model/assist';
 import {RootStackList} from '../../../../navigation/types';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {ConditionView} from '../../../../common/components/ConditionView';
+import {useKeyboard} from '../../../../common/hooks/useKeyboard';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]
@@ -28,7 +29,7 @@ type TProps = {
 }
 export const NotePage = memo((props: TProps) => {
   const {route} = props;
-  const {noteData, imagesUri = [], mode, pageId} = route.params;
+  const {noteData, imagesUri = [], mode, pageId, diaryId} = route.params;
 
   const {t, i18n} = useTranslation();
   const database = useDatabase();
@@ -43,28 +44,8 @@ export const NotePage = memo((props: TProps) => {
     getValues,
   } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
   const editorRef = useRef<RichEditor>(null);
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  console.log(getValues())
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true);
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false);
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+  const {isKeyboardVisible} = useKeyboard();
+  console.log(getValues());
 
   useEffect(() => {
     if (imagesUri) {
@@ -89,7 +70,7 @@ export const NotePage = memo((props: TProps) => {
         photo: data.imagesUri?.join(';'),
       };
       if (mode === NotePageMode.Create && pageId) {
-        await createNoteDB(database, _noteData, pageId);
+        await createNoteDB(database, _noteData, pageId, diaryId);
         navigation.goBack();
       } else {
         await updateNoteDB(database, _noteData);
@@ -168,7 +149,6 @@ export const NotePage = memo((props: TProps) => {
           getEditor={getEditor() ? getEditor : undefined}
           selectedIconTint={'red'}
           style={{backgroundColor: '#fff', alignItems: 'center'}}
-
         />
       </ConditionView>
     </SafeAreaView>

@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
 import {dateFormat} from '../../assist';
 import {Controller} from 'react-hook-form';
@@ -12,6 +12,7 @@ import {Control} from 'react-hook-form/dist/types/form';
 import {IFormNote} from './NotePage';
 import {RichEditor} from 'react-native-pell-rich-editor';
 import {generateAssetsFontCss, getHTML} from '../../Page/assiat';
+import {Images} from '../../../../common/imageResources';
 
 
 type TProps = {
@@ -28,6 +29,7 @@ export const NoteCard = memo((props: TProps) => {
   const navigation = useNavigation();
 
   const [slideIndex, changeSlideIndex] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
   const formErrors = formControl.formStateRef?.current?.errors;
 
   const onPressImage = () => {
@@ -43,25 +45,52 @@ export const NoteCard = memo((props: TProps) => {
     contentCSSText: `font-size: 18px; ${generateAssetsFontCss(Fonts.regular, 'ttf')}`
   };
 
+  const onPressBookmark = () => {
+    setBookmarked(!bookmarked);
+    if (!bookmarked === true) {
+
+    }
+  };
   return (
     <View style={styles.container}>
-      <Controller
-        control={formControl}
-        render={({field: {onChange, onBlur, value}}) => (
-          <TextInput
-            style={styles.title}
-            onBlur={onBlur}
-            onChangeText={value => onChange(value)}
-            value={value}
-            placeholder={t('noteTitle')}
-            placeholderTextColor={formErrors?.title ? 'orange' : 'rgba(144,133,133,0.5)'}
-            defaultValue={noteData?.title}
-          />
-        )}
-        name="title"
-        rules={{required: true}}
-        defaultValue=""
-      />
+      <View style={styles.topBlock}>
+        <Controller
+          control={formControl}
+          render={({field: {onChange, onBlur, value}}) => (
+            <TextInput
+              style={styles.title}
+              onBlur={onBlur}
+              onChangeText={value => onChange(value)}
+              value={value}
+              placeholder={t('noteTitle')}
+              placeholderTextColor={formErrors?.title ? 'orange' : 'rgba(144,133,133,0.5)'}
+              defaultValue={noteData?.title}
+            />
+          )}
+          name="title"
+          rules={{required: true}}
+          defaultValue=""
+        />
+
+        <Controller
+          control={formControl}
+          render={({field: {onChange, onBlur, value}}) => (
+            <TouchableOpacity
+              onPress={() => onChange(!value)}
+              style={styles.bookmarkWrapper}
+              hitSlop={{top: 5, bottom: 5, left: 10, right: 10}}
+            >
+              {
+                value ? <Image style={styles.bookmark} source={Images.bookmarkFilled} /> :
+                  <Image style={styles.bookmark} source={Images.bookmarkBorder} />
+              }
+            </TouchableOpacity>
+          )}
+          name="bookmarked"
+          rules={{required: false}}
+          defaultValue={false}
+        />
+      </View>
       <ConditionView showIf={noteData.imagesUri?.length > 0}>
         <ImagesSlider
           imagesUri={noteData.imagesUri}
@@ -128,6 +157,21 @@ const styles = StyleSheet.create({
       }
     }),
   },
+  topBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  bookmarkWrapper: {
+    alignSelf: 'center',
+    marginLeft: 8,
+    flexShrink: 1
+  },
+  bookmark: {
+    width: 24,
+    height: 24,
+    tintColor: '#FFA100',
+  },
   noteTextContainer: {
   },
   separatorsContainer: {
@@ -145,6 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#41C3CD',
+    flex: 1
   },
   date: {
     fontFamily: Fonts.regular,

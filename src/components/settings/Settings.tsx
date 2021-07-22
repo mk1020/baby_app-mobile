@@ -1,13 +1,11 @@
 import React, {memo, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {signOut} from '../../../redux/appSlice';
 import {useDispatch} from 'react-redux';
-import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {database} from '../../../AppContainer';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../../model/schema';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
+import {signOut} from '../../redux/appSlice';
+import {ChaptersTableName, DiaryTableName, PagesTableName} from '../../model/schema';
 
 type TProps = {
   database?: Database
@@ -15,7 +13,7 @@ type TProps = {
   chapters?: any[]
   pages?: any[]
 }
-export const HashtagTab_ = memo((props: TProps) => {
+export const Settings_ = memo((props: TProps) => {
   const {diaryId, database, chapters, pages} = props;
   const dispatch = useDispatch();
 
@@ -73,13 +71,13 @@ export const HashtagTab_ = memo((props: TProps) => {
 });
 
 //type InputProps = ObservableifyProps<TProps, 'diaryId'>
-export const HashtagTab = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
+export const Settings = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
   return {
     chapters: database?.collections?.get(ChaptersTableName).query().observe(),
     pages: database?.collections?.get(PagesTableName).query().observe()
     //pages: database?.collections?.get(PagesTableName)?.query(Q.where('id', diaryId))?.observe()
   };
-})(HashtagTab_));
+})(Settings_));
 const styles = StyleSheet.create({
   sign: {
     width: 150,

@@ -28,7 +28,8 @@ export type RootStackList = {
     imagesUri: string[],
     mode: NotePageMode,
     noteData?: INoteJS,
-    pageId: string
+    pageId: string,
+    diaryId: string,
   },
   [NavigationPages.ImagesFullScreenEdit]: {
     counter: {

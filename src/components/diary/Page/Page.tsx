@@ -28,11 +28,9 @@ export const Page_ = memo((props: TProps) => {
   const [adaptedNotes, setAdaptedNotes] = useState<IResult>({});
 
   useFocusEffect(useCallback(() => {
-    console.log('renderr');
     if (database) {
       (async function() {
         const notesDB = await getNotesByPageDB(pageId, database);
-        console.log('notesDB', notesDB);
         if (notesDB) {
           const notes = notesAdapter(notesDB);
           setAdaptedNotes(getRecordsByYearsAndMonth(notes));
@@ -41,13 +39,6 @@ export const Page_ = memo((props: TProps) => {
     }
   }, [database, pageId])
   );
-
-  /*useEffect(() => {
-    if (props.notes) {
-      const notes = notesAdapter(props.notes);
-      setAdaptedNotes(getRecordsByYearsAndMonth(notes));
-    }
-  }, [props.notes]);*/
 
   useEffect(() => {
     const preparingPeriods: TPeriod[] = [];

@@ -7,6 +7,7 @@ export class Diary extends Model {
   static table = DiaryTableName
   static associations: Associations = {
     [ChaptersTableName]: {type: 'has_many', foreignKey: 'diary_id'},
+    [NotesTableName]: {type: 'has_many', foreignKey: 'diary_id'},
   }
 
   @field('user_id') userId: number | undefined
@@ -16,6 +17,7 @@ export class Diary extends Model {
   @field('updated_at') updatedAt: number | undefined
 
   @children(ChaptersTableName) chapter: any
+  @children(NotesTableName) notes: any
 
   @action async changeIsCurrentDiary(isCurrent: boolean) {
     await this.update(diary => {
@@ -45,14 +47,14 @@ export class Page extends Model {
   static table = PagesTableName
   static associations: Associations = {
     [NotesTableName]: {type: 'has_many', foreignKey: 'page_id'},
-    [NotesTableName]: {type: 'has_many', foreignKey: 'page_type'},
+    //[NotesTableName]: {type: 'has_many', foreignKey: 'page_type'},
     [ChaptersTableName]: {type: 'belongs_to', key: 'chapter_id'},
     [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
   }
 
   @field('diary_id') diaryId: string | undefined
   @field('chapter_id') chapterId: string | undefined
-  @field('page_type') pageType: string | undefined
+  //@field('page_type') pageType: string | undefined
   @field('name') name: string | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
@@ -66,10 +68,12 @@ export class Note extends Model {
   static table = NotesTableName
   static associations: Associations = {
     [PagesTableName]: {type: 'belongs_to', key: 'page_id'},
-    [PagesTableName]: {type: 'belongs_to', key: 'page_type'},
+    [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
+    //[PagesTableName]: {type: 'belongs_to', key: 'page_type'},
   }
 
-  @field('page_id') pageId: number | undefined
+  @field('page_id') pageId: string | undefined
+  @field('diary_id') diaryId: string | undefined
   //@field('page_type') noteType: number | undefined
   @field('title') title: string | undefined
   @field('bookmarked') bookmarked: boolean | undefined
@@ -86,6 +90,7 @@ export class Note extends Model {
   @field('updated_at') updatedAt: number | undefined
 
   @relation(PagesTableName, 'page_id') page: any
+  @relation(DiaryTableName, 'diary_id') diary: any
 
   @action async deleteNote() {
     await this.markAsDeleted();

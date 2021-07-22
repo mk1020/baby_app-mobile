@@ -9,6 +9,6 @@ export const Images = {
   arrowBack: <ImageURISource>require('../../assets/images/arrowBack.png'),
   photo: <ImageURISource>require('../../assets/images/photo.png'),
   delete: <ImageURISource>require('../../assets/images/delete.png'),
-  bookmarkFill: <ImageURISource>require('../../assets/images/delete.png'),
-  delete: <ImageURISource>require('../../assets/images/delete.png'),
+  bookmarkFilled: <ImageURISource>require('../../assets/images/outline_bookmark_black.png'),
+  bookmarkBorder: <ImageURISource>require('../../assets/images/outline_bookmark_border_black.png'),
 };

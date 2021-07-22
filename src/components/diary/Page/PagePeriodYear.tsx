@@ -58,7 +58,6 @@ export const PagePeriodYear = memo((props: TProps) => {
           keyExtractor={item => item.toString()}
         />
       </ConditionView>
-
     </>
   );
 });

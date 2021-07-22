@@ -2,7 +2,6 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationPages, NavigationTabs, TabsName} from './pages';
 import {Diary} from '../components/diary/Diary';
-import {Main} from '../components/main/Main';
 import {createStackNavigator, HeaderBackButton} from '@react-navigation/stack';
 import {Page} from '../components/diary/Page/Page';
 import {HeaderButton} from '../common/components/HeaderButton';
@@ -12,6 +11,7 @@ import {NotePage, NotePageMode} from '../components/diary/contentTab/NotePage/No
 import {ImagesFullScreenEdit} from '../components/diary/contentTab/NotePage/ImagesFullScreenEdit';
 import {ImagesFullScreen} from '../components/diary/Page/ImagesFullScreen';
 import {RootStackList, TabsList} from './types';
+import {Settings} from '../components/settings/Settings';
 
 const Tabs = createBottomTabNavigator<TabsList>();
 const TabsNav = () => {
@@ -21,7 +21,7 @@ const TabsNav = () => {
         name={NavigationTabs.Diary}
         component={Diary}
       />
-      <Tabs.Screen name={NavigationTabs.Settings} component={Main} />
+      <Tabs.Screen name={NavigationTabs.Settings} component={Settings} />
     </Tabs.Navigator>
   );
 };
@@ -44,7 +44,11 @@ export const AuthorizedScreens = (): JSX.Element => {
           headerTitleStyle: stylesHeader.title,
           headerRight: () =>  (
             <HeaderButton icon={Images.add} onPress={() => {
-              navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Create, pageId: route.params?.pageData?.id});
+              navigation.navigate(NavigationPages.NotePage, {
+                mode: NotePageMode.Create,
+                pageId: route.params?.pageData?.id,
+                diaryId: route.params?.pageData?.diaryId
+              });
             }}
             />
           ),

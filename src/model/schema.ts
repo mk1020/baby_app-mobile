@@ -43,6 +43,7 @@ export const babyAppSchema = appSchema({
       name: NotesTableName,
       columns: [
         {name: 'page_id', type: 'string'},
+        {name: 'diary_id', type: 'string'},
         //{name: 'page_type', type: 'number'},
         {name: 'title', type: 'string'},
         {name: 'bookmarked', type: 'boolean'},

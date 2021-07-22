@@ -101,12 +101,14 @@ export const createPage = async  (database: Database, data: IFormCretePage, diar
   });
 };
 
-export const createNoteDB = async (database: Database, data: Partial<INoteJS>, pageId: string) => {
+export const createNoteDB = async (database: Database, data: Partial<INoteJS>, pageId: string, diaryId: string) => {
   const notes = database?.get(NotesTableName);
   await database.action(async () => {
     await notes.create((note: any) => {
+      note.diaryId = diaryId;
       note.pageId = pageId;
       note.title = data?.title;
+      note.bookmarked = data?.bookmarked;
       note.note = data?.note;
       note.photo = data?.photo;
     });
@@ -120,6 +122,7 @@ export const updateNoteDB = async (database: Database, data?: Partial<INoteJS>) 
   await database.action(async () => {
     await targetNote.update((note: any) => {
       note.title = data?.title;
+      note.bookmarked = data?.bookmarked;
       note.note = data?.note;
       note.photo = data?.photo;
     });
@@ -137,4 +140,14 @@ export const deleteNote = async (id: string, db: any) => {
   const notes = db.get(NotesTableName);
   const targetNote = await notes.find(id || '');
   await targetNote.deleteNote();
+};
+
+export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any) => {
+  const notes = db.get(NotesTableName);
+  const targetNote = await notes.find(id || '');
+  await db.action(async () => {
+    await targetNote.update((note: any) => {
+      note.bookmarked = bookmarked;
+    });
+  });
 };

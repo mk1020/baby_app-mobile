@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
 import {dateFormat} from '../assist';
 import {ImagesSlider, SliderMode} from '../../../common/components/ImagesSlider/ImagesSlider';
@@ -7,28 +7,65 @@ import {ConditionView} from '../../../common/components/ConditionView';
 import {NavigationPages} from '../../../navigation/pages';
 import {useNavigation} from '@react-navigation/native';
 import {parseHTML} from '../../../common/assistant/others';
+import {Images} from '../../../common/imageResources';
+import {setBookmarkToNote} from '../../../model/assist';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
 
 type TProps = {
+  id: string
+  bookmarked: boolean
   title: string
   text: string
   date: number
-  onPress: ()=> void
+  onPress: (bookmarked: boolean) => void
   imagesUri: string[]
 }
 export const NoteItem = memo((props: TProps) => {
-  const {title, text, date, onPress, imagesUri} = props;
+  const {id, title, text, date, onPress, imagesUri} = props;
 
   const [slideIndex, changeSlideIndex] = useState(0);
+  const [bookmarked, setBookmarked] = useState(props.bookmarked || false);
+
   const navigation = useNavigation();
+  const db = useDatabase();
 
   const onPressImage = () => {
     const counter = {total: imagesUri?.length, currentIndex: slideIndex};
     navigation.navigate(NavigationPages.ImagesFullScreen, {counter, imagesUri});
   };
 
+  const onPressBookmark = () => {
+    try {
+      setBookmarked(!bookmarked);
+      if (!bookmarked) {
+        setBookmarkToNote(id, !bookmarked, db);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.85}>
-      <Text style={styles.title}>{title}</Text>
+    <TouchableOpacity style={styles.container} onPress={() => onPress(bookmarked)} activeOpacity={0.85}>
+      <View style={styles.topBlock}>
+        <Text
+          style={styles.title}
+          numberOfLines={1}
+          ellipsizeMode={'tail'}
+        >
+          {title}
+        </Text>
+        <TouchableOpacity
+          onPress={onPressBookmark}
+          style={styles.bookmarkWrapper}
+          hitSlop={{top: 5, bottom: 5, left: 10, right: 10}}
+        >
+          {
+            bookmarked ? <Image style={styles.bookmark} source={Images.bookmarkFilled} /> :
+              <Image style={styles.bookmark} source={Images.bookmarkBorder} />
+          }
+        </TouchableOpacity>
+      </View>
       <ConditionView showIf={imagesUri?.length > 0}>
         <View style={styles.sliderWrapper}>
           <ImagesSlider
@@ -47,7 +84,7 @@ export const NoteItem = memo((props: TProps) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 8,
-    paddingTop: 16,
+    paddingTop: 8,
     marginBottom: 16,
     paddingBottom: 8,
     backgroundColor: '#ffffff',
@@ -67,8 +104,24 @@ const styles = StyleSheet.create({
       }
     }),
   },
+  topBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+
+  },
+  bookmarkWrapper: {
+    alignSelf: 'flex-start',
+    flexShrink: 1,
+    marginLeft: 8
+  },
+  bookmark: {
+    width: 24,
+    height: 24,
+    tintColor: '#FFA100'
+  },
   sliderWrapper: {
-    marginBottom: 8
+    marginVertical: 8,
   },
   noteText: {
     fontFamily: Fonts.regular,
@@ -82,7 +135,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#41C3CD',
-    marginBottom: 13
+    flex: 1
   },
   date: {
     fontFamily: Fonts.regular,
