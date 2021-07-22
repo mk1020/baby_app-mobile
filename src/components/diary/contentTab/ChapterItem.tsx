@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 18,
     color: '#383838',
-    marginLeft: 8
+    marginLeft: 8,
+    flex: 1
   },
   arrow: {
     width: 24,
