@@ -15,6 +15,7 @@ import {RootStackList} from '../../../../navigation/types';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {ConditionView} from '../../../../common/components/ConditionView';
 import {useKeyboard} from '../../../../common/hooks/useKeyboard';
+import {ButtonFilled, ButtonModes} from '../../../../common/components/ButtonFilled';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]
@@ -125,15 +126,11 @@ export const NotePage = memo((props: TProps) => {
             editorRef={editorRef}
           />
         </View>
-        <TouchableHighlight
+        <ButtonFilled
+          title={t('done')}
+          mode={ButtonModes.Positive}
           onPress={handleSubmit(onPressDone)}
-          underlayColor={'#c67200'}
-          style={styles.buttonDoneWrapper}
-        >
-          <View style={styles.buttonDone}>
-            <Text style={styles.buttonDoneText}>{t('done')}</Text>
-          </View>
-        </TouchableHighlight>
+        />
       </ScrollView>
       <ConditionView showIf={isKeyboardVisible}>
         <RichToolbar
@@ -162,40 +159,4 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'space-between'
   },
-  buttonDoneContainer: {
-    flex: 1,
-    backgroundColor: 'red',
-  },
-  buttonDoneWrapper: {
-    marginHorizontal: 16,
-    marginBottom: 20,
-    borderRadius: 28,
-  },
-  buttonDone: {
-    backgroundColor: '#FFA100',
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 49,
-    ...Platform.select({
-      ios: {
-        shadowOffset: {
-          width: 0,
-          height: 2
-        },
-        shadowRadius: 5,
-        shadowColor: 'rgba(0, 0, 0, 0.4)',
-      },
-      android: {
-        elevation: 2,
-      }
-    }),
-  },
-  buttonDoneText: {
-    fontFamily: Fonts.bold,
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#ffffff',
-    textTransform: 'uppercase'
-  }
 });

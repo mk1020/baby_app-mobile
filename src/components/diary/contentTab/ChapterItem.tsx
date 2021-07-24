@@ -38,7 +38,7 @@ export const ChapterItem = memo((props: TProps) => {
             <Text style={{fontFamily: Fonts.bold}}>{chapterNum}. </Text>
             {name}
           </Text>
-          <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowUp : styles.arrowDown]}/>
+          <Image source={Images.arrowDown} style={[styles.arrow, isOpen ? styles.arrowDown : styles.arrowRight]}/>
         </View>
       </TouchableHighlight>
       <ConditionView showIf={isOpen}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   arrowDown: {
     transform: [{rotateZ: '0deg'}],
   },
-  arrowUp: {
-    transform: [{rotateZ: '180deg'}],
+  arrowRight: {
+    transform: [{rotateZ: '-90deg'}],
   },
 });

@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {Images} from '../../../common/imageResources';
 import {Fonts} from '../../../common/phone/fonts';
 

@@ -1,18 +1,18 @@
 import React, {memo, useState} from 'react';
-import {StyleSheet, Text, TextInput, TextStyle, TouchableHighlight, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, TextStyle, TouchableOpacity, View, ViewStyle} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import {emailRegex, inputsRegex} from '../../common/consts';
+import {inputsRegex} from '../../common/consts';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Fonts} from '../../common/phone/fonts';
 import Modal from 'react-native-modal';
 import {useTranslation} from 'react-i18next';
 import {ConditionView} from '../../common/components/ConditionView';
-import {getItemsPageType} from './assist';
 import {Space} from '../../common/components/Space';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {ChaptersTableName, DiaryTableName, PagesTableName} from '../../model/schema';
+import {ChaptersTableName} from '../../model/schema';
 import {createPage, createPageAndChapter} from '../../model/assist';
+import {ButtonFilled, ButtonModes} from '../../common/components/ButtonFilled';
 
 type TProps = {
   onRequestClose: ()=> void
@@ -75,114 +75,99 @@ export const AddPageModal = memo((props: TProps) => {
       onBackButtonPress={onRequestClose}
       useNativeDriverForBackdrop={true}
       useNativeDriver={true}
+      style={{margin: 0}}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DropDownPicker
-                open={openChapterPicker}
-                value={value}
-                items={chapterItems}
-                setOpen={setOpenChapterPicker}
-                setValue={callback => onChange(callback(value))}
-                setItems={setChapterItems}
-                style={styles.picker}
-                textStyle={styles.pickerTextStyle}
-                listMode={'MODAL'}
-                modalProps={{
-                  animationType: 'fade'
-                }}
-              />
-            )}
-            name="selectedChapter"
-            rules={{required: false}}
-            defaultValue={defaultItemsChapters[1].value}
-          />
-          <Space.V px={16} />
-          <ConditionView showIf={getValues().selectedChapter === 0}>
-            <>
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
-                    <TextInput
-                      placeholder={'Название главы'}
-                      onChangeText={value => onChange(value)}
-                      value={value}
-                      style={styles.input}
-                      placeholderTextColor={'#41C3CD'}
-                    />
-                  </View>
-                )}
-                name="newChapter"
-                rules={{required: true, pattern: inputsRegex}}
-                defaultValue=""
-              />
-              <Space.V px={16} />
-            </>
-          </ConditionView>
-
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
-                <TextInput
-                  placeholder={'Название страницы'}
-                  onChangeText={value => onChange(value)}
+        <View style={[styles.modalView, getValues().selectedChapter === 0 ? flex['.45'] : flex['.40']]}>
+          <ScrollView
+            contentContainerStyle={styles.scrollViewContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <Controller
+              control={control}
+              render={({field: {onChange, onBlur, value}}) => (
+                <DropDownPicker
+                  open={openChapterPicker}
                   value={value}
-                  style={styles.input}
-                  placeholderTextColor={'#41C3CD'}
+                  items={chapterItems}
+                  setOpen={setOpenChapterPicker}
+                  setValue={callback => onChange(callback(value))}
+                  setItems={setChapterItems}
+                  style={styles.picker}
+                  textStyle={styles.pickerTextStyle}
+                  // dropDownDirection={'TOP'}
+                  listMode={'SCROLLVIEW'}
+                  scrollViewProps={{showsVerticalScrollIndicator: false}}
+                  modalProps={{
+                    animationType: 'fade',
+                  }}
                 />
-              </View>
-            )}
-            name="pageName"
-            rules={{required: true, pattern: inputsRegex}}
-            defaultValue=""
-          />
+              )}
+              name="selectedChapter"
+              rules={{required: false}}
+              defaultValue={defaultItemsChapters[1].value}
+            />
+            <Space.V px={16} />
+            <ConditionView showIf={getValues().selectedChapter === 0}>
+              <>
+                <Controller
+                  control={control}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
+                      <TextInput
+                        placeholder={'Название главы'}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                        style={styles.input}
+                        placeholderTextColor={'#41C3CD'}
+                      />
+                    </View>
+                  )}
+                  name="newChapter"
+                  rules={{required: true, pattern: inputsRegex}}
+                  defaultValue=""
+                />
+                <Space.V px={16} />
+              </>
+            </ConditionView>
 
-          {/*<Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DropDownPicker
-                open={openPageTypePicker}
-                value={value}
-                items={pageTypeItems}
-                setOpen={setOpenPageTypePicker}
-                setValue={callback => onChange(callback(value))}
-                setItems={setPageTypeItems}
-                style={[styles.picker, errors.pageType && styles.fieldErrView]}
-                textStyle={styles.pickerTextStyle}
-                placeholder={t('pageType')}
-                listMode={'MODAL'}
-                modalProps={{
-                  animationType: 'fade'
-                }}
-                //flatListProps={{pointerEvents: 'box-none'}}
+            <Controller
+              control={control}
+              render={({field: {onChange, onBlur, value}}) => (
+                <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
+                  <TextInput
+                    placeholder={'Название страницы'}
+                    onChangeText={value => onChange(value)}
+                    value={value}
+                    style={styles.input}
+                    placeholderTextColor={'#41C3CD'}
+                  />
+                </View>
+              )}
+              name="pageName"
+              rules={{required: true, pattern: inputsRegex}}
+              defaultValue=""
+            />
+            <Space.V px={24}/>
+            <View style={styles.buttonsWrapper}>
+              <ButtonFilled
+                title={t('cancel')}
+                mode={ButtonModes.Negative}
+                onPress={onRequestClose}
               />
-            )}
-            name="pageType"
-            rules={{required: true}}
-            defaultValue={null}
-          />
-          <Space.V px={16} />*/}
-
-          <View style={styles.buttonsWrapper}>
-            <TouchableOpacity onPress={onRequestClose}>
-              <Text style={styles.buttonCancelText}>{t('cancel')}</Text>
-            </TouchableOpacity>
-            <Space.H px={24}/>
-            <TouchableOpacity onPress={handleSubmit(onPressAdd)}>
-              <Text style={styles.buttonAddText}>{t('done')}</Text>
-            </TouchableOpacity>
-          </View>
+              <Space.V px={24}/>
+              <ButtonFilled
+                title={t('done')}
+                mode={ButtonModes.Positive}
+                onPress={handleSubmit(onPressAdd)}
+              />
+            </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
   );
 });
-//todo переделать под страницу с прозрачным фоном...
 const fieldStyle: ViewStyle = {
   backgroundColor: '#EBF6FA',
   borderWidth: 2,
@@ -197,14 +182,17 @@ const fieldTextStyle: TextStyle = {
   color: '#41C3CD',
   fontFamily: Fonts.bold,
 };
+const flex = {
+  '.40': {flex: 0.40},
+  '.45': {flex: 0.45},
+};
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 28,
@@ -218,6 +206,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5
+  },
+  scrollViewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center'
   },
   picker: {
     ...fieldStyle,
@@ -235,21 +228,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
   buttonsWrapper: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignSelf: 'flex-end'
-  },
-  buttonAddText: {
-    color: '#41C3CD',
-    fontSize: 18,
-    lineHeight: 21,
-    fontFamily: Fonts.regular,
-  },
-  buttonCancelText: {
-    color: '#BAC0CF',
-    fontSize: 18,
-    lineHeight: 21,
-    fontFamily: Fonts.regular,
+    alignSelf: 'stretch',
   },
   validationErr: {
     color: 'red',
