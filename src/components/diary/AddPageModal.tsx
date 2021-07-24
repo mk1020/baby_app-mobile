@@ -76,6 +76,7 @@ export const AddPageModal = memo((props: TProps) => {
       useNativeDriverForBackdrop={true}
       useNativeDriver={true}
       style={{margin: 0}}
+      //propagateSwipe
     >
       <View style={styles.centeredView}>
         <View style={[styles.modalView, getValues().selectedChapter === 0 ? flex['.45'] : flex['.40']]}>
@@ -208,7 +209,6 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   scrollViewContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignSelf: 'center'
   },

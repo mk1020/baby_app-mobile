@@ -29,12 +29,8 @@ export const Header = memo((props: TProps) => {
         <Text style={stylesHeader.title} numberOfLines={3} ellipsizeMode={'tail'}>{title}</Text>
       </View>
       <View style={stylesHeader.rightButtons}>
-        <View style={stylesHeader.addIconWrapper}>
-          <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
-        </View>
-        <HeaderButton icon={Images.diary}/>
+        <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
       </View>
-
       <ConditionView showIf={modalVisible}>
         <AddPageModal onRequestClose={onModalClose} diaryId={diaryId} chapters={chapters}/>
       </ConditionView>
@@ -45,7 +41,7 @@ export const Header = memo((props: TProps) => {
 export const stylesHeader = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 16,
     marginTop: 16,

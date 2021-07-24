@@ -1,5 +1,5 @@
 import {ChangesByEvents, PullResponse} from './sync';
-import {ChaptersTableName, NotesTableName, PagesTableName} from './schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
 import {INote, INoteJS} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -150,4 +150,18 @@ export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any
       note.bookmarked = bookmarked;
     });
   });
+};
+
+export const createDiaryIfNotExist = async (db: Database, title: string) => {
+  const diary = db?.get(DiaryTableName);
+  const diaryCount = await diary.query().fetchCount();
+  if (diaryCount === 0) {
+    await db?.action(async () => {
+      await diary?.create((diary: any) => {
+        diary.userId = 27;
+        diary.name = title;
+        diary.isCurrent = true;
+      });
+    });
+  }
 };

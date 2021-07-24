@@ -43,16 +43,7 @@ export const Settings_ = memo((props: TProps) => {
     const allPosts = await diaryCollection?.query().fetch();
     console.log(allPosts);
   };
-  const createDiary = async () => {
-    const diaryCollection = database?.get(DiaryTableName);
-    await database?.action(async () => {
-      await diaryCollection?.create((diary: any) => {
-        diary.userId = 27;
-        diary.name = 'Test дневник 3';
-        diary.isCurrent = true;
-      });
-    });
-  };
+
   return (
     <View>
       <Text>text text</Text>
@@ -62,9 +53,6 @@ export const Settings_ = memo((props: TProps) => {
 
       <TouchableOpacity onPress={resetDB} style={styles.sign}>
         <Text>RESET DB</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={createDiary} style={styles.sign}>
-        <Text>CREATE DIARY</Text>
       </TouchableOpacity>
     </View>
   );

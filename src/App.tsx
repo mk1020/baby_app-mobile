@@ -1,18 +1,17 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect, useLayoutEffect, useState} from 'react';
 import {Platform, UIManager, useColorScheme} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import './common/localization/localization';
-import {storeData} from './common/assistant/asyncStorage';
+import {useDispatch} from 'react-redux';
 import {InitialState, NavigationState} from '@react-navigation/routers';
-import {RootStoreType} from './redux/rootReducer';
 import {NavContainer} from './navigation/NavRoot';
 import {ColorSchemes, TColorScheme} from './redux/types';
-import {googleOAuthClientId, PERSISTENCE_NAV_KEY} from './common/consts';
+import {googleOAuthClientId} from './common/consts';
 import {Spinner} from './common/components/Spinner';
-import {store} from './redux/store';
-import {setColorScheme, setLoadingAppStatus} from './redux/appSlice';
+import {setColorScheme} from './redux/appSlice';
 import {restoreNavState} from './navigation/utils';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {createDiaryIfNotExist} from './model/assist';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {useTranslation} from 'react-i18next';
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -32,6 +31,8 @@ export const App = memo((props: TProps) => {
 
   const dispatch = useDispatch();
   const scheme = useColorScheme();
+  const db = useDatabase();
+  const {t} = useTranslation();
 
   useEffect(() => {
     const restoreNav = async () => {
@@ -43,6 +44,10 @@ export const App = memo((props: TProps) => {
     GoogleSignin.configure({
       webClientId: googleOAuthClientId
     });
+  }, []);
+
+  useEffect(() => {
+    createDiaryIfNotExist(db, t('diaryTitle'));
   }, []);
 
   useEffect(() => {
