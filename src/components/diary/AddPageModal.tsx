@@ -13,6 +13,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {ChaptersTableName} from '../../model/schema';
 import {createPage, createPageAndChapter} from '../../model/assist';
 import {ButtonFilled, ButtonModes} from '../../common/components/ButtonFilled';
+import {ModalDown} from '../../common/components/ModalDown';
 
 type TProps = {
   onRequestClose: ()=> void
@@ -28,7 +29,7 @@ export interface IFormCretePage {
 
 
 export const AddPageModal = memo((props: TProps) => {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
   const {onRequestClose, chapters = [], diaryId} = props;
 
   const defaultItemsChapters = [
@@ -48,9 +49,6 @@ export const AddPageModal = memo((props: TProps) => {
   const [openChapterPicker, setOpenChapterPicker] = useState(false);
   const [chapterItems, setChapterItems] = useState([...defaultItemsChapters, ...chaptersPikerItems]);
 
-  //const [openPageTypePicker, setOpenPageTypePicker] = useState(false);
-  //const [pageTypeItems, setPageTypeItems] = useState(getItemsPageType(t));
-
   const database = useDatabase();
 
   const onPressAdd = async (data: UnpackNestedValue<IFormCretePage>) => {
@@ -69,75 +67,49 @@ export const AddPageModal = memo((props: TProps) => {
   };
 
   return (
-    <Modal
-      isVisible={true}
+    <ModalDown
       onBackdropPress={onRequestClose}
       onBackButtonPress={onRequestClose}
-      useNativeDriverForBackdrop={true}
-      useNativeDriver={true}
-      style={{margin: 0}}
-      //propagateSwipe
+      flexHeight={getValues().selectedChapter === 0 ? flex['.45'] : flex['.40']}
+      isVisible={true}
     >
-      <View style={styles.centeredView}>
-        <View style={[styles.modalView, getValues().selectedChapter === 0 ? flex['.45'] : flex['.40']]}>
-          <ScrollView
-            contentContainerStyle={styles.scrollViewContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <Controller
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <DropDownPicker
-                  open={openChapterPicker}
-                  value={value}
-                  items={chapterItems}
-                  setOpen={setOpenChapterPicker}
-                  setValue={callback => onChange(callback(value))}
-                  setItems={setChapterItems}
-                  style={styles.picker}
-                  textStyle={styles.pickerTextStyle}
-                  // dropDownDirection={'TOP'}
-                  listMode={'SCROLLVIEW'}
-                  scrollViewProps={{showsVerticalScrollIndicator: false}}
-                  modalProps={{
-                    animationType: 'fade',
-                  }}
-                />
-              )}
-              name="selectedChapter"
-              rules={{required: false}}
-              defaultValue={defaultItemsChapters[1].value}
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <Controller
+          control={control}
+          render={({field: {onChange, onBlur, value}}) => (
+            <DropDownPicker
+              open={openChapterPicker}
+              value={value}
+              items={chapterItems}
+              setOpen={setOpenChapterPicker}
+              setValue={callback => onChange(callback(value))}
+              setItems={setChapterItems}
+              style={styles.picker}
+              textStyle={styles.pickerTextStyle}
+              // dropDownDirection={'TOP'}
+              listMode={'SCROLLVIEW'}
+              scrollViewProps={{showsVerticalScrollIndicator: false}}
+              modalProps={{
+                animationType: 'fade',
+              }}
             />
-            <Space.V px={16} />
-            <ConditionView showIf={getValues().selectedChapter === 0}>
-              <>
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
-                      <TextInput
-                        placeholder={'Название главы'}
-                        onChangeText={value => onChange(value)}
-                        value={value}
-                        style={styles.input}
-                        placeholderTextColor={'#41C3CD'}
-                      />
-                    </View>
-                  )}
-                  name="newChapter"
-                  rules={{required: true, pattern: inputsRegex}}
-                  defaultValue=""
-                />
-                <Space.V px={16} />
-              </>
-            </ConditionView>
-
+          )}
+          name="selectedChapter"
+          rules={{required: false}}
+          defaultValue={defaultItemsChapters[1].value}
+        />
+        <Space.V px={16} />
+        <ConditionView showIf={getValues().selectedChapter === 0}>
+          <>
             <Controller
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
+                <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
                   <TextInput
-                    placeholder={'Название страницы'}
+                    placeholder={'Название главы'}
                     onChangeText={value => onChange(value)}
                     value={value}
                     style={styles.input}
@@ -145,28 +117,47 @@ export const AddPageModal = memo((props: TProps) => {
                   />
                 </View>
               )}
-              name="pageName"
+              name="newChapter"
               rules={{required: true, pattern: inputsRegex}}
               defaultValue=""
             />
-            <Space.V px={24}/>
-            <View style={styles.buttonsWrapper}>
-              <ButtonFilled
-                title={t('cancel')}
-                mode={ButtonModes.Negative}
-                onPress={onRequestClose}
-              />
-              <Space.V px={24}/>
-              <ButtonFilled
-                title={t('done')}
-                mode={ButtonModes.Positive}
-                onPress={handleSubmit(onPressAdd)}
+            <Space.V px={16} />
+          </>
+        </ConditionView>
+
+        <Controller
+          control={control}
+          render={({field: {onChange, onBlur, value}}) => (
+            <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
+              <TextInput
+                placeholder={'Название страницы'}
+                onChangeText={value => onChange(value)}
+                value={value}
+                style={styles.input}
+                placeholderTextColor={'#41C3CD'}
               />
             </View>
-          </ScrollView>
+          )}
+          name="pageName"
+          rules={{required: true, pattern: inputsRegex}}
+          defaultValue=""
+        />
+        <Space.V px={24}/>
+        <View style={styles.buttonsWrapper}>
+          <ButtonFilled
+            title={t('cancel')}
+            mode={ButtonModes.Negative}
+            onPress={onRequestClose}
+          />
+          <Space.V px={24}/>
+          <ButtonFilled
+            title={t('done')}
+            mode={ButtonModes.Positive}
+            onPress={handleSubmit(onPressAdd)}
+          />
         </View>
-      </View>
-    </Modal>
+      </ScrollView>
+    </ModalDown>
   );
 });
 const fieldStyle: ViewStyle = {
@@ -184,33 +175,14 @@ const fieldTextStyle: TextStyle = {
   fontFamily: Fonts.bold,
 };
 const flex = {
-  '.40': {flex: 0.40},
-  '.45': {flex: 0.45},
+  '.40': 0.40,
+  '.45': 0.47,
 };
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 28,
-    paddingBottom: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
   scrollViewContainer: {
     justifyContent: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    alignItems: 'center'
   },
   picker: {
     ...fieldStyle,
@@ -229,6 +201,7 @@ const styles = StyleSheet.create({
   },
   buttonsWrapper: {
     alignSelf: 'stretch',
+    paddingBottom: 3
   },
   validationErr: {
     color: 'red',

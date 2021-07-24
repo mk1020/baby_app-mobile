@@ -11,4 +11,5 @@ export const Images = {
   delete: <ImageURISource>require('../../assets/images/delete.png'),
   bookmarkFilled: <ImageURISource>require('../../assets/images/outline_bookmark_black.png'),
   bookmarkBorder: <ImageURISource>require('../../assets/images/outline_bookmark_border_black.png'),
+  edit: <ImageURISource>require('../../assets/images/outline_edit_black.png'),
 };

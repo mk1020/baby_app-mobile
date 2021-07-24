@@ -1,10 +1,9 @@
-import {Alert, Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import React, {Dispatch, memo, SetStateAction, useState} from 'react';
+import {Alert, StyleSheet, Text, View} from 'react-native';
+import React, {Dispatch, memo, SetStateAction} from 'react';
 import {Images} from '../../../../common/imageResources';
 import {Fonts} from '../../../../common/phone/fonts';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
 import {ConditionView} from '../../../../common/components/ConditionView';
-import {AddPageModal} from '../../AddPageModal';
 import {useNavigation} from '@react-navigation/native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ImagePickerResponse} from 'react-native-image-picker/src/types';

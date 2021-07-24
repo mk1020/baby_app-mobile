@@ -10,9 +10,10 @@ type TProps = {
    name: string
    pages: any[]
    onPressPage: ()=> void
+   onLongPress?: ()=> void
 }
 export const ChapterItem = memo((props: TProps) => {
-  const {chapterNum, name, pages, onPressPage} = props;
+  const {chapterNum, name, pages, onPressPage, onLongPress} = props;
   const [isOpen, setIsOpen] = useState(false);
 
   const onPress = () => {
@@ -28,7 +29,7 @@ export const ChapterItem = memo((props: TProps) => {
 
   return (
     <>
-      <TouchableHighlight onPress={onPress} underlayColor={'#E5E5E5'}>
+      <TouchableHighlight onPress={onPress} onLongPress={onLongPress} delayLongPress={150} underlayColor={'#E5E5E5'}>
         <View style={styles.containerParent}>
           <Text
             numberOfLines={1}

@@ -46,8 +46,11 @@ export const AuthorizedScreens = (): JSX.Element => {
             <HeaderButton icon={Images.add} onPress={() => {
               navigation.navigate(NavigationPages.NotePage, {
                 mode: NotePageMode.Create,
-                pageId: route.params?.pageData?.id,
-                diaryId: route.params?.pageData?.diaryId
+                relations: {
+                  pageId: route.params?.pageData?.id,
+                  diaryId: route.params?.pageData?.diaryId,
+                  chapterId: route.params?.pageData?.chapterId,
+                }
               });
             }}
             />

@@ -54,6 +54,8 @@ export const ru = {
     deleteNoteMessage: 'Вы действительно хотите удалить запись?',
     ok: 'ОК',
     bookmarks: 'Закладки',
-    diaryTitle: 'Книга моей жизни'
+    diaryTitle: 'Книга моей жизни',
+    edit: 'Редактировать',
+    delete: 'Удалить'
   },
 };

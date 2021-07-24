@@ -30,7 +30,7 @@ type TProps = {
 }
 export const NotePage = memo((props: TProps) => {
   const {route} = props;
-  const {noteData, imagesUri = [], mode, pageId, diaryId} = route.params;
+  const {noteData, imagesUri = [], mode, relations} = route.params;
 
   const {t, i18n} = useTranslation();
   const database = useDatabase();
@@ -70,8 +70,8 @@ export const NotePage = memo((props: TProps) => {
         ...data,
         photo: data.imagesUri?.join(';'),
       };
-      if (mode === NotePageMode.Create && pageId) {
-        await createNoteDB(database, _noteData, pageId, diaryId);
+      if (mode === NotePageMode.Create) {
+        await createNoteDB(database, _noteData, relations);
         navigation.goBack();
       } else {
         await updateNoteDB(database, _noteData);

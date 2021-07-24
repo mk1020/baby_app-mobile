@@ -1,7 +1,8 @@
 import {Model} from '@nozbe/watermelondb';
 import {Associations} from '@nozbe/watermelondb/Model';
-import {action, children, field, relation} from '@nozbe/watermelondb/decorators';
+import {children, field, relation} from '@nozbe/watermelondb/decorators';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
+import {writer} from '@nozbe/watermelondb/decorators';
 
 export class Diary extends Model {
   static table = DiaryTableName
@@ -19,7 +20,7 @@ export class Diary extends Model {
   @children(ChaptersTableName) chapter: any
   @children(NotesTableName) notes: any
 
-  @action async changeIsCurrentDiary(isCurrent: boolean) {
+  @writer async changeIsCurrentDiary(isCurrent: boolean) {
     await this.update(diary => {
       diary['isCurrent'] = isCurrent;
     });
@@ -30,6 +31,7 @@ export class Chapter extends Model {
   static table = ChaptersTableName
   static associations: Associations = {
     [PagesTableName]: {type: 'has_many', foreignKey: 'chapter_id'},
+    [NotesTableName]: {type: 'has_many', foreignKey: 'chapter_id'},
     [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
   }
 
@@ -40,14 +42,24 @@ export class Chapter extends Model {
   @field('updated_at') updatedAt: number | undefined
 
   @children(PagesTableName) pages: any
+  @children(NotesTableName) notes: any
   @relation(DiaryTableName, 'diary_id') diary: any
+
+  async markAsDeleted() {
+    await this.pages.destroyAllPermanently();
+    await this.notes.destroyAllPermanently();
+    await super.markAsDeleted();
+  }
+
+  @writer async delete() {
+    await this.markAsDeleted();
+  }
 }
 
 export class Page extends Model {
   static table = PagesTableName
   static associations: Associations = {
     [NotesTableName]: {type: 'has_many', foreignKey: 'page_id'},
-    //[NotesTableName]: {type: 'has_many', foreignKey: 'page_type'},
     [ChaptersTableName]: {type: 'belongs_to', key: 'chapter_id'},
     [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
   }
@@ -62,6 +74,15 @@ export class Page extends Model {
   @children(NotesTableName) notes: any
   @relation(ChaptersTableName, 'chapter_id') chapter: any
   @relation(DiaryTableName, 'diary_id') diary: any
+
+  async markAsDeleted() {
+    await this.notes.destroyAllPermanently();
+    await super.markAsDeleted();
+  }
+
+  @writer async delete() {
+    await this.markAsDeleted();
+  }
 }
 
 export class Note extends Model {
@@ -69,30 +90,25 @@ export class Note extends Model {
   static associations: Associations = {
     [PagesTableName]: {type: 'belongs_to', key: 'page_id'},
     [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
-    //[PagesTableName]: {type: 'belongs_to', key: 'page_type'},
+    [ChaptersTableName]: {type: 'belongs_to', key: 'chapter_id'},
   }
 
   @field('page_id') pageId: string | undefined
   @field('diary_id') diaryId: string | undefined
-  //@field('page_type') noteType: number | undefined
+  @field('chapter_id') chapterId: string | undefined
   @field('title') title: string | undefined
   @field('bookmarked') bookmarked: boolean | undefined
   @field('note') note: string | undefined
   @field('photo') photo: string | undefined
-  // @field('food') food: string | undefined
-  // @field('event_date_start') eventDateStart: string | undefined
-  // @field('event_date_end') eventDateEnd: string | undefined
-  //@field('volume') volume: string | undefined
-  // @field('temp') temp: string | undefined
   @field('tags') tags: string | undefined
-  // @field('pressure') pressure: string | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
 
   @relation(PagesTableName, 'page_id') page: any
   @relation(DiaryTableName, 'diary_id') diary: any
+  @relation(ChaptersTableName, 'chapter_id') chapter: any
 
-  @action async deleteNote() {
+  @writer async deleteNote() {
     await this.markAsDeleted();
   }
 }

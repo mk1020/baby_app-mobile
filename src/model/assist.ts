@@ -1,9 +1,10 @@
-import {ChangesByEvents, PullResponse} from './sync';
+import {PullResponse} from './sync';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
 import {INote, INoteJS} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
 import {Database, Q} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
+import {NoteRelations} from '../navigation/types';
 
 enum ChangesEvents {
   created='created',
@@ -19,16 +20,9 @@ const noteAdapter = (note: INote) => {
     diary_id: Number(note.diary_id),
     created_at: new Date(note.created_at).getTime(),
     updated_at: new Date(note.updated_at).getTime(),
-    //note_type: note.note_type,
-    // date_event_start: note.date_event_start || null,
-    // date_event_end: note.date_event_end || null,
     photo: note.photo || null,
-    //food: note.food || null,
-    //volume: note.volume || null,
     note: note.note || null,
-    //temp: note.temp || null,
     tags: note.tags || null,
-    //pressure: note.pressure || null
   };
 };
 type AdapterRes = {
@@ -68,9 +62,9 @@ export const pulledNotesAdapter = (res: PullResponse): AdapterRes => {
 
 
 export const createPageAndChapter = async  (database: Database, data: IFormCretePage, diaryId: string, chapterNumber: number) => {
-  const chapters = database?.get(ChaptersTableName);
-  const pages = database?.get(PagesTableName);
-  await database.action(async () => {
+  await database.write(async () => {
+    const chapters = database?.get(ChaptersTableName);
+    const pages = database?.get(PagesTableName);
 
     const prepareCreateChapter = chapters.prepareCreate((page: any) => {
       page.diaryId = diaryId;
@@ -91,8 +85,8 @@ export const createPageAndChapter = async  (database: Database, data: IFormCrete
 };
 
 export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string, chapterId?: string) => {
-  const pages = database?.get(PagesTableName);
-  await database.action(async () => {
+  await database.write(async () => {
+    const pages = database?.get(PagesTableName);
     await pages.create((page: any) => {
       page.diaryId = diaryId;
       page.name = data.pageName;
@@ -101,12 +95,13 @@ export const createPage = async  (database: Database, data: IFormCretePage, diar
   });
 };
 
-export const createNoteDB = async (database: Database, data: Partial<INoteJS>, pageId: string, diaryId: string) => {
-  const notes = database?.get(NotesTableName);
-  await database.action(async () => {
+export const createNoteDB = async (db: Database, data: Partial<INoteJS>, relations: NoteRelations) => {
+  await db.write(async () => {
+    const notes = db?.get(NotesTableName);
     await notes.create((note: any) => {
-      note.diaryId = diaryId;
-      note.pageId = pageId;
+      note.diaryId = relations.diaryId;
+      note.chapterId = relations.chapterId;
+      note.pageId = relations.pageId;
       note.title = data?.title;
       note.bookmarked = data?.bookmarked;
       note.note = data?.note;
@@ -115,11 +110,11 @@ export const createNoteDB = async (database: Database, data: Partial<INoteJS>, p
   });
 };
 
-export const updateNoteDB = async (database: Database, data?: Partial<INoteJS>) => {
-  const notes = database?.get(NotesTableName);
-  const targetNote = await notes.find(data?.id || '');
+export const updateNoteDB = async (db: Database, data?: Partial<INoteJS>) => {
+  await db.write(async () => {
+    const notes = db?.get(NotesTableName);
+    const targetNote = await notes.find(data?.id || '');
 
-  await database.action(async () => {
     await targetNote.update((note: any) => {
       note.title = data?.title;
       note.bookmarked = data?.bookmarked;
@@ -137,15 +132,17 @@ export const getNotesByPageDB = async (pageId: string, db: Database) => {
 };
 
 export const deleteNote = async (id: string, db: any) => {
-  const notes = db.get(NotesTableName);
-  const targetNote = await notes.find(id || '');
-  await targetNote.deleteNote();
+  await db.write(async () => {
+    const notes = db.get(NotesTableName);
+    const targetNote = await notes.find(id || '');
+    await targetNote.deleteNote();
+  });
 };
 
 export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any) => {
-  const notes = db.get(NotesTableName);
-  const targetNote = await notes.find(id || '');
-  await db.action(async () => {
+  await db.write(async () => {
+    const notes = db.get(NotesTableName);
+    const targetNote = await notes.find(id || '');
     await targetNote.update((note: any) => {
       note.bookmarked = bookmarked;
     });
@@ -153,15 +150,23 @@ export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any
 };
 
 export const createDiaryIfNotExist = async (db: Database, title: string) => {
-  const diary = db?.get(DiaryTableName);
-  const diaryCount = await diary.query().fetchCount();
-  if (diaryCount === 0) {
-    await db?.action(async () => {
+  await db.write(async () => {
+    const diary = db?.get(DiaryTableName);
+    const diaryCount = await diary.query().fetchCount();
+    if (diaryCount === 0) {
       await diary?.create((diary: any) => {
         diary.userId = 27;
         diary.name = title;
         diary.isCurrent = true;
       });
-    });
-  }
+    }
+  });
+};
+
+export const deletePage = async (id: string, db: any) => {
+  await db.get(PagesTableName).find(id || '').delete();
+};
+
+export const deleteChapter = async (chapterId: string, db: any) => {
+  await db.get(ChaptersTableName).find(chapterId || '').delete();
 };

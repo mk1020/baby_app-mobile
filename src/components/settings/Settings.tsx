@@ -6,6 +6,8 @@ import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {signOut} from '../../redux/appSlice';
 import {ChaptersTableName, DiaryTableName, PagesTableName} from '../../model/schema';
+import {getNotesByPageDB} from '../../model/assist';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
 
 type TProps = {
   database?: Database
@@ -16,6 +18,7 @@ type TProps = {
 export const Settings_ = memo((props: TProps) => {
   const {diaryId, database, chapters, pages} = props;
   const dispatch = useDispatch();
+  const db = useDatabase();
 
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
   const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
@@ -53,6 +56,10 @@ export const Settings_ = memo((props: TProps) => {
 
       <TouchableOpacity onPress={resetDB} style={styles.sign}>
         <Text>RESET DB</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={async () => console.log(await getNotesByPageDB('g8kpu5cly1poqyfs', db))} style={styles.sign}>
+        <Text>GET notes by page</Text>
       </TouchableOpacity>
     </View>
   );

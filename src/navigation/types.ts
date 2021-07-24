@@ -12,6 +12,11 @@ export type PageType = {
   createdAt: number
   updatedAt: number
 }
+export type NoteRelations = {
+  diaryId: string,
+  chapterId: string,
+  pageId: string,
+}
 
 //NavigatorScreenParams<AuthDiaryStackScreenList>
 
@@ -28,8 +33,7 @@ export type RootStackList = {
     imagesUri: string[],
     mode: NotePageMode,
     noteData?: INoteJS,
-    pageId: string,
-    diaryId: string,
+    relations: NoteRelations
   },
   [NavigationPages.ImagesFullScreenEdit]: {
     counter: {

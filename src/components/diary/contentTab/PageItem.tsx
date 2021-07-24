@@ -6,14 +6,15 @@ import {Fonts} from '../../../common/phone/fonts';
 type TProps = {
   name: string
   onPress: ()=> void
+  onLongPress?: ()=> void
   asItemChapter?: boolean
   withSeparator?: boolean
 }
 export const PageItem = memo((props: TProps) => {
-  const {name, onPress, asItemChapter, withSeparator = true} = props;
+  const {name, onPress, asItemChapter, withSeparator = true, onLongPress} = props;
 
   return (
-    <TouchableHighlight onPress={onPress} underlayColor={'#E5E5E5'}>
+    <TouchableHighlight onPress={onPress} onLongPress={onLongPress} underlayColor={'#E5E5E5'} delayLongPress={150}>
       <View style={[withSeparator && styles.separator]}>
         <View style={[styles.container, asItemChapter && styles.marginLeft]}>
           <Image style={styles.pageIcon} source={Images.page} />
