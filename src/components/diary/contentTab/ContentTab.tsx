@@ -12,10 +12,10 @@ import {NavigationPages} from '../../../navigation/pages';
 import {ModalDown} from '../../../common/components/ModalDown';
 import {ButtonIconVert} from '../../../common/components/ButtonIconVert';
 import {useTranslation} from 'react-i18next';
-import {Space} from '../../../common/components/Space';
 import {Images} from '../../../common/imageResources';
-import {deleteChapter, deleteNotesByPage, deletePage} from '../../../model/assist';
+import {deleteChapter, deletePage} from '../../../model/assist';
 import {database} from '../../../AppContainer';
+import {deleteAlert} from '../../../common/components/DeleteAlert';
 
 type TProps = {
   database?: Database
@@ -32,6 +32,7 @@ export const ContentTab_ = memo((props: TProps) => {
   const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
   const [showMenu, setShowMenu] = useState(false);
   const [longPressItem, setLongPressItem] = useState<any>();
+  const [editableItemId, setEditableItemId] = useState('');
 
   useEffect(() => {
     const chapters_ = chapters?.filter(chapter => chapter.diaryId === diaryId);
@@ -47,12 +48,10 @@ export const ContentTab_ = memo((props: TProps) => {
       id: item?.id,
       name: item?.name,
       diaryId: item?.diaryId,
-      pageType: item?.pageType,
       chapterId: item?.chapterId,
       createdAt: item?.createdAt,
       updatedAt: item?.updatedAt
     };
-
     navigation.navigate(NavigationPages.DiaryPage, {pageData: pageDataAdapted});
   };
 
@@ -63,6 +62,16 @@ export const ContentTab_ = memo((props: TProps) => {
   const onRequestClose = () => {
     setShowMenu(false);
   };
+
+  const onPressEdit = () => {
+    setShowMenu(false);
+    setEditableItemId(longPressItem?.id);
+  };
+
+  const onFinalEdit = () => {
+    setEditableItemId('');
+    setLongPressItem(null);
+  };
   const onPressDelete = () => {
     try {
       if (longPressItem?.table === PagesTableName) {
@@ -72,33 +81,42 @@ export const ContentTab_ = memo((props: TProps) => {
         deleteChapter(longPressItem?.id, database);
       }
       setShowMenu(false);
-      console.log(longPressItem);
     } catch (e) {
       console.log(e);
     }
   };
 
   const renderItem = ({item}: any) => {
-    if (item?.table === PagesTableName && item?.chapterId !== '') return null;
+    if (item?.table === PagesTableName && item?.chapterId) return null;
     const currentChapterId = item?.id;
 
-    return (
-      item?.table === PagesTableName ? (
-        <PageItem
-          name={item?.name}
-          onPress={() => onPressPage(item)}
-          onLongPress={() => onLongPressItem(item)}
-        />
-      ) : (
-        <ChapterItem
-          chapterNum={item?.number}
-          name={item?.name}
-          pages={currentDiaryPages.filter(page => page.chapterId === currentChapterId)}
-          onPressPage={() => onPressPage(item)}
-          onLongPress={() => onLongPressItem(item)}
-        />
-      )
+    switch (item?.table) {
+    case PagesTableName: return (
+      <PageItem
+        name={item?.name}
+        id={item.id}
+        onPress={() => onPressPage(item)}
+        onLongPress={() => onLongPressItem(item)}
+        editable={item.id === editableItemId}
+        onFinalEdit={onFinalEdit}
+      />
     );
+    case ChaptersTableName: return (
+      <ChapterItem
+        id={item.id}
+        chapterNum={item?.number}
+        name={item?.name}
+        pages={currentDiaryPages.filter(page => page.chapterId === currentChapterId)}
+        onPressPage={page => onPressPage(page)}
+        onLongPress={() => onLongPressItem(item)}
+        onLongPressPage={page => onLongPressItem(page)}
+        editable={item.id === editableItemId}
+        onFinalEdit={onFinalEdit}
+        editablePageId={longPressItem?.table === PagesTableName ? editableItemId : null}
+      />
+    );
+    default: return null;
+    }
   };
 
   const flatListData = useMemo(() => [...currentDiaryPages, ...currentDiaryChapters], [currentDiaryChapters, currentDiaryPages]);
@@ -119,12 +137,12 @@ export const ContentTab_ = memo((props: TProps) => {
           <ButtonIconVert
             title={t('edit')}
             image={Images.edit}
-            onPress={onPressDelete}
+            onPress={onPressEdit}
           />
           <ButtonIconVert
             title={t('delete')}
             image={Images.delete}
-            onPress={onPressDelete}
+            onPress={() => deleteAlert(t, onPressDelete)}
           />
         </View>
       </ModalDown>
@@ -143,7 +161,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    flex: 1,
   },
   sign: {
     width: 150,

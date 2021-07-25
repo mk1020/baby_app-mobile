@@ -6,7 +6,6 @@ import {INoteJS} from '../model/types';
 export type PageType = {
   id: string
   name: string
-  pageType: number
   chapterId: string
   diaryId: string
   createdAt: number

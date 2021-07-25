@@ -29,7 +29,6 @@ export const NoteCard = memo((props: TProps) => {
   const navigation = useNavigation();
 
   const [slideIndex, changeSlideIndex] = useState(0);
-  const [bookmarked, setBookmarked] = useState(false);
   const formErrors = formControl.formStateRef?.current?.errors;
 
   const onPressImage = () => {
@@ -45,12 +44,6 @@ export const NoteCard = memo((props: TProps) => {
     contentCSSText: `font-size: 18px; ${generateAssetsFontCss(Fonts.regular, 'ttf')}`
   };
 
-  const onPressBookmark = () => {
-    setBookmarked(!bookmarked);
-    if (!bookmarked === true) {
-
-    }
-  };
   return (
     <View style={styles.container}>
       <View style={styles.topBlock}>

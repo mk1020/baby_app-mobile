@@ -11,6 +11,7 @@ import {requestSavePhotoPermission} from '../../assist';
 import {DropdownMenu} from '../../../../common/components/DropdownMenu';
 import {useTranslation} from 'react-i18next';
 import {NotePageMode} from './NotePage';
+import {deleteAlert} from '../../../../common/components/DeleteAlert';
 
 
 type TProps = {
@@ -72,21 +73,6 @@ export const NoteHeader = memo((props: TProps) => {
     }
   ];
 
-  const deleteAlert = () =>
-    Alert.alert(
-      t('deleteNoteTitle'),
-      t('deleteNoteMessage'),
-      [
-        {
-          text: t('cancel'),
-          style: 'cancel',
-        },
-        {text: t('ok'), onPress: onPressDelete}
-      ], {
-        cancelable: true,
-      }
-    );
-
   return (
     <View style={stylesHeader.container}>
       <HeaderButton icon={Images.arrowBack} onPress={onPressBack}/>
@@ -97,7 +83,7 @@ export const NoteHeader = memo((props: TProps) => {
         <HeaderButton icon={Images.photo} onPress={onPressPhoto}/>
         <ConditionView showIf={mode === NotePageMode.Edit}>
           <View style={stylesHeader.deleteIconWrapper}>
-            <HeaderButton icon={Images.delete} onPress={deleteAlert}/>
+            <HeaderButton icon={Images.delete} onPress={() => deleteAlert(t, onPressDelete)}/>
           </View>
         </ConditionView>
       </View>

@@ -27,7 +27,6 @@ const adapter = new SQLiteAdapter({
 export const database = new Database({
   adapter,
   modelClasses: [Diary, Chapter, Page, Note],
-  actionsEnabled: true,
 });
 
 (function setup() {

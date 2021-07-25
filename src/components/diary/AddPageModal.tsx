@@ -58,7 +58,7 @@ export const AddPageModal = memo((props: TProps) => {
       if (data.selectedChapter === 0) { // 0 - значение стандартного элемента в выпадающем списке. Означает "Создать главу"
         createPageAndChapter(database, data, diaryId, chaptersCount + 1).then();
       } else {
-        createPage(database, data, diaryId, typeof data.selectedChapter === 'string' ? data.selectedChapter : '').then();
+        createPage(database, data, diaryId, typeof data.selectedChapter === 'string' ? data.selectedChapter : null).then();
       }
 
     } catch (e) {
@@ -89,7 +89,7 @@ export const AddPageModal = memo((props: TProps) => {
               setItems={setChapterItems}
               style={styles.picker}
               textStyle={styles.pickerTextStyle}
-              // dropDownDirection={'TOP'}
+              dropDownDirection={'BOTTOM'}
               listMode={'SCROLLVIEW'}
               scrollViewProps={{showsVerticalScrollIndicator: false}}
               modalProps={{
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   scrollViewContainer: {
     justifyContent: 'center',
     alignSelf: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   picker: {
     ...fieldStyle,

@@ -54,6 +54,11 @@ export class Chapter extends Model {
   @writer async delete() {
     await this.markAsDeleted();
   }
+  @writer async updateName(name: string) {
+    await this.update(chapter => {
+      chapter.name = name;
+    });
+  }
 }
 
 export class Page extends Model {
@@ -66,7 +71,6 @@ export class Page extends Model {
 
   @field('diary_id') diaryId: string | undefined
   @field('chapter_id') chapterId: string | undefined
-  //@field('page_type') pageType: string | undefined
   @field('name') name: string | undefined
   @field('created_at') createdAt: number | undefined
   @field('updated_at') updatedAt: number | undefined
@@ -82,6 +86,12 @@ export class Page extends Model {
 
   @writer async delete() {
     await this.markAsDeleted();
+  }
+
+  @writer async updateName(name: string) {
+    await this.update(page => {
+      page.name = name;
+    });
   }
 }
 

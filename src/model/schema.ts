@@ -21,7 +21,7 @@ export const babyAppSchema = appSchema({
     tableSchema({
       name: ChaptersTableName,
       columns: [
-        {name: 'diary_id', type: 'string'},
+        {name: 'diary_id', type: 'string', isIndexed: true},
         {name: 'name', type: 'string'},
         {name: 'number', type: 'string'},
         {name: 'created_at', type: 'number'},
@@ -31,10 +31,9 @@ export const babyAppSchema = appSchema({
     tableSchema({
       name: PagesTableName,
       columns: [
-        {name: 'diary_id', type: 'string'},
-        {name: 'chapter_id', type: 'string'},
+        {name: 'diary_id', type: 'string', isIndexed: true},
+        {name: 'chapter_id', type: 'string', isIndexed: true, isOptional: true},
         {name: 'name', type: 'string'},
-        {name: 'page_type', type: 'number'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]
@@ -42,20 +41,14 @@ export const babyAppSchema = appSchema({
     tableSchema({
       name: NotesTableName,
       columns: [
-        {name: 'page_id', type: 'string'},
-        {name: 'diary_id', type: 'string'},
-        //{name: 'page_type', type: 'number'},
+        {name: 'page_id', type: 'string', isIndexed: true},
+        {name: 'diary_id', type: 'string', isIndexed: true},
+        {name: 'chapter_id', type: 'string', isIndexed: true, isOptional: true},
         {name: 'title', type: 'string'},
         {name: 'bookmarked', type: 'boolean'},
         {name: 'note', type: 'string'},
         {name: 'photo', type: 'string'},
-        // {name: 'event_date_start', type: 'number'},
-        // {name: 'event_date_end', type: 'number'},
-        // {name: 'food', type: 'string'},
-        // {name: 'volume', type: 'string'},
-        // {name: 'temp', type: 'string'},
         {name: 'tags', type: 'string'},
-        // {name: 'pressure', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]

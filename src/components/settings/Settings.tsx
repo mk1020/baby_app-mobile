@@ -5,7 +5,7 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {signOut} from '../../redux/appSlice';
-import {ChaptersTableName, DiaryTableName, PagesTableName} from '../../model/schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../model/schema';
 import {getNotesByPageDB} from '../../model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 
@@ -36,7 +36,7 @@ export const Settings_ = memo((props: TProps) => {
   };
 
   const resetDB = async () => {
-    await database?.action(async () => {
+    await database?.write(async () => {
       await database?.unsafeResetDatabase();
     });
   };
@@ -58,8 +58,14 @@ export const Settings_ = memo((props: TProps) => {
         <Text>RESET DB</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={async () => console.log(await getNotesByPageDB('g8kpu5cly1poqyfs', db))} style={styles.sign}>
-        <Text>GET notes by page</Text>
+      <TouchableOpacity onPress={async () => console.log(await db.get(NotesTableName).query().fetch())} style={styles.sign}>
+        <Text>GET notes </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={async () => console.log(await db.get(PagesTableName).query().fetch())} style={styles.sign}>
+        <Text>GET pages</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={async () => console.log(await db.get(ChaptersTableName).query().fetch())} style={styles.sign}>
+        <Text>GET chapters</Text>
       </TouchableOpacity>
     </View>
   );

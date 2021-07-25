@@ -84,13 +84,13 @@ export const createPageAndChapter = async  (database: Database, data: IFormCrete
   });
 };
 
-export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string, chapterId?: string) => {
+export const createPage = async  (database: Database, data: IFormCretePage, diaryId: string, chapterId?: string | null) => {
   await database.write(async () => {
     const pages = database?.get(PagesTableName);
     await pages.create((page: any) => {
       page.diaryId = diaryId;
       page.name = data.pageName;
-      page.chapterId = chapterId || '';
+      page.chapterId = chapterId || null;
     });
   });
 };
@@ -98,10 +98,11 @@ export const createPage = async  (database: Database, data: IFormCretePage, diar
 export const createNoteDB = async (db: Database, data: Partial<INoteJS>, relations: NoteRelations) => {
   await db.write(async () => {
     const notes = db?.get(NotesTableName);
+    console.log(notes);
     await notes.create((note: any) => {
-      note.diaryId = relations.diaryId;
-      note.chapterId = relations.chapterId;
-      note.pageId = relations.pageId;
+      note.diaryId = relations?.diaryId;
+      note.chapterId = relations?.chapterId || null;
+      note.pageId = relations?.pageId;
       note.title = data?.title;
       note.bookmarked = data?.bookmarked;
       note.note = data?.note;
@@ -163,10 +164,14 @@ export const createDiaryIfNotExist = async (db: Database, title: string) => {
   });
 };
 
-export const deletePage = async (id: string, db: any) => {
-  await db.get(PagesTableName).find(id || '').delete();
+export const deletePage = async (id: string, db: Database) => {
+  const page = await db.get(PagesTableName).find(id || '');
+  // @ts-ignore
+  await page.delete();
 };
 
-export const deleteChapter = async (chapterId: string, db: any) => {
-  await db.get(ChaptersTableName).find(chapterId || '').delete();
+export const deleteChapter = async (chapterId: string, db: Database) => {
+  const chapter = await db.get(ChaptersTableName).find(chapterId || '');
+  // @ts-ignore
+  await chapter.delete();
 };

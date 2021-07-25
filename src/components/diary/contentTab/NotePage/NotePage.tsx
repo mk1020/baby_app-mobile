@@ -1,15 +1,14 @@
 import React, {memo, useEffect, useRef, useState} from 'react';
-import {Keyboard, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, TextInput, View} from 'react-native';
 import {NoteHeader} from './NoteHeader';
 import {useTranslation} from 'react-i18next';
 import {NoteCard} from './NoteCard';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../../navigation/pages';
-import {Fonts} from '../../../../common/phone/fonts';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {INoteJS} from '../../../../model/types';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
 import {createNoteDB, deleteNote, updateNoteDB} from '../../../../model/assist';
 import {RootStackList} from '../../../../navigation/types';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
@@ -41,27 +40,15 @@ export const NotePage = memo((props: TProps) => {
     control,
     handleSubmit,
     formState: {errors},
-    setValue,
     getValues,
+    trigger
   } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
   const editorRef = useRef<RichEditor>(null);
   const {isKeyboardVisible} = useKeyboard();
-  console.log(getValues());
-
-  useEffect(() => {
-    if (imagesUri) {
-      setValue('imagesUri', imagesUri);
-    }
-  }, [imagesUri]);
 
   const onPressOutside = () => {
     setModalVisible(false);
     return false;
-  };
-
-  const onLoadImage = (imageUri: string) => {
-    const images = getValues('imagesUri');
-    setValue('imagesUri', [...images, imageUri], {shouldValidate: true});
   };
 
   const onPressDone = async (data: UnpackNestedValue<IFormNote>) => {
@@ -70,6 +57,7 @@ export const NotePage = memo((props: TProps) => {
         ...data,
         photo: data.imagesUri?.join(';'),
       };
+
       if (mode === NotePageMode.Create) {
         await createNoteDB(database, _noteData, relations);
         navigation.goBack();
@@ -111,13 +99,25 @@ export const NotePage = memo((props: TProps) => {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <NoteHeader
-            title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
-            mode={mode}
-            setModalVisible={setModalVisible}
-            modalVisible={modalVisible}
-            onLoadImage={onLoadImage}
-            onPressDelete={onPressDelete}
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <NoteHeader
+                title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
+                mode={mode}
+                setModalVisible={setModalVisible}
+                modalVisible={modalVisible}
+                onLoadImage={(imageUri: string) => {
+                  onChange([...value, imageUri]);
+                  trigger('imagesUri');
+                }}
+                onPressDelete={onPressDelete}
+              />
+            )}
+            name="imagesUri"
+            rules={{required: false}}
+            defaultValue={[]}
+
           />
           <NoteCard
             formControl={control}

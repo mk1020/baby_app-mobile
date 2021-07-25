@@ -23,7 +23,7 @@ export const ModalDown = memo((props: TProps) => {
       propagateSwipe
     >
       <View style={styles.modalContainer}>
-        <View style={[styles.modalView, {flex: flexHeight}]}>
+        <View style={[styles.modalView, {flexShrink: flexHeight}]}>
           {children}
         </View>
       </View>
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 28,
-    //paddingBottom: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
