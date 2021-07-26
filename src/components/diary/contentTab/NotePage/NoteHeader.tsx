@@ -1,5 +1,5 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
-import React, {Dispatch, memo, SetStateAction} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {Dispatch, memo, SetStateAction, useState} from 'react';
 import {Images} from '../../../../common/imageResources';
 import {Fonts} from '../../../../common/phone/fonts';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
@@ -12,26 +12,25 @@ import {DropdownMenu} from '../../../../common/components/DropdownMenu';
 import {useTranslation} from 'react-i18next';
 import {NotePageMode} from './NotePage';
 import {deleteAlert} from '../../../../common/components/DeleteAlert';
+import {ModalDownPhoto} from '../../../../common/components/ModalDownPhoto';
 
 
 type TProps = {
    title: string
    mode: NotePageMode
-   setModalVisible: Dispatch<SetStateAction<boolean>>
-   modalVisible: boolean
    onLoadImage: (imageUri: string)=> void
    onPressDelete: () => void
 }
 export const NoteHeader = memo((props: TProps) => {
-  const {title, mode, setModalVisible, modalVisible, onLoadImage, onPressDelete} = props;
+  const {title, mode, onLoadImage, onPressDelete} = props;
   const navigation = useNavigation();
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const onPressBack = () => {
     navigation.goBack();
   };
   const launchCallback = (response: ImagePickerResponse) => {
-    console.log(response.assets);
     if (response.assets?.length) {
       onLoadImage && onLoadImage(response.assets[0].uri as string);
     }
@@ -62,16 +61,9 @@ export const NoteHeader = memo((props: TProps) => {
     setModalVisible(!modalVisible);
   };
 
-  const dropdownMenuData = [
-    {
-      title: t('gallery'),
-      onPress: onPressGallery
-    },
-    {
-      title: t('camera'),
-      onPress: onPressCamera
-    }
-  ];
+  const onRequestCloseModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <View style={stylesHeader.container}>
@@ -87,9 +79,12 @@ export const NoteHeader = memo((props: TProps) => {
           </View>
         </ConditionView>
       </View>
-      <ConditionView showIf={modalVisible}>
-        <DropdownMenu renderData={dropdownMenuData}/>
-      </ConditionView>
+      <ModalDownPhoto
+        onRequestClose={onRequestCloseModal}
+        isVisible={modalVisible}
+        onPressCamera={onPressCamera}
+        onPressGallery={onPressGallery}
+      />
     </View>
   );
 });

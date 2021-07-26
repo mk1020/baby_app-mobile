@@ -14,4 +14,7 @@ export const Images = {
   edit: <ImageURISource>require('../../assets/images/outline_edit_black.png'),
   done: <ImageURISource>require('../../assets/images/outline_check_circle.png'),
   cancel: <ImageURISource>require('../../assets/images/outline_cancel.png'),
+  gallery: <ImageURISource>require('../../assets/images/outline_gallery.png'),
+  cameraFront: <ImageURISource>require('../../assets/images/outline_photo_camera_front.png'),
+  camera: <ImageURISource>require('../../assets/images/outline_photo_camera.png'),
 };

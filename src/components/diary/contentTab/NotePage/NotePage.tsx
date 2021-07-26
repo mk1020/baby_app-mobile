@@ -35,7 +35,6 @@ export const NotePage = memo((props: TProps) => {
   const database = useDatabase();
   const navigation = useNavigation();
 
-  const [modalVisible, setModalVisible] = useState(false);
   const {
     control,
     handleSubmit,
@@ -45,11 +44,6 @@ export const NotePage = memo((props: TProps) => {
   } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
   const editorRef = useRef<RichEditor>(null);
   const {isKeyboardVisible} = useKeyboard();
-
-  const onPressOutside = () => {
-    setModalVisible(false);
-    return false;
-  };
 
   const onPressDone = async (data: UnpackNestedValue<IFormNote>) => {
     try {
@@ -89,10 +83,7 @@ export const NotePage = memo((props: TProps) => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.containerWrapper}
-      onStartShouldSetResponder={onPressOutside}
-    >
+    <SafeAreaView style={styles.containerWrapper}>
       <ScrollView
         ref={scrollRef}
         contentContainerStyle={styles.container}
@@ -105,8 +96,6 @@ export const NotePage = memo((props: TProps) => {
               <NoteHeader
                 title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
                 mode={mode}
-                setModalVisible={setModalVisible}
-                modalVisible={modalVisible}
                 onLoadImage={(imageUri: string) => {
                   onChange([...value, imageUri]);
                   trigger('imagesUri');

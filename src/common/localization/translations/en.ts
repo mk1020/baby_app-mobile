@@ -54,7 +54,7 @@ export const en = {
     deleteNoteMessage: 'Are you sure you want to delete the note?',
     ok: 'OK',
     bookmarks: 'Bookmarks',
-    diaryTitle: 'Book Of My Life',
+    diaryTitle: 'My Life',
     edit: 'Edit',
     delete: 'Delete'
   },
