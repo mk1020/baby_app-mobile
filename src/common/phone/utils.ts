@@ -5,3 +5,7 @@ export const isIpad = Platform.OS === 'ios' && Platform.isPad;
 export const isDroid = Platform.OS !== 'ios';
 export const windowWidth = Dimensions.get('window').width;
 export const windowHeight = Dimensions.get('window').height;
+
+export const getPhotoUri = (photoUri: string) => {
+  return Platform.OS === 'android' ? photoUri : photoUri.replace('file://', '');
+};

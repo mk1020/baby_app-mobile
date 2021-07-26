@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
 import {Images} from '../../../../common/imageResources';
 import {RouteProp, useNavigation} from '@react-navigation/native';
@@ -7,6 +7,7 @@ import {NavigationPages} from '../../../../navigation/pages';
 import {ImagesSlider, SliderMode} from '../../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../../common/components/ConditionView';
 import {RootStackList} from '../../../../navigation/types';
+import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimple';
 
 type TProps = {
   route: RouteProp<RootStackList, NavigationPages.ImagesFullScreenEdit>
@@ -37,9 +38,10 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <View style={styles.header}>
-        <HeaderButton icon={Images.arrowBack} onPress={onPressBack}/>
-        <HeaderButton icon={Images.delete} onPress={onPressDelete}/>
+        <HeaderButtonSimple icon={Images.arrowBackFull} onPress={onPressBack}/>
+        <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
 
       <ConditionView showIf={imagesUri?.length > 0}>
@@ -55,15 +57,14 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
 });
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 20,
-    backgroundColor: '#ffcc5f'
+    paddingVertical: 8,
+    backgroundColor: 'rgb(254,183,77)'
   },
 });

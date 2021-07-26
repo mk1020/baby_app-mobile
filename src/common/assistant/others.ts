@@ -9,4 +9,3 @@ export const parseHTML = (html: string): string => {
   return preResult.replace(/&nbsp;/gm, ' ');
 };
 
-
