@@ -1,11 +1,12 @@
 import {PullResponse} from './sync';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
-import {INote, INoteJS} from './types';
+import {INote, INoteJS, IPhoto} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
 import {Database, Q} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
 import {writer} from '@nozbe/watermelondb/decorators';
+import {photoAdapter} from '../components/diary/contentTab/photosByMonth/assist';
 
 enum ChangesEvents {
   created='created',
@@ -200,14 +201,18 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
     const prepareCreatePhotos = [];
     const photos = db.get(PhotosTableName);
     const allPhotos = await photos.query().fetch();
+    const photosAdapted = allPhotos?.map((photo: IPhoto) => photoAdapter(photo));
+    photosAdapted?.sort((a: IPhoto, b: IPhoto) => {
+      return a.date - b.date;
+    });
 
-    if (allPhotos.length) {
-      const year = new Date(allPhotos[allPhotos.length - 1].date).getFullYear();
-      const lastPhotoDate = new Date(allPhotos[allPhotos.length - 1].date).setFullYear(year + 1);
+    if (photosAdapted?.length) {
+      const lastDate = new Date(photosAdapted[photosAdapted.length - 1].date);
+      const necessaryDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
 
       for (let i = 0; i < n; i++) {
-        const nowMonth = new Date(lastPhotoDate).getMonth();
-        const nextDate = new Date(lastPhotoDate).setMonth(nowMonth + i);
+        const nowMonth = new Date(necessaryDate).getMonth();
+        const nextDate = new Date(necessaryDate).setMonth(nowMonth + i);
         prepareCreatePhotos.push(
           photos.prepareCreate((photo: any) => {
             photo.date = nextDate;

@@ -59,8 +59,10 @@ export const ContentTab_ = memo((props: TProps) => {
   };
 
   const onLongPressItem = (item: any) => {
-    setShowMenu(true);
-    setLongPressItem(item);
+    if (item.id !== 'photosByMonth') {
+      setShowMenu(true);
+      setLongPressItem(item);
+    }
   };
   const onRequestClose = () => {
     setShowMenu(false);
