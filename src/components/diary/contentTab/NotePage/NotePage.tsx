@@ -15,6 +15,7 @@ import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {ConditionView} from '../../../../common/components/ConditionView';
 import {useKeyboard} from '../../../../common/hooks/useKeyboard';
 import {ButtonFilled, ButtonModes} from '../../../../common/components/ButtonFilled';
+import {Space} from '../../../../common/components/Space';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]
@@ -115,12 +116,15 @@ export const NotePage = memo((props: TProps) => {
             editorRef={editorRef}
           />
         </View>
-        <ButtonFilled
-          title={t('done')}
-          mode={ButtonModes.Positive}
-          onPress={handleSubmit(onPressDone)}
-        />
+
       </ScrollView>
+
+      <ButtonFilled
+        title={t('done')}
+        mode={ButtonModes.Positive}
+        onPress={handleSubmit(onPressDone)}
+      />
+      <Space.V px={16}/>
       <ConditionView showIf={isKeyboardVisible}>
         <RichToolbar
           editor={editorRef}
@@ -143,9 +147,9 @@ export const NotePage = memo((props: TProps) => {
 const styles = StyleSheet.create({
   containerWrapper: {
     backgroundColor: '#ffffff',
-    flex: 1
+    flex: 1,
   },
   container: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 });

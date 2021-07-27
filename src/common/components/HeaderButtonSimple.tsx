@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, ImageStyle, ImageURISource, Platform, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Image, ImageStyle, ImageURISource, Platform, StyleSheet, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 
 type TProps = {
   icon: ImageURISource
@@ -12,22 +12,22 @@ export const HeaderButtonSimple = memo((props: TProps) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onPress} >
+      <TouchableHighlight style={styles.button} onPress={onPress} underlayColor={'rgb(172, 124, 52)'} >
         <Image source={icon} style={[styles.icon, imageStyle]}/>
-      </TouchableOpacity>
+      </TouchableHighlight>
     </View>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 16,
   },
   button: {
     width: 40,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 20,
   },
   icon: {
     width: 28,

@@ -29,7 +29,7 @@ export const ContentTab_ = memo((props: TProps) => {
   const {t} = useTranslation();
 
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
-  const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
+  const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([{name: t('photosByMonth'), id: 'photosByMonth', table: PagesTableName}]);
   const [showMenu, setShowMenu] = useState(false);
   const [longPressItem, setLongPressItem] = useState<any>();
   const [editableItemId, setEditableItemId] = useState('');
@@ -39,8 +39,7 @@ export const ContentTab_ = memo((props: TProps) => {
     chapters_ && setCurrentDiaryChapters(chapters_);
 
     const pages_ = pages?.filter(page => page.diaryId === diaryId);
-
-    pages_ && setCurrentDiaryPages(pages_);
+    pages_ && setCurrentDiaryPages([...currentDiaryPages, ...pages_]);
   }, [chapters, pages]);
 
   const onPressPage = (item: any) => {
@@ -52,7 +51,11 @@ export const ContentTab_ = memo((props: TProps) => {
       createdAt: item?.createdAt,
       updatedAt: item?.updatedAt
     };
-    navigation.navigate(NavigationPages.DiaryPage, {pageData: pageDataAdapted});
+    if (item.id === 'photosByMonth') {
+      navigation.navigate(NavigationPages.PhotosByMonth, {diaryId});
+    } else {
+      navigation.navigate(NavigationPages.DiaryPage, {pageData: pageDataAdapted});
+    }
   };
 
   const onLongPressItem = (item: any) => {

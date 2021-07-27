@@ -56,6 +56,7 @@ export const en = {
     bookmarks: 'Bookmarks',
     diaryTitle: 'My Life',
     edit: 'Edit',
-    delete: 'Delete'
+    delete: 'Delete',
+    addTwelveCards: 'Add twelve more cards',
   },
 };

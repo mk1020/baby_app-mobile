@@ -5,9 +5,10 @@ import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {signOut} from '../../redux/appSlice';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../model/schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../../model/schema';
 import {getNotesByPageDB} from '../../model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {PhotosByMonth} from '../diary/contentTab/photosByMonth/PhotosByMonth';
 
 type TProps = {
   database?: Database
@@ -66,6 +67,9 @@ export const Settings_ = memo((props: TProps) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={async () => console.log(await db.get(ChaptersTableName).query().fetch())} style={styles.sign}>
         <Text>GET chapters</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={async () => console.log(await db.get(PhotosTableName).query().fetch())} style={styles.sign}>
+        <Text>GET photos</Text>
       </TouchableOpacity>
     </View>
   );

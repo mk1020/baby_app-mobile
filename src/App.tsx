@@ -12,6 +12,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {createDiaryIfNotExist} from './model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
+import {DiaryTableName} from './model/schema';
 
 (function setup() {
   if (Platform.OS === 'android') {

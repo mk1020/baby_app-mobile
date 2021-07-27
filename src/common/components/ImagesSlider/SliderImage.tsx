@@ -5,7 +5,7 @@ type TProps = {
    uri: string
    onPressImage?: ()=> void
 }
-export const ImagePreview = memo((props: TProps) => {
+export const SliderImage = memo((props: TProps) => {
   const {uri, onPressImage} = props;
 
   return (

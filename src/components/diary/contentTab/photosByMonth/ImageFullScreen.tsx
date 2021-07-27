@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import {Image, SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
 import {Images} from '../../../../common/imageResources';
 import {RouteProp, useNavigation} from '@react-navigation/native';
@@ -9,32 +9,33 @@ import {ConditionView} from '../../../../common/components/ConditionView';
 import {RootStackList} from '../../../../navigation/types';
 import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimple';
 import {HeaderBackButton} from '@react-navigation/stack';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {PhotosTableName} from '../../../../model/schema';
 
 type TProps = {
-  route: RouteProp<RootStackList, NavigationPages.ImagesFullScreenEdit>
+  route: RouteProp<RootStackList, NavigationPages.ImageFullScreen>
 }
-export const ImagesFullScreenEdit = memo((props: TProps) => {
+export const ImageFullScreen = memo((props: TProps) => {
   const {route} = props;
 
-  const counter = route.params?.counter;
-  const _imagesUri = route.params?.imagesUri;
+  const {imageUri, imageId} = route.params;
 
   const navigation = useNavigation();
-  const [imagesUri, changeImagesUri] = useState<string[]>(_imagesUri);
-  const [currSlideIndex, changeCurrSlideIndex] = useState(0);
-
-  useEffect(() => {
-    changeImagesUri(_imagesUri);
-  }, [_imagesUri]);
+  const db = useDatabase();
 
   const onPressBack = () => {
-    navigation.navigate(NavigationPages.NotePage, {imagesUri});
+    navigation.goBack();
   };
 
-  const onPressDelete = () => {
-    const images = [...imagesUri];
-    images.splice(currSlideIndex, 1);
-    changeImagesUri(images);
+  const onPressDelete = async () => {
+    try {
+      const image = await db.get(PhotosTableName).find(imageId || '');
+      // @ts-ignore
+      await image.updatePhoto(null);
+      navigation.navigate(NavigationPages.PhotosByMonth, {deletedPhotoId: imageId});
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -45,14 +46,8 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
         <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
 
-      <ConditionView showIf={imagesUri?.length > 0}>
-        <ImagesSlider
-          imagesUri={imagesUri}
-          mode={SliderMode.FullScreen}
-          slideIndex={counter.currentIndex}
-          onSlideChange={changeCurrSlideIndex}
-        />
-      </ConditionView>
+      <Image source={{uri: imageUri}} style={styles.image}/>
+
     </SafeAreaView>
   );
 });
@@ -68,4 +63,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: 'rgb(254,183,77)'
   },
+  image: {
+    flex: 1
+  }
 });

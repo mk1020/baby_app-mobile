@@ -49,6 +49,8 @@ export type RootStackList = {
     imagesUri: string[],
   },
   [TabsName]: NavigatorScreenParams<TabsList>,
+  [NavigationPages.PhotosByMonth]: {diaryId: string, deletedPhotoId?: string},
+  [NavigationPages.ImageFullScreen]: {imageUri: string, imageId: string},
 };
 export type TabsList = {
   [NavigationTabs.Diary]: {diaryName: string}

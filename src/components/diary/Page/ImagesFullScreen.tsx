@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {HeaderButton} from '../../../common/components/HeaderButton';
 import {Images} from '../../../common/imageResources';
 import {RouteProp, useNavigation} from '@react-navigation/native';
@@ -7,6 +7,7 @@ import {NavigationPages} from '../../../navigation/pages';
 import {ImagesSlider, SliderMode} from '../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../common/components/ConditionView';
 import {RootStackList} from '../../../navigation/types';
+import {HeaderBackButton} from '@react-navigation/stack';
 
 type TProps = {
   route: RouteProp<RootStackList, NavigationPages.ImagesFullScreen>
@@ -22,8 +23,9 @@ export const ImagesFullScreen = memo((props: TProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <View style={styles.header}>
-        <HeaderButton icon={Images.arrowBack} onPress={onPressBack}/>
+        <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
       </View>
 
       <ConditionView showIf={imagesUri?.length > 0}>
@@ -43,10 +45,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 20,
-    backgroundColor: '#ffcc5f'
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    backgroundColor: 'rgb(254,183,77)'
   },
 });

@@ -1,20 +1,45 @@
-import React, {memo} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ButtonIconVert} from './ButtonIconVert';
 import {Images} from '../imageResources';
 import {deleteAlert} from './DeleteAlert';
 import {ModalDown} from './ModalDown';
 import {useTranslation} from 'react-i18next';
+import {requestSavePhotoPermission} from '../../components/diary/assist';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {ImagePickerResponse} from 'react-native-image-picker/src/types';
 
 type TProps = {
+  onLoadImage: (response: ImagePickerResponse) => void
   onRequestClose: () => void
   isVisible: boolean
-  onPressCamera: ()=> void
-  onPressGallery: ()=> void
 }
 export const ModalDownPhoto = memo((props: TProps) => {
-  const {onRequestClose, isVisible, onPressCamera, onPressGallery} = props;
+  const {isVisible, onLoadImage, onRequestClose} = props;
   const {t} = useTranslation();
+
+  const onPressCamera = async () => {
+    if (await requestSavePhotoPermission()) {
+      launchCamera({
+        mediaType: 'photo',
+        quality: 1,
+        saveToPhotos: true
+      }, (response: ImagePickerResponse) => {
+        onLoadImage(response);
+        !response.didCancel && onRequestClose();
+      });
+    }
+  };
+
+  const onPressGallery = () => {
+    launchImageLibrary({
+      mediaType: 'photo',
+      quality: 1,
+    }, (response: ImagePickerResponse) => {
+      onLoadImage(response);
+      !response.didCancel && onRequestClose();
+    });
+  };
 
   return (
     <ModalDown
@@ -25,14 +50,14 @@ export const ModalDownPhoto = memo((props: TProps) => {
     >
       <View style={styles.modalContent}>
         <ButtonIconVert
-          title={t('camera')}
-          image={Images.camera}
-          onPress={onPressCamera}
-        />
-        <ButtonIconVert
           title={t('gallery')}
           image={Images.gallery}
           onPress={onPressGallery}
+        />
+        <ButtonIconVert
+          title={t('camera')}
+          image={Images.camera}
+          onPress={onPressCamera}
         />
       </View>
     </ModalDown>

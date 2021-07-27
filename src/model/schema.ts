@@ -4,6 +4,7 @@ export const NotesTableName = 'notes';
 export const DiaryTableName = 'diaries';
 export const ChaptersTableName = 'chapters';
 export const PagesTableName = 'pages';
+export const PhotosTableName = 'photos_by_month';
 
 export const babyAppSchema = appSchema({
   version: 1,
@@ -49,6 +50,16 @@ export const babyAppSchema = appSchema({
         {name: 'note', type: 'string'},
         {name: 'photo', type: 'string'},
         {name: 'tags', type: 'string'},
+        {name: 'created_at', type: 'number'},
+        {name: 'updated_at', type: 'number'},
+      ]
+    }),
+    tableSchema({
+      name: PhotosTableName,
+      columns: [
+        {name: 'diary_id', type: 'string', isIndexed: true},
+        {name: 'photo', type: 'string', isOptional: true},
+        {name: 'date', type: 'number'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]

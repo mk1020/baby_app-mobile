@@ -10,7 +10,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {Database} from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import {babyAppSchema} from './model/schema';
-import {Chapter, Diary, Note, Page} from './model/Diary';
+import {Chapter, Diary, Note, Page, Photo} from './model/Diary';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {migrations} from './model/migrations';
 
@@ -26,7 +26,7 @@ const adapter = new SQLiteAdapter({
 
 export const database = new Database({
   adapter,
-  modelClasses: [Diary, Chapter, Page, Note],
+  modelClasses: [Diary, Chapter, Page, Note, Photo],
 });
 
 (function setup() {

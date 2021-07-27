@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {Dispatch, memo, SetStateAction, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction, useMemo, useState} from 'react';
 import {Images} from '../../../../common/imageResources';
 import {Fonts} from '../../../../common/phone/fonts';
 import {HeaderButton} from '../../../../common/components/HeaderButton';
@@ -30,35 +30,14 @@ export const NoteHeader = memo((props: TProps) => {
   const onPressBack = () => {
     navigation.goBack();
   };
-  const launchCallback = (response: ImagePickerResponse) => {
+  const onLoadPhoto = (response: ImagePickerResponse) => {
     if (response.assets?.length) {
       onLoadImage && onLoadImage(response.assets[0].uri as string);
     }
   };
 
-  const onPressCamera = async () => {
-    setModalVisible(false);
-
-    if (await requestSavePhotoPermission()) {
-      launchCamera({
-        mediaType: 'photo',
-        quality: 1,
-        saveToPhotos: true
-      }, launchCallback);
-    }
-  };
-
-  const onPressGallery = () => {
-    setModalVisible(false);
-
-    launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
-    }, launchCallback);
-  };
-
   const onPressPhoto = () => {
-    setModalVisible(!modalVisible);
+    setModalVisible(true);
   };
 
   const onRequestCloseModal = () => {
@@ -82,8 +61,7 @@ export const NoteHeader = memo((props: TProps) => {
       <ModalDownPhoto
         onRequestClose={onRequestCloseModal}
         isVisible={modalVisible}
-        onPressCamera={onPressCamera}
-        onPressGallery={onPressGallery}
+        onLoadImage={onLoadPhoto}
       />
     </View>
   );

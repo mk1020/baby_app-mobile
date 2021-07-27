@@ -38,3 +38,12 @@ export interface INoteJS {
   //eventDateStart: number,
   //eventDateEnd: number,
 }
+
+export interface IPhoto {
+  id: string
+  diaryId: string
+  photo: string | null
+  date: number
+  createdAt: number
+  updatedAt: number
+}

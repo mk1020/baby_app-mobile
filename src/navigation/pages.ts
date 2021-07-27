@@ -10,6 +10,8 @@ export enum NavigationPages {
   NotePage = 'NotePage',
   ImagesFullScreen = 'ImagesFullScreen',
   ImagesFullScreenEdit = 'ImagesFullScreenEdit',
+  PhotosByMonth = 'PhotosByMonth',
+  ImageFullScreen = 'ImageFullScreen',
 }
 export enum NavigationTabs {
   Diary = 'Diary',

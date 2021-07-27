@@ -12,6 +12,13 @@ import {ImagesFullScreenEdit} from '../components/diary/contentTab/NotePage/Imag
 import {ImagesFullScreen} from '../components/diary/Page/ImagesFullScreen';
 import {RootStackList, TabsList} from './types';
 import {Settings} from '../components/settings/Settings';
+import {PhotosByMonth} from '../components/diary/contentTab/photosByMonth/PhotosByMonth';
+import {useTranslation} from 'react-i18next';
+import {HeaderButtonSimple} from '../common/components/HeaderButtonSimple';
+import {StyleSheet} from 'react-native';
+import {Fonts} from '../common/phone/fonts';
+import {ImageFullScreen} from '../components/diary/contentTab/photosByMonth/ImageFullScreen';
+import {PhotosByMonthContainer} from '../components/diary/contentTab/photosByMonth/PhotosByMonthContainer';
 
 const Tabs = createBottomTabNavigator<TabsList>();
 const TabsNav = () => {
@@ -28,6 +35,8 @@ const TabsNav = () => {
 
 const RootStack = createStackNavigator<RootStackList>();
 export const AuthorizedScreens = (): JSX.Element => {
+  const {t} = useTranslation();
+
   return (
     <RootStack.Navigator>
       <RootStack.Screen
@@ -77,8 +86,34 @@ export const AuthorizedScreens = (): JSX.Element => {
         component={ImagesFullScreen}
         options={{headerShown: false}}
       />
-
+      <RootStack.Screen
+        name={NavigationPages.PhotosByMonth}
+        component={PhotosByMonthContainer}
+        options={({route, navigation}) => ({
+          title: t('photosByMonth'),
+          headerLeft: () => <HeaderBackButton tintColor={'#fff'} onPress={()=> navigation.goBack()}/>,
+          headerTitleStyle: styles.headerTitle,
+          headerRightContainerStyle: {marginRight: 16},
+          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0, backgroundColor: 'rgb(254,183,77)'},
+        })}
+      />
+      <RootStack.Screen
+        name={NavigationPages.ImageFullScreen}
+        component={ImageFullScreen}
+        options={{headerShown: false}}
+      />
     </RootStack.Navigator>
   );
 };
 
+export const styles = StyleSheet.create({
+  headerTitle: {
+    color: '#fff',
+    fontFamily: Fonts.regular,
+    fontWeight: '600',
+    fontSize: 20,
+    lineHeight: 24,
+    letterSpacing: -0.26,
+    alignSelf: 'center',
+  }
+});

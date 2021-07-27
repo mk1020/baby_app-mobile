@@ -1,14 +1,16 @@
 import {Model} from '@nozbe/watermelondb';
 import {Associations} from '@nozbe/watermelondb/Model';
 import {children, field, relation} from '@nozbe/watermelondb/decorators';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 import {writer} from '@nozbe/watermelondb/decorators';
+import {createDiaryIfNotExist} from './assist';
 
 export class Diary extends Model {
   static table = DiaryTableName
   static associations: Associations = {
     [ChaptersTableName]: {type: 'has_many', foreignKey: 'diary_id'},
     [NotesTableName]: {type: 'has_many', foreignKey: 'diary_id'},
+    [PhotosTableName]: {type: 'has_many', foreignKey: 'diary_id'},
   }
 
   @field('user_id') userId: number | undefined
@@ -19,6 +21,7 @@ export class Diary extends Model {
 
   @children(ChaptersTableName) chapter: any
   @children(NotesTableName) notes: any
+  @children(PhotosTableName) photos: any
 
   @writer async changeIsCurrentDiary(isCurrent: boolean) {
     await this.update(diary => {
@@ -119,6 +122,30 @@ export class Note extends Model {
   @relation(ChaptersTableName, 'chapter_id') chapter: any
 
   @writer async deleteNote() {
+    await this.markAsDeleted();
+  }
+}
+
+export class Photo extends Model {
+  static table = PhotosTableName
+  static associations: Associations = {
+    [DiaryTableName]: {type: 'belongs_to', key: 'diary_id'},
+  }
+
+  @field('diary_id') diaryId: string | undefined
+  @field('photo') photo: string | undefined
+  @field('date') date: number | undefined
+  @field('created_at') createdAt: number | undefined
+  @field('updated_at') updatedAt: number | undefined
+
+  @relation(DiaryTableName, 'diary_id') diary: any
+
+  @writer async updatePhoto(photoUri: string) {
+    await this.update(photo => {
+      photo.photo = photoUri;
+    });
+  }
+  @writer async delete() {
     await this.markAsDeleted();
   }
 }

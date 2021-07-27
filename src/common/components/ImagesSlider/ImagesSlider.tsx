@@ -3,7 +3,7 @@ import {Dimensions, StyleSheet, Text, TouchableWithoutFeedback, View} from 'reac
 import {TabView} from 'react-native-tab-view';
 import {Fonts} from '../../phone/fonts';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
-import {ImagePreview} from './ImagePreview';
+import {SliderImage} from './SliderImage';
 
 export enum SliderMode {
   FullScreen = 'FullScreen',
@@ -32,7 +32,7 @@ export const ImagesSlider = memo((props: TProps) => {
 
   const renderScene = ({route}: {route: Route}) => {
     return (
-      <ImagePreview
+      <SliderImage
         uri={route.key}
         onPressImage={onPressImage}
       />

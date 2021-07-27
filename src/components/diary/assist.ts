@@ -1,8 +1,6 @@
 import {TFunction} from 'i18next';
-import {INote, INoteJS} from '../../model/types';
-import {PermissionsAndroid, Platform} from 'react-native';
-import {Database, Q} from '@nozbe/watermelondb';
-import {NotesTableName} from '../../model/schema';
+import {INoteJS} from '../../model/types';
+import {PermissionsAndroid} from 'react-native';
 
 export const getItemsPageType = (t: TFunction) => ([
   {label: t('common'), value: 1},

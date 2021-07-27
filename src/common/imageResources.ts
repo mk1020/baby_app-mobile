@@ -16,6 +16,8 @@ export const Images = {
   done: <ImageURISource>require('../../assets/images/outline_check_circle.png'),
   cancel: <ImageURISource>require('../../assets/images/outline_cancel.png'),
   gallery: <ImageURISource>require('../../assets/images/outline_gallery.png'),
-  cameraFront: <ImageURISource>require('../../assets/images/outline_photo_camera_front.png'),
   camera: <ImageURISource>require('../../assets/images/outline_photo_camera.png'),
+  cameraSmile: <ImageURISource>require('../../assets/images/camera_with_face.png'),
+  addPhotoAlternate: <ImageURISource>require('../../assets/images/add_photo_alternate.png'),
+  playlistAdd: <ImageURISource>require('../../assets/images/playlist_add.png'),
 };

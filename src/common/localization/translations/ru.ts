@@ -56,6 +56,7 @@ export const ru = {
     bookmarks: 'Закладки',
     diaryTitle: 'Моя жизнь',
     edit: 'Редактировать',
-    delete: 'Удалить'
+    delete: 'Удалить',
+    addTwelveCards: 'Добавить еще двенадцать карточек',
   },
 };

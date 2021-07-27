@@ -1,10 +1,11 @@
 import {PullResponse} from './sync';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 import {INote, INoteJS} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
 import {Database, Q} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
+import {writer} from '@nozbe/watermelondb/decorators';
 
 enum ChangesEvents {
   created='created',
@@ -152,14 +153,32 @@ export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any
 
 export const createDiaryIfNotExist = async (db: Database, title: string) => {
   await db.write(async () => {
-    const diary = db?.get(DiaryTableName);
-    const diaryCount = await diary.query().fetchCount();
+    const diaryCollection = db?.get(DiaryTableName);
+    const diaryCount = await diaryCollection.query().fetchCount();
     if (diaryCount === 0) {
-      await diary?.create((diary: any) => {
+      const diary = diaryCollection?.prepareCreate((diary: any) => {
         diary.userId = 27;
         diary.name = title;
         diary.isCurrent = true;
       });
+      const photosCollection = db?.get(PhotosTableName);
+      const prepareCreatePhotos = [];
+      for (let i = 0; i < 12; i++) {
+        const nowMonth = new Date().getMonth();
+        const nextDate = new Date().setMonth(nowMonth + i);
+        prepareCreatePhotos.push(
+          photosCollection.prepareCreate(photo => {
+            // @ts-ignore
+            photo.date = nextDate;
+            // @ts-ignore
+            photo.diaryId = diary.id;
+          })
+        );
+      }
+      await db.batch(
+        diary,
+        ...prepareCreatePhotos
+      );
     }
   });
 };
@@ -174,4 +193,29 @@ export const deleteChapter = async (chapterId: string, db: Database) => {
   const chapter = await db.get(ChaptersTableName).find(chapterId || '');
   // @ts-ignore
   await chapter.delete();
+};
+
+export const addNPhotos = async (n: number, diaryId: string, db: any) => {
+  await db.write(async () => {
+    const prepareCreatePhotos = [];
+    const photos = db.get(PhotosTableName);
+    const allPhotos = await photos.query().fetch();
+
+    if (allPhotos.length) {
+      const year = new Date(allPhotos[allPhotos.length - 1].date).getFullYear();
+      const lastPhotoDate = new Date(allPhotos[allPhotos.length - 1].date).setFullYear(year + 1);
+
+      for (let i = 0; i < n; i++) {
+        const nowMonth = new Date(lastPhotoDate).getMonth();
+        const nextDate = new Date(lastPhotoDate).setMonth(nowMonth + i);
+        prepareCreatePhotos.push(
+          photos.prepareCreate((photo: any) => {
+            photo.date = nextDate;
+            photo.diaryId = diaryId;
+          })
+        );
+      }
+      await db.batch(...prepareCreatePhotos);
+    }
+  });
 };
