@@ -15,8 +15,9 @@ export enum NavigationPages {
 }
 export enum NavigationTabs {
   Diary = 'Diary',
-  Settings = 'Settings',
-  Tabs= 'Tabs'
+  Menu = 'Menu',
+  Tabs= 'Tabs',
+  Service= 'Service'
 }
 
 export const TabsName = 'Tabs';

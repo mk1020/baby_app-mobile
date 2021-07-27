@@ -40,7 +40,7 @@ export const PhotosByMonth = memo((props: TProps) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <FlatList
         data={renderData}
@@ -53,6 +53,10 @@ export const PhotosByMonth = memo((props: TProps) => {
 
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'rgb(244, 244, 236)',
+    flex: 1
+  },
   rowCards: {
     flexDirection: 'row',
     justifyContent: 'space-between',

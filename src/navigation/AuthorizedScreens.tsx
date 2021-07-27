@@ -11,14 +11,14 @@ import {NotePage, NotePageMode} from '../components/diary/contentTab/NotePage/No
 import {ImagesFullScreenEdit} from '../components/diary/contentTab/NotePage/ImagesFullScreenEdit';
 import {ImagesFullScreen} from '../components/diary/Page/ImagesFullScreen';
 import {RootStackList, TabsList} from './types';
-import {Settings} from '../components/settings/Settings';
-import {PhotosByMonth} from '../components/diary/contentTab/photosByMonth/PhotosByMonth';
+import {Menu} from '../components/menu/Menu';
 import {useTranslation} from 'react-i18next';
-import {HeaderButtonSimple} from '../common/components/HeaderButtonSimple';
 import {StyleSheet} from 'react-native';
 import {Fonts} from '../common/phone/fonts';
 import {ImageFullScreen} from '../components/diary/contentTab/photosByMonth/ImageFullScreen';
 import {PhotosByMonthContainer} from '../components/diary/contentTab/photosByMonth/PhotosByMonthContainer';
+import {Service} from '../components/menu/Service';
+import {MenuContainer} from '../components/menu/MenuContainer';
 
 const Tabs = createBottomTabNavigator<TabsList>();
 const TabsNav = () => {
@@ -28,7 +28,8 @@ const TabsNav = () => {
         name={NavigationTabs.Diary}
         component={Diary}
       />
-      <Tabs.Screen name={NavigationTabs.Settings} component={Settings} />
+      <Tabs.Screen name={NavigationTabs.Menu} component={MenuContainer} />
+      <Tabs.Screen name={NavigationTabs.Service} component={Service} />
     </Tabs.Navigator>
   );
 };
@@ -64,9 +65,9 @@ export const AuthorizedScreens = (): JSX.Element => {
             }}
             />
           ),
-          headerLeftContainerStyle: {marginHorizontal: 16, marginTop: 16},
-          headerRightContainerStyle: {marginHorizontal: 16, marginTop: 16},
-          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0},
+          headerLeftContainerStyle: {marginHorizontal: 16},
+          headerRightContainerStyle: {marginHorizontal: 16},
+          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0, backgroundColor: 'rgb(244, 244, 236)', borderBottomWidth: 1,},
         })}
       />
       <RootStack.Screen
@@ -91,10 +92,10 @@ export const AuthorizedScreens = (): JSX.Element => {
         component={PhotosByMonthContainer}
         options={({route, navigation}) => ({
           title: t('photosByMonth'),
-          headerLeft: () => <HeaderBackButton tintColor={'#fff'} onPress={()=> navigation.goBack()}/>,
+          headerLeft: () => <HeaderBackButton tintColor={'#fff'} onPress={() => navigation.goBack()}/>,
           headerTitleStyle: styles.headerTitle,
           headerRightContainerStyle: {marginRight: 16},
-          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0, backgroundColor: 'rgb(254,183,77)'},
+          headerStyle: {},
         })}
       />
       <RootStack.Screen
@@ -115,5 +116,11 @@ export const styles = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: -0.26,
     alignSelf: 'center',
+  },
+  pageHeaderStyle: {
+    elevation: 0,
+    shadowOffset: {width: 0, height: 0},
+    shadowRadius: 0,
+    backgroundColor: 'rgb(254,183,77)'
   }
 });

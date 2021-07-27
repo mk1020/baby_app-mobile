@@ -47,7 +47,8 @@ export const Diary = withDatabase(withObservables<TProps, {}>([], ({database}) =
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(244, 244, 236)',
     flex: 1
   }
 });
+

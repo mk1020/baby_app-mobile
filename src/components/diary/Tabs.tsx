@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     height: 3
   },
   tabBar: {
-    backgroundColor: 'white'
+    backgroundColor: 'rgb(244, 244, 236)'
   },
   tabBarLabel: {
     color: '#31A0B2',

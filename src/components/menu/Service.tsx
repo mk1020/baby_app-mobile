@@ -16,7 +16,7 @@ type TProps = {
   chapters?: any[]
   pages?: any[]
 }
-export const Settings_ = memo((props: TProps) => {
+export const Service_ = memo((props: TProps) => {
   const {diaryId, database, chapters, pages} = props;
   const dispatch = useDispatch();
   const db = useDatabase();
@@ -76,13 +76,13 @@ export const Settings_ = memo((props: TProps) => {
 });
 
 //type InputProps = ObservableifyProps<TProps, 'diaryId'>
-export const Settings = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
+export const Service = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
   return {
     chapters: database?.collections?.get(ChaptersTableName).query().observe(),
     pages: database?.collections?.get(PagesTableName).query().observe()
     //pages: database?.collections?.get(PagesTableName)?.query(Q.where('id', diaryId))?.observe()
   };
-})(Settings_));
+})(Service_));
 const styles = StyleSheet.create({
   sign: {
     width: 150,

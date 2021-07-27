@@ -93,11 +93,11 @@ export const Page = withDatabase(Page_);
 
 const styles = StyleSheet.create({
   containerWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgb(244, 244, 236)',
     flex: 1
   },
   container: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgb(244, 244, 236)',
     marginTop: 16,
     flex: 1
   },

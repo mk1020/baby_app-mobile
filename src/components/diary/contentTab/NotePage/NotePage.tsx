@@ -146,7 +146,7 @@ export const NotePage = memo((props: TProps) => {
 });
 const styles = StyleSheet.create({
   containerWrapper: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgb(244, 244, 236)',
     flex: 1,
   },
   container: {

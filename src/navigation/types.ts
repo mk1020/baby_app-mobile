@@ -54,7 +54,8 @@ export type RootStackList = {
 };
 export type TabsList = {
   [NavigationTabs.Diary]: {diaryName: string}
-  [NavigationTabs.Settings]: undefined,
+  [NavigationTabs.Menu]: undefined,
+  [NavigationTabs.Service]: undefined,
 }
 
 export type Screens = keyof (RootStackList & TUnAuthPagesList);
