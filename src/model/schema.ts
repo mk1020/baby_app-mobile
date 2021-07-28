@@ -13,7 +13,7 @@ export const babyAppSchema = appSchema({
       name: DiaryTableName,
       columns: [
         {name: 'user_id', type: 'number'},
-        {name: 'name', type: 'string'},
+        {name: 'name', type: 'string', isOptional: true},
         {name: 'is_current', type: 'boolean'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},

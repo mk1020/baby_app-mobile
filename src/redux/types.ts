@@ -1,9 +1,13 @@
+import {TLanguage} from '../common/localization/localization';
+
 export type TColorScheme = 'light' | 'dark';
 
 export type TAppReducer = {
   colorScheme: TColorScheme;
   userToken: TToken | null;
   isLoading: boolean;
+  language: TLanguage | null
+  diaryTitle: string
 };
 
 export type TSignIn = {

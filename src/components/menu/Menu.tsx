@@ -61,7 +61,7 @@ export const Menu = memo((props: TProps) => {
       >
         <CardUser email={'mmmffjs7438g@gmail.com'} lastSyncAt={'27 июл. 18:42'}/>
         {renderItems}
-        <TouchableOpacity style={styles.buttonExit}>
+        <TouchableOpacity style={styles.buttonExit} hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}>
           <Text style={styles.buttonExitText}>{t('exit')}</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -94,12 +94,12 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {},
   buttonExit: {
-    marginTop: 8
+    marginTop: 8,
+    alignSelf: 'center',
   },
   buttonExitText: {
     fontFamily: Fonts.bold,
     color: 'red',
     fontSize: 16,
-    alignSelf: 'center'
   },
 });

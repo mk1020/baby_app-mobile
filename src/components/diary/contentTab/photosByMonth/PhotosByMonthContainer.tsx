@@ -58,7 +58,7 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
     const newPhoto = photos?.map(photo => {
       const adaptedPhoto = photoAdapter(photo);
       adaptedPhoto.photo = null;
-      return  photo.id === deletedPhotoId ? adaptedPhoto : photo;
+      return photo.id === deletedPhotoId ? adaptedPhoto : photo;
     });
     setPhotosRenderData(photosDataAdapter(newPhoto));
   }, [deletedPhotoId]);

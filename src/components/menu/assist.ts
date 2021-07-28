@@ -1,6 +1,8 @@
 import {TFunction} from 'i18next';
 import {ImageURISource} from 'react-native';
 import {Images} from '../../common/imageResources';
+import {TModalDataItem} from '../../common/components/ModalSelectorList';
+import {TLanguage} from '../../common/localization/localization';
 
 type Handlers = {
   onPressDisableAds: ()=> void
@@ -27,7 +29,10 @@ export type Section = {
   title: string | null
   data: TMenuItem[]
 }
-export const getSectionsData = (t: TFunction, handlers: Handlers): Section[] => [
+type SectionOptions = {
+  language: TLanguage
+}
+export const getSectionsData = (t: TFunction, handlers: Handlers, options: SectionOptions): Section[] => [
   {
     title: t('general'),
     data: [
@@ -57,7 +62,8 @@ export const getSectionsData = (t: TFunction, handlers: Handlers): Section[] => 
       {
         title: t('changeLanguage'),
         onPress: handlers.onPressChangeLanguage,
-        icon: Images.languages
+        icon: Images.languages,
+        subTitle: t(options.language)
       },
     ]
   },
@@ -96,4 +102,18 @@ export const getSectionsData = (t: TFunction, handlers: Handlers): Section[] => 
       },
     ]
   }
+];
+export const getLanguagesData = (t: TFunction, handler: (lang: TLanguage) => void, currLang: TLanguage): TModalDataItem[] => [
+  {
+    title: t('ru'),
+    onPress: () => handler('ru'),
+    icon: Images.language,
+    check: currLang === 'ru'
+  },
+  {
+    title: t('en'),
+    onPress: () => handler('en'),
+    icon: Images.language,
+    check: currLang === 'en'
+  },
 ];

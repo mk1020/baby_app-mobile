@@ -13,9 +13,7 @@ type TProps = {
 }
 export const PhotosByMonth = memo((props: TProps) => {
   const {onPressAddPhoto, onPressPhoto, renderData} = props;
-
   const {t} = useTranslation();
-  console.log('render');
 
   const renderItem = (item: ListRenderItemInfo<IPhoto[]>) => {
     return (

@@ -15,6 +15,8 @@ type TProps = {
 export const NavContainer = memo((props: TProps) => {
   const {initState} = props;
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
+  const language = useSelector((state: RootStoreType) => state.app.language);
+
   const onChangeNav = (state?: NavigationState) => {
     storeData(PERSISTENCE_NAV_KEY, state).then();
   };
@@ -25,7 +27,7 @@ export const NavContainer = memo((props: TProps) => {
       initialState={initState}
       onStateChange={onChangeNav}
     >
-      {userToken !== null ? <AuthorizedScreens /> : <UnauthorizedScreens/>}
+      {userToken !== null ? <AuthorizedScreens key={language + 'salt nav container'}/> : <UnauthorizedScreens key={language + 'salt nav container'}/>}
     </NavigationContainer>
   );
 });

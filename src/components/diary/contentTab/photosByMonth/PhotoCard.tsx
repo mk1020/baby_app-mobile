@@ -54,18 +54,17 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    height: 20,
+    height: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'stretch'
+    alignSelf: 'stretch',
   },
   dateContainerEmpty: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   date: {
     fontFamily: Fonts.regular,
     color: '#fff',
-    marginBottom: 3
   },
   dateEmptyCard: {
     fontFamily: Fonts.regular,

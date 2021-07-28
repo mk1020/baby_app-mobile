@@ -1,4 +1,4 @@
-import React, {memo, useMemo} from 'react';
+import React, {memo, useMemo, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
@@ -7,7 +7,12 @@ import {ChaptersTableName, DiaryTableName, PagesTableName} from '../../model/sch
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
 import {Menu} from './Menu';
-import {getSectionsData} from './assist';
+import {getLanguagesData, getSectionsData} from './assist';
+import {ModalSelectorList} from '../../common/components/ModalSelectorList';
+import {TLanguage} from '../../common/localization/localization';
+import {useNavigation, useNavigationState} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {changeDiaryTitle, changeLanguage} from '../../redux/appSlice';
 
 type TProps = {
   database?: Database
@@ -19,13 +24,19 @@ type TProps = {
 export const MenuContainer_ = memo((props: TProps) => {
   const {diaryId, database} = props;
   const db = useDatabase();
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+
+  const language =  i18n.language as TLanguage;
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   const onPressDisableAds = () => {};
   const onPressSync = () => {};
   const onPressExport = () => {};
   const onPressImport = () => {};
-  const onPressChangeLanguage = () => {};
+  const onPressChangeLanguage = () => {
+    setLanguageModalVisible(true);
+  };
   const onPressNotifications = () => {};
   const onPressFeatureRequest = () => {};
   const onPressRateApp = () => {};
@@ -33,6 +44,19 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressTermsUse =  () => {};
   const onPressPrivacyPolicy = () => {};
 
+  const onModalCloseRequest = () => {
+    setLanguageModalVisible(false);
+  };
+  const changeLanguage_ = async (language: TLanguage) => {
+    try {
+      await i18n.changeLanguage(language);
+      setLanguageModalVisible(false);
+      dispatch(changeLanguage(language));
+      dispatch(changeDiaryTitle(t('diaryTitle')));
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const handlers = {
     onPressDisableAds,
     onPressSync,
@@ -46,11 +70,19 @@ export const MenuContainer_ = memo((props: TProps) => {
     onPressTermsUse,
     onPressPrivacyPolicy,
   };
+  const sectionDataOpt = {
+    language
+  };
 
   return (
-    <Menu
-      renderData={getSectionsData(t, handlers)}
-    />
+    <>
+      <Menu renderData={getSectionsData(t, handlers, sectionDataOpt)} />
+      <ModalSelectorList
+        data={getLanguagesData(t, changeLanguage_, language)}
+        onRequestClose={onModalCloseRequest}
+        isVisible={languageModalVisible}
+      />
+    </>
   );
 });
 

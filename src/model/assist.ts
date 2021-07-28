@@ -152,14 +152,14 @@ export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any
   });
 };
 
-export const createDiaryIfNotExist = async (db: Database, title: string) => {
+export const createDiaryIfNotExist = async (db: Database, title?: string) => {
   await db.write(async () => {
     const diaryCollection = db?.get(DiaryTableName);
     const diaryCount = await diaryCollection.query().fetchCount();
     if (diaryCount === 0) {
       const diary = diaryCollection?.prepareCreate((diary: any) => {
         diary.userId = 27;
-        diary.name = title;
+        // diary.name = title;
         diary.isCurrent = true;
       });
       const photosCollection = db?.get(PhotosTableName);

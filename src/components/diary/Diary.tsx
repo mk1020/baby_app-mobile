@@ -9,6 +9,8 @@ import {ChaptersTableName, DiaryTableName, NotesTableName} from '../../model/sch
 import {Q} from '@nozbe/watermelondb';
 import {Header} from './Header';
 import {Tabs} from './Tabs';
+import {useSelector} from 'react-redux';
+import {RootStoreType} from '../../redux/rootReducer';
 
 type TProps = {
   route: RouteProp<TabsList, NavigationTabs.Diary>
@@ -22,15 +24,15 @@ type TProps = {
 
 const Diary_ = memo((props:TProps) => {
 
-  const {notes, diary, database, chapters} = props;
-  const {params} = props.route;
+  const {diary, chapters} = props;
+  const diaryTitle = useSelector((state: RootStoreType) => state.app.diaryTitle);
 
   const [tabIndex, setTabIndex] = useState(0);
   const diaryData = diary.length ? diary[0] : null;
   //todo возможно когда diaryId обновится, pages and chapters не обновятся..
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={diaryData?.name || ''} diaryId={diaryData?.id} chapters={chapters}/>
+      <Header title={diaryTitle} diaryId={diaryData?.id} chapters={chapters}/>
       <Tabs currentTabIndex={tabIndex} onIndexChange={setTabIndex} diaryId={diaryData?.id}/>
     </SafeAreaView>
   );

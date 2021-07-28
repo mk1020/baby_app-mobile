@@ -31,4 +31,6 @@ export const Images = {
   insurance: <ImageURISource>require('../../assets/images/insurance.png'),
   rate: <ImageURISource>require('../../assets/images/rate.png'),
   contract: <ImageURISource>require('../../assets/images/contract.png'),
+  check: <ImageURISource>require('../../assets/images/check.png'),
+  language: <ImageURISource>require('../../assets/images/language.png'),
 };

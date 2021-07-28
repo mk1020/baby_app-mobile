@@ -73,5 +73,7 @@ export const en = {
     general: 'General',
     supportUs: 'Please support us',
     exit: 'Exit',
+    ru: 'Russian',
+    en: 'English'
   },
 };

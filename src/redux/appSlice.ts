@@ -4,11 +4,14 @@ import {ColorSchemes, TAppReducer, TColorScheme, TSignIn, TSignInGoogle, TSignIn
 import {RootStoreType} from './rootReducer';
 import {req} from '../common/assistant/api';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {TLanguage} from '../common/localization/localization';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
   userToken: null,
   isLoading: true,
+  language: null,
+  diaryTitle: ''
 };
 
 export const signIn = createAsyncThunk(
@@ -64,6 +67,12 @@ const appSlice = createSlice({
     refreshToken: (state: TAppReducer, action: PayloadAction<TToken>) => {
       state.userToken = action.payload;
     },
+    changeLanguage: (state: TAppReducer, action: PayloadAction<TLanguage>) => {
+      state.language = action.payload;
+    },
+    changeDiaryTitle: (state: TAppReducer, action: PayloadAction<string>) => {
+      state.diaryTitle = action.payload;
+    },
   },
   extraReducers: builder => {
     builder.addCase(signIn.pending, (state: TAppReducer, action: PayloadAction) => {
@@ -87,4 +96,10 @@ const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const {setColorScheme, setLoadingAppStatus, refreshToken} = appSlice.actions;
+export const {
+  setColorScheme,
+  setLoadingAppStatus,
+  refreshToken,
+  changeLanguage,
+  changeDiaryTitle
+} = appSlice.actions;

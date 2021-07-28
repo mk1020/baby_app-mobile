@@ -95,7 +95,7 @@ export const AuthorizedScreens = (): JSX.Element => {
           headerLeft: () => <HeaderBackButton tintColor={'#fff'} onPress={() => navigation.goBack()}/>,
           headerTitleStyle: styles.headerTitle,
           headerRightContainerStyle: {marginRight: 16},
-          headerStyle: {},
+          headerStyle: {backgroundColor: 'rgb(254, 183, 77)'},
         })}
       />
       <RootStack.Screen
