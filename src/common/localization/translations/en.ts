@@ -68,6 +68,7 @@ export const en = {
     newFeatureRequest: 'New feature request',
     rateApp: 'Rate app',
     writeUs: 'Write a review or suggestion',
+    writeUsSubject: 'Review or suggestion',
     termsUse: 'Terms of Use',
     privacyPolicy: 'Privacy Policy',
     general: 'General',

@@ -1,5 +1,5 @@
 import React, {memo, useMemo, useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Linking, StyleSheet} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -38,9 +38,22 @@ export const MenuContainer_ = memo((props: TProps) => {
     setLanguageModalVisible(true);
   };
   const onPressNotifications = () => {};
-  const onPressFeatureRequest = () => {};
-  const onPressRateApp = () => {};
-  const onPressWriteUs = () => {};
+  const onPressFeatureRequest = async () => {
+    const url = `mailto:app.mikhail.kovalchuk@gmail.com?subject=${t('newFeatureRequest')}`;
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
+  };
+  const onPressRateApp = () => {
+  };
+  const onPressWriteUs = async () => {
+    const url = `mailto:app.mikhail.kovalchuk@gmail.com?subject=${t('writeUs')}`;
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      await Linking.openURL(url);
+    }
+  };
   const onPressTermsUse =  () => {};
   const onPressPrivacyPolicy = () => {};
 

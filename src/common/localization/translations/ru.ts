@@ -68,6 +68,7 @@ export const ru = {
     newFeatureRequest: 'Запрос новой функции',
     rateApp: 'Оценить приложение',
     writeUs: 'Написать отзыв или предложение',
+    writeUsSubject: 'Отзыв или предложение',
     termsUse: 'Условия использования',
     privacyPolicy: 'Политика конфиденциальности',
     general: 'Общее',

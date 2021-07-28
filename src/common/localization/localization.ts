@@ -10,9 +10,7 @@ const translations = {en, ru};
 export const fallbackLanguage: TLanguage = 'en';
 
 let language = RNLocalize.findBestAvailableLanguage(Object.keys(translations))?.languageTag;
-console.log(language);
 language = language || fallbackLanguage;
-console.log('language', language);
 
 i18n.use(initReactI18next).init({
   resources: translations,
