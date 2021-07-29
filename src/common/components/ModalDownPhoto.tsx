@@ -23,7 +23,7 @@ export const ModalDownPhoto = memo((props: TProps) => {
       launchCamera({
         mediaType: 'photo',
         quality: 1,
-        saveToPhotos: true
+        saveToPhotos: true,
       }, (response: ImagePickerResponse) => {
         onLoadImage(response);
         !response.didCancel && onRequestClose();
@@ -36,6 +36,7 @@ export const ModalDownPhoto = memo((props: TProps) => {
       mediaType: 'photo',
       quality: 1,
     }, (response: ImagePickerResponse) => {
+      console.log(response);
       onLoadImage(response);
       !response.didCancel && onRequestClose();
     });

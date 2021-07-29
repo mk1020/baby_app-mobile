@@ -1,12 +1,15 @@
 import {PullResponse} from './sync';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
-import {INote, INoteJS, IPhoto} from './types';
+import {IDiary, INote, INoteJS, IPhoto, TTables} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
-import {Database, Q} from '@nozbe/watermelondb';
+import {Database, Q, tableName} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
-import {writer} from '@nozbe/watermelondb/decorators';
-import {photoAdapter} from '../components/diary/contentTab/photosByMonth/assist';
+import {adapterByTableName, noteAdapter, photoAdapter} from './adapters';
+import {zip} from 'react-native-zip-archive';
+import {CachesDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
+import * as RNFS from 'react-native-fs';
+import {getClearPathFile} from '../common/assistant/files';
 
 enum ChangesEvents {
   created='created',
@@ -14,9 +17,10 @@ enum ChangesEvents {
   deleted = 'deleted'
 }
 
+
 //todo я изменил поля записи в базе и интерфейс INote... привести в порядок все тут и на беке, в связи с этим
 /* eslint-disable camelcase */
-const noteAdapter = (note: INote) => {
+/*const noteAdapter = (note: INote) => {
   return {
     id: note.id,
     diary_id: Number(note.diary_id),
@@ -26,7 +30,7 @@ const noteAdapter = (note: INote) => {
     note: note.note || null,
     tags: note.tags || null,
   };
-};
+};*/
 type AdapterRes = {
   changes: {
     [NotesTableName]: {
@@ -184,15 +188,27 @@ export const createDiaryIfNotExist = async (db: Database, title?: string) => {
   });
 };
 
-export const deletePage = async (id: string, db: Database) => {
+export const deleteImagesFromCache = async (imagesUri: string[]) => {
+  if (imagesUri?.length) {
+    for (const image of imagesUri) {
+      if (image) {
+        const path = getClearPathFile(image);
+        await RNFS.unlink(path);
+      }
+    }
+  }
+};
+export const deletePage = async (id: string, db: any) => {
   const page = await db.get(PagesTableName).find(id || '');
-  // @ts-ignore
+  const notes = await db.get(NotesTableName).query('page_id', page?.id).fetch();
+  await deleteImagesFromCache(notes);
   await page.delete();
 };
 
-export const deleteChapter = async (chapterId: string, db: Database) => {
+export const deleteChapter = async (chapterId: string, db: any) => {
   const chapter = await db.get(ChaptersTableName).find(chapterId || '');
-  // @ts-ignore
+  const notes = await db.get(NotesTableName).query('chapter_id', chapter?.id).fetch();
+  await deleteImagesFromCache(notes);
   await chapter.delete();
 };
 
@@ -224,3 +240,38 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
     }
   });
 };
+
+interface DBExportJson {
+  [tableName: string]: {
+    [created: string]: any[]
+  }
+}
+export const exportDBToZip = async (db: Database) => {
+  try {
+    const schema = await db.schema;
+    const tables = Object.keys(schema?.tables);
+    const batchPromises = tables.map(table => db.get(table).query().fetch());
+    const collections = await Promise.all(batchPromises);
+    //crete db json
+    const exportJson: DBExportJson = {};
+    collections.forEach((collection: any[]) => {
+      const tableName = collection.length && collection[0].table;
+      if (tableName) {
+        const adaptedRecords = collection.map(record => adapterByTableName[record.table as TTables](record));
+        exportJson[tableName] = {
+          created: adaptedRecords
+        };
+      }
+    });
+
+    //write file
+    await RNFS.writeFile(CachesDirectoryPath + '/db.json', JSON.stringify(exportJson), 'utf8');
+    //zip all
+    await zip(CachesDirectoryPath, DownloadDirectoryPath + '/book-life-backup.zip');
+
+  } catch (e) {
+    console.log(e);
+  }
+};
+//todo когда я удалю главу или страницу, то из базы все удалится,
+// но изображения в кеше останутся.. и при бекапе они будут сильно увеличивать размер

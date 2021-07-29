@@ -16,8 +16,10 @@ import withObservables from '@nozbe/with-observables';
 import {RootStackList} from '../../../../navigation/types';
 import {Database} from '@nozbe/watermelondb';
 import {useTranslation} from 'react-i18next';
-import {photoAdapter, photosDataAdapter} from './assist';
+import {photosDataAdapter} from './assist';
 import {addNPhotos} from '../../../../model/assist';
+import {DocumentDirectoryPath} from 'react-native-fs';
+import {photoAdapter} from '../../../../model/adapters';
 
 type TProps = {
   route?: RouteProp<RootStackList, NavigationPages.PhotosByMonth>
@@ -109,7 +111,6 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
   const onPressPhoto = useCallback((photo: IPhoto) => {
     navigation.navigate(NavigationPages.ImageFullScreen, {imageUri: photo.photo, imageId: photo.id});
   }, [navigation]);
-  console.log('render container');
 
   return (
     <>

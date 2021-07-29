@@ -30,6 +30,7 @@ export type RootStackList = {
   [NavigationPages.DiaryPage]: {pageData: PageType},
   [NavigationPages.NotePage]: {
     imagesUri: string[],
+    deletedImagesUri?: string[],
     mode: NotePageMode,
     noteData?: INoteJS,
     relations: NoteRelations

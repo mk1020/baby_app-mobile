@@ -1,9 +1,7 @@
 import {Model} from '@nozbe/watermelondb';
 import {Associations} from '@nozbe/watermelondb/Model';
-import {children, field, relation} from '@nozbe/watermelondb/decorators';
+import {children, field, relation, writer} from '@nozbe/watermelondb/decorators';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
-import {writer} from '@nozbe/watermelondb/decorators';
-import {createDiaryIfNotExist} from './assist';
 
 export class Diary extends Model {
   static table = DiaryTableName

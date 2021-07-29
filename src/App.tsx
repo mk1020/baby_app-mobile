@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useLayoutEffect, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {Platform, UIManager, useColorScheme} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {InitialState, NavigationState} from '@react-navigation/routers';
@@ -12,7 +12,6 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {createDiaryIfNotExist} from './model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
-import {DiaryTableName} from './model/schema';
 import {fallbackLanguage, TLanguage} from './common/localization/localization';
 import {RootStoreType} from './redux/rootReducer';
 

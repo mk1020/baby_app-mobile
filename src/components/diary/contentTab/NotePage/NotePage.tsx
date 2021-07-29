@@ -9,7 +9,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {INoteJS} from '../../../../model/types';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {Controller, useForm} from 'react-hook-form';
-import {createNoteDB, deleteNote, updateNoteDB} from '../../../../model/assist';
+import {createNoteDB, deleteImagesFromCache, deleteNote, updateNoteDB} from '../../../../model/assist';
 import {RootStackList} from '../../../../navigation/types';
 import {actions, RichEditor, RichToolbar} from 'react-native-pell-rich-editor';
 import {ConditionView} from '../../../../common/components/ConditionView';
@@ -30,7 +30,13 @@ type TProps = {
 }
 export const NotePage = memo((props: TProps) => {
   const {route} = props;
-  const {noteData, imagesUri = [], mode, relations} = route.params;
+  const {
+    noteData,
+    imagesUri = [],
+    mode,
+    relations,
+    deletedImagesUri = []
+  } = route.params;
 
   const {t, i18n} = useTranslation();
   const database = useDatabase();
@@ -56,8 +62,11 @@ export const NotePage = memo((props: TProps) => {
       if (mode === NotePageMode.Create) {
         await createNoteDB(database, _noteData, relations);
         navigation.goBack();
-      } else {
+      }
+
+      if (mode === NotePageMode.Edit) {
         await updateNoteDB(database, _noteData);
+        deleteImagesFromCache(deletedImagesUri);
         navigation.goBack();
       }
     } catch (e) {

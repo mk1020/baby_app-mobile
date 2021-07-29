@@ -1,4 +1,4 @@
-import React, {memo, useMemo, useState} from 'react';
+import React, {memo, useEffect, useMemo, useState} from 'react';
 import {Linking, StyleSheet} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
@@ -13,6 +13,9 @@ import {TLanguage} from '../../common/localization/localization';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {changeDiaryTitle, changeLanguage} from '../../redux/appSlice';
+import {zip, unzip, unzipAssets, subscribe} from 'react-native-zip-archive';
+import {exportDBToZip} from '../../model/assist';
+import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
 
 type TProps = {
   database?: Database
@@ -23,16 +26,26 @@ type TProps = {
 
 export const MenuContainer_ = memo((props: TProps) => {
   const {diaryId, database} = props;
-  const db = useDatabase();
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
+  useEffect(() => {
+    const zipProgress = subscribe(({progress, filePath}) => {
+      // the filePath is always empty on iOS for zipping.
+      console.log(`progress: ${progress}\nprocessed at: ${filePath}`);
+    });
+    return () => zipProgress.remove();
+  }, []);
   const onPressDisableAds = () => {};
-  const onPressSync = () => {};
-  const onPressExport = () => {};
+  const onPressSync = () => {
+    console.log(CachesDirectoryPath);
+  };
+  const onPressExport = async () => {
+    await exportDBToZip(database as Database);
+  };
   const onPressImport = () => {};
   const onPressChangeLanguage = () => {
     setLanguageModalVisible(true);

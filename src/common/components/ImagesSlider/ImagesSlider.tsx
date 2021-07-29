@@ -4,6 +4,8 @@ import {TabView} from 'react-native-tab-view';
 import {Fonts} from '../../phone/fonts';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
 import {SliderImage} from './SliderImage';
+import {ConditionView} from '../ConditionView';
+import {SlidesCounter} from './SlidesCounter';
 
 export enum SliderMode {
   FullScreen = 'FullScreen',
@@ -35,6 +37,7 @@ export const ImagesSlider = memo((props: TProps) => {
       <SliderImage
         uri={route.key}
         onPressImage={onPressImage}
+        mode={mode}
       />
     );
   };
@@ -54,9 +57,9 @@ export const ImagesSlider = memo((props: TProps) => {
         initialLayout={{width, height}}
         style={[mode === SliderMode.Preview ? styles.tabViewPreview : {}]}
       />
-      <View style={styles.counter}>
-        <Text style={styles.counterText}>{index + 1}/{routes.length}</Text>
-      </View>
+      <ConditionView showIf={mode === SliderMode.Preview}>
+        <SlidesCounter slide={index + 1} totalCount={routes.length} mode={SliderMode.Preview}/>
+      </ConditionView>
     </View>
   );
 });
@@ -66,24 +69,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   containerModeFull: {
-    flex: 1
-  },
-  counter: {
-    width: 34,
-    height: 21,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    right: 8,
-    top: 8
-  },
-  counterText: {
-    fontFamily: Fonts.regular,
-    fontSize: 14,
-    lineHeight: 17,
-    color: '#ffffff'
+    flex: 1,
   },
   tabViewPreview: {
     height: 185

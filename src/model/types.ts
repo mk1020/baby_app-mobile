@@ -4,39 +4,28 @@ export interface INote {
   id: string,
   page_id: string,
   diary_id: string,
-  //page_type: number,
+  chapter_id: string,
+  bookmarked: boolean
   title: string
   note: string,
   photo: string,
-  //food: string,
-  //volume: string,
-  //temp: number,
   tags: string,
- // pressure: string,
   created_at: number,
   updated_at: number,
-  //event_date_start: number,
-  //event_date_end: number,
 }
 
 export interface INoteJS {
   id: string,
   pageId: string,
   diaryId: string,
-  //pageType: number,
+  chapterId: string,
   title: string
   bookmarked: boolean
   note: string,
   photo: string,
-  //food: string,
-  //volume: string,
-  //temp: number,
   tags: string,
-  //pressure: string,
   createdAt: number,
   updatedAt: number,
-  //eventDateStart: number,
-  //eventDateEnd: number,
 }
 
 export interface IPhoto {
@@ -47,3 +36,28 @@ export interface IPhoto {
   createdAt: number
   updatedAt: number
 }
+export interface IDiary {
+  id: string
+  userId: number
+  name: string | null
+  createdAt: number
+  updatedAt: number
+}
+
+export interface IChapter {
+  id: string
+  diaryId: string
+  number: string
+  createdAt: number
+  updatedAt: number
+}
+export interface IPage {
+  id: string
+  diaryId: string
+  chapterId: string
+  name: string
+  createdAt: number
+  updatedAt: number
+}
+
+export type TTables = 'diaries' | 'notes' | 'chapters' | 'pages' | 'photos_by_month'

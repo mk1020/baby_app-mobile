@@ -1,6 +1,7 @@
 import {TFunction} from 'i18next';
 import {INoteJS} from '../../model/types';
 import {PermissionsAndroid} from 'react-native';
+import {noteAdapter} from '../../model/adapters';
 
 export const getItemsPageType = (t: TFunction) => ([
   {label: t('common'), value: 1},
@@ -43,25 +44,6 @@ export const notesAdapter = (notes: any): INoteJSEnhanced[] => {
   return notes?.map((note: INoteJS) => noteAdapter(note));
 };
 
-export const noteAdapter = (note: INoteJS) => ({
-  id: note.id,
-  title: note.title,
-  bookmarked: note.bookmarked,
-  note: note.note,
-  photo: note.photo,
-  imagesUri: note.photo ? note.photo?.split(';') : [],
-  tags: note.tags,
-  //food: note.food,
-  //temp: note.temp,
-  //volume: note.volume,
-  //pressure: note.pressure,
-  pageId: note.pageId,
-  //pageType: note.pageType,
-  createdAt: note.createdAt,
-  updatedAt: note.updatedAt,
-  //eventDateStart: note.eventDateStart,
-  //eventDateEnd: note.eventDateEnd,
-});
 interface IRecord {
   createdAt: number
 }

@@ -1,12 +1,6 @@
 import {IPhoto} from '../../../../model/types';
-export const photoAdapter = (photo: IPhoto) => ({
-  diaryId: photo.diaryId,
-  id: photo.id,
-  photo: photo.photo,
-  date: photo.date,
-  createdAt: photo.createdAt,
-  updatedAt: photo.updatedAt
-});
+import {photoAdapter} from '../../../../model/adapters';
+
 export const photosDataAdapter = (photos: IPhoto[]) => {
   let photosScopeItemsData: any[] = [];
   const photosData: any[][] = [];

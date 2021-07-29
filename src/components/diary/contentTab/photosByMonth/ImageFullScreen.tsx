@@ -1,16 +1,15 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo} from 'react';
 import {Image, SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
-import {HeaderButton} from '../../../../common/components/HeaderButton';
 import {Images} from '../../../../common/imageResources';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../../../navigation/pages';
-import {ImagesSlider, SliderMode} from '../../../../common/components/ImagesSlider/ImagesSlider';
-import {ConditionView} from '../../../../common/components/ConditionView';
 import {RootStackList} from '../../../../navigation/types';
 import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimple';
 import {HeaderBackButton} from '@react-navigation/stack';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {PhotosTableName} from '../../../../model/schema';
+import {getClearPathFile} from '../../../../common/assistant/files';
+import * as RNFS from 'react-native-fs';
 
 type TProps = {
   route: RouteProp<RootStackList, NavigationPages.ImageFullScreen>
@@ -32,6 +31,7 @@ export const ImageFullScreen = memo((props: TProps) => {
       const image = await db.get(PhotosTableName).find(imageId || '');
       // @ts-ignore
       await image.updatePhoto(null);
+      await RNFS.unlink(getClearPathFile(imageUri));
       navigation.navigate(NavigationPages.PhotosByMonth, {deletedPhotoId: imageId});
     } catch (e) {
       console.log(e);
@@ -45,9 +45,7 @@ export const ImageFullScreen = memo((props: TProps) => {
         <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
         <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
-
-      <Image source={{uri: imageUri}} style={styles.image}/>
-
+      <Image source={{uri: imageUri}} style={styles.image} resizeMode={'contain'}/>
     </SafeAreaView>
   );
 });
