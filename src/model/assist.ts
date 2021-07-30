@@ -246,6 +246,8 @@ interface DBExportJson {
     [created: string]: any[]
   }
 }
+
+export const backupFileName = 'life-book-backup.zip'
 export const exportDBToZip = async (db: Database) => {
   const backupFolderPath = DocumentDirectoryPath + '/backup';
 
@@ -285,7 +287,7 @@ export const exportDBToZip = async (db: Database) => {
     await RNFS.writeFile(backupFolderPath + '/db.json', JSON.stringify(exportJson), 'utf8');
 
     //zip all
-    await zip(backupFolderPath, DownloadDirectoryPath + '/life-book-backup.zip');
+    await zip(backupFolderPath, DownloadDirectoryPath + '/' + backupFileName);
   } catch (e) {
     console.log(e);
   } finally {

@@ -75,6 +75,9 @@ export const en = {
     supportUs: 'Please support us',
     exit: 'Exit',
     ru: 'Russian',
-    en: 'English'
+    en: 'English',
+    exportData: 'Backup',
+    exportDone: 'The backup was successfully created',
+    location: 'Location',
   },
 };

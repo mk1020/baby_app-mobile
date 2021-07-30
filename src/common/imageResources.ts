@@ -33,4 +33,5 @@ export const Images = {
   contract: <ImageURISource>require('../../assets/images/contract.png'),
   check: <ImageURISource>require('../../assets/images/check.png'),
   language: <ImageURISource>require('../../assets/images/language.png'),
+  where: <ImageURISource>require('../../assets/images/where_to_vote.png'),
 };
