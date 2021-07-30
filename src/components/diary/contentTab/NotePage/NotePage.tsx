@@ -76,7 +76,10 @@ export const NotePage = memo((props: TProps) => {
 
   const onPressDelete = async () => {
     try {
+      console.log('logggg1')
       await deleteNote(getValues('id'), database);
+      const imagesUri = getValues('imagesUri');
+      deleteImagesFromCache(imagesUri);
       navigation.goBack();
     } catch (e) {
       console.log(e);

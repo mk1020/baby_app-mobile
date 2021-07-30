@@ -1,17 +1,15 @@
-import React, {memo, useEffect, useState} from 'react';
-import {FlatList, ListRenderItemInfo, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {signOut} from '../../../redux/appSlice';
-import {useDispatch} from 'react-redux';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from '../../../model/schema';
+import React, {memo} from 'react';
+import {FlatList, ListRenderItemInfo, StyleSheet} from 'react-native';
+import {NotesTableName} from '../../../model/schema';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
+import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
-import {INoteJSEnhanced, noteAdapter} from '../assist';
 import {INoteJS} from '../../../model/types';
 import {BookmarkItem} from './BookmarkItem';
 import {NavigationPages} from '../../../navigation/pages';
 import {NotePageMode} from '../contentTab/NotePage/NotePage';
 import {useNavigation} from '@react-navigation/native';
+import {noteAdapter} from '../../../model/adapters';
 
 type TProps = {
   database?: Database
@@ -19,7 +17,7 @@ type TProps = {
   bookmarkedNotes?: any[]
 }
 export const BookmarksTab_ = memo((props: TProps) => {
-  const {diaryId, database, bookmarkedNotes} = props;
+  const {bookmarkedNotes} = props;
   const navigation = useNavigation();
   const onPressBookmark = (note: INoteJS) => {
     const noteData = noteAdapter(note);

@@ -9,7 +9,7 @@ import {TLanguage} from '../common/localization/localization';
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
   userToken: null,
-  isLoading: true,
+  isLoading: false,
   language: null,
   diaryTitle: ''
 };

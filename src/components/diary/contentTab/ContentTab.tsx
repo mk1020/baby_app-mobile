@@ -29,7 +29,7 @@ export const ContentTab_ = memo((props: TProps) => {
   const {t} = useTranslation();
 
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
-  const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([{name: t('photosByMonth'), id: 'photosByMonth', table: PagesTableName}]);
+  const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
   const [showMenu, setShowMenu] = useState(false);
   const [longPressItem, setLongPressItem] = useState<any>();
   const [editableItemId, setEditableItemId] = useState('');
@@ -39,9 +39,11 @@ export const ContentTab_ = memo((props: TProps) => {
     chapters_ && setCurrentDiaryChapters(chapters_);
 
     const pages_ = pages?.filter(page => page.diaryId === diaryId);
-    pages_ && setCurrentDiaryPages([...currentDiaryPages, ...pages_]);
-  }, [chapters, pages]);
+    console.log('pages_', pages_);
 
+    pages_ && setCurrentDiaryPages([{name: t('photosByMonth'), id: 'photosByMonth', table: PagesTableName}, ...pages_]);
+  }, [chapters, pages]);
+  console.log(currentDiaryPages);
   const onPressPage = (item: any) => {
     const pageDataAdapted: PageType = {
       id: item?.id,

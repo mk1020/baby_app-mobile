@@ -7,7 +7,7 @@ import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
 import {adapterByTableName, noteAdapter, photoAdapter} from './adapters';
 import {zip} from 'react-native-zip-archive';
-import {CachesDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
+import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
 import * as RNFS from 'react-native-fs';
 import {getClearPathFile} from '../common/assistant/files';
 
@@ -104,7 +104,6 @@ export const createPage = async  (database: Database, data: IFormCretePage, diar
 export const createNoteDB = async (db: Database, data: Partial<INoteJS>, relations: NoteRelations) => {
   await db.write(async () => {
     const notes = db?.get(NotesTableName);
-    console.log(notes);
     await notes.create((note: any) => {
       note.diaryId = relations?.diaryId;
       note.chapterId = relations?.chapterId || null;
@@ -139,11 +138,12 @@ export const getNotesByPageDB = async (pageId: string, db: Database) => {
 };
 
 export const deleteNote = async (id: string, db: any) => {
-  await db.write(async () => {
-    const notes = db.get(NotesTableName);
-    const targetNote = await notes.find(id || '');
-    await targetNote.deleteNote();
-  });
+  const notes = db.get(NotesTableName);
+  const targetNote = await notes.find(id || '');
+  console.log('log', id);
+  console.log('id', id);
+  console.log('targetNote', targetNote);
+  await targetNote.deleteNote();
 };
 
 export const setBookmarkToNote = async (id: string, bookmarked: boolean, db: any) => {
@@ -247,6 +247,8 @@ interface DBExportJson {
   }
 }
 export const exportDBToZip = async (db: Database) => {
+  const backupFolderPath = DocumentDirectoryPath + '/backup';
+
   try {
     const schema = await db.schema;
     const tables = Object.keys(schema?.tables);
@@ -254,24 +256,39 @@ export const exportDBToZip = async (db: Database) => {
     const collections = await Promise.all(batchPromises);
     //crete db json
     const exportJson: DBExportJson = {};
-    collections.forEach((collection: any[]) => {
+
+    for (const collection of collections) {
       const tableName = collection.length && collection[0].table;
       if (tableName) {
-        const adaptedRecords = collection.map(record => adapterByTableName[record.table as TTables](record));
+        const adaptedRecords: any = collection.map(record => adapterByTableName[record.table as TTables](record));
         exportJson[tableName] = {
           created: adaptedRecords
         };
+
+        for (const record of adaptedRecords) {
+          if (record?.photo) {
+            //create folder
+            await RNFS.mkdir(backupFolderPath);
+            //copy images to folder
+            const imagesUri: string[] = record.photo.split(';');
+            for (const image of imagesUri) {
+              const imageSplit = image.split('/');
+              const imageName = imageSplit[imageSplit.length - 1];
+              await RNFS.copyFile(getClearPathFile(image), backupFolderPath + '/' + imageName);
+            }
+          }
+        }
       }
-    });
+    }
 
-    //write file
-    await RNFS.writeFile(CachesDirectoryPath + '/db.json', JSON.stringify(exportJson), 'utf8');
+    //write db file
+    await RNFS.writeFile(backupFolderPath + '/db.json', JSON.stringify(exportJson), 'utf8');
+
     //zip all
-    await zip(CachesDirectoryPath, DownloadDirectoryPath + '/book-life-backup.zip');
-
+    await zip(backupFolderPath, DownloadDirectoryPath + '/life-book-backup.zip');
   } catch (e) {
     console.log(e);
+  } finally {
+    await RNFS.unlink(backupFolderPath).catch(e => console.log(e));
   }
 };
-//todo когда я удалю главу или страницу, то из базы все удалится,
-// но изображения в кеше останутся.. и при бекапе они будут сильно увеличивать размер

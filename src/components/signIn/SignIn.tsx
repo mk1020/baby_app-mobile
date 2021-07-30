@@ -1,11 +1,11 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {oAuthGoogle, setLoadingAppStatus, signIn} from '../../redux/appSlice';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
-import {emailRegex, googleOAuthClientId, passRegex} from '../../common/consts';
+import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
 import {NavigationPages} from '../../navigation/pages';
 import {RouteProp, useNavigation} from '@react-navigation/native';
@@ -13,8 +13,6 @@ import {TUnAuthPagesList} from '../../navigation/types';
 import {RootStoreType} from '../../redux/rootReducer';
 import {Spinner} from '../../common/components/Spinner';
 import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-google-signin/google-signin';
-import {DiaryTableName} from '../../model/schema';
-import {database} from '../../AppContainer';
 
 type TProps = {
   route: RouteProp<TUnAuthPagesList, NavigationPages.SignIn>
