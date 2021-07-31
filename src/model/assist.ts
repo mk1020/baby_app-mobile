@@ -1,13 +1,11 @@
 import {PullResponse} from './sync';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
-import {IDiary, INote, INoteJS, IPhoto, TTables} from './types';
+import {INote, INoteJS, IPhoto} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
-import {Database, Q, tableName} from '@nozbe/watermelondb';
+import {Database, Q} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
-import {adapterByTableName, noteAdapter, photoAdapter} from './adapters';
-import {zip} from 'react-native-zip-archive';
-import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
+import {noteAdapter, photoAdapterJs} from './adapters';
 import * as RNFS from 'react-native-fs';
 import {getClearPathFile} from '../common/assistant/files';
 
@@ -199,17 +197,32 @@ export const deleteImagesFromCache = async (imagesUri: string[]) => {
   }
 };
 export const deletePage = async (id: string, db: any) => {
-  const page = await db.get(PagesTableName).find(id || '');
-  const notes = await db.get(NotesTableName).query('page_id', page?.id).fetch();
-  await deleteImagesFromCache(notes);
-  await page.delete();
+  try {
+    const page = await db.get(PagesTableName).find(id || '');
+    const notes = await db.get(NotesTableName).query(Q.where('page_id', id)).fetch();
+    await page.delete();
+    await deleteImagesFromCache(notes.map((note: any) => note.photo));
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const deleteChapter = async (chapterId: string, db: any) => {
-  const chapter = await db.get(ChaptersTableName).find(chapterId || '');
-  const notes = await db.get(NotesTableName).query('chapter_id', chapter?.id).fetch();
-  await deleteImagesFromCache(notes);
-  await chapter.delete();
+  try {
+    const chapter = await db.get(ChaptersTableName).find(chapterId || '');
+    const notes = await db.get(NotesTableName).query(Q.where('chapter_id', chapterId)).fetch();
+    await chapter.delete();
+    const photosUri: string[] = [];
+    notes.forEach((note: any) => {
+      if (note.photo) {
+        const photos = note.photo.split(';');
+        photosUri.push(...photos);
+      }
+    });
+    await deleteImagesFromCache(photosUri);
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const addNPhotos = async (n: number, diaryId: string, db: any) => {
@@ -217,7 +230,7 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
     const prepareCreatePhotos = [];
     const photos = db.get(PhotosTableName);
     const allPhotos = await photos.query().fetch();
-    const photosAdapted = allPhotos?.map((photo: IPhoto) => photoAdapter(photo));
+    const photosAdapted = allPhotos?.map((photo: IPhoto) => photoAdapterJs(photo));
     photosAdapted?.sort((a: IPhoto, b: IPhoto) => {
       return a.date - b.date;
     });
@@ -241,56 +254,5 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
   });
 };
 
-interface DBExportJson {
-  [tableName: string]: {
-    [created: string]: any[]
-  }
-}
 
-export const backupFileName = 'life-book-backup.zip'
-export const exportDBToZip = async (db: Database) => {
-  const backupFolderPath = DocumentDirectoryPath + '/backup';
 
-  try {
-    const schema = await db.schema;
-    const tables = Object.keys(schema?.tables);
-    const batchPromises = tables.map(table => db.get(table).query().fetch());
-    const collections = await Promise.all(batchPromises);
-    //crete db json
-    const exportJson: DBExportJson = {};
-
-    for (const collection of collections) {
-      const tableName = collection.length && collection[0].table;
-      if (tableName) {
-        const adaptedRecords: any = collection.map(record => adapterByTableName[record.table as TTables](record));
-        exportJson[tableName] = {
-          created: adaptedRecords
-        };
-
-        for (const record of adaptedRecords) {
-          if (record?.photo) {
-            //create folder
-            await RNFS.mkdir(backupFolderPath);
-            //copy images to folder
-            const imagesUri: string[] = record.photo.split(';');
-            for (const image of imagesUri) {
-              const imageSplit = image.split('/');
-              const imageName = imageSplit[imageSplit.length - 1];
-              await RNFS.copyFile(getClearPathFile(image), backupFolderPath + '/' + imageName);
-            }
-          }
-        }
-      }
-    }
-
-    //write db file
-    await RNFS.writeFile(backupFolderPath + '/db.json', JSON.stringify(exportJson), 'utf8');
-
-    //zip all
-    await zip(backupFolderPath, DownloadDirectoryPath + '/' + backupFileName);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    await RNFS.unlink(backupFolderPath).catch(e => console.log(e));
-  }
-};

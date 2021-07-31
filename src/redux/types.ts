@@ -7,7 +7,8 @@ export type TAppReducer = {
   userToken: TToken | null;
   isLoading: boolean;
   language: TLanguage | null
-  diaryTitle: string
+  diaryTitle: string,
+  forceUpdate: number
 };
 
 export type TSignIn = {

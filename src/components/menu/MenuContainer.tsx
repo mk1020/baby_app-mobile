@@ -10,22 +10,24 @@ import {getLanguagesData, getSectionsData} from './assist';
 import {ModalSelectorList} from '../../common/components/ModalSelectorList';
 import {TLanguage} from '../../common/localization/localization';
 import {useDispatch} from 'react-redux';
-import {changeDiaryTitle, changeLanguage} from '../../redux/appSlice';
+import {changeDiaryTitle, changeLanguage, forceUpdate} from '../../redux/appSlice';
 import {subscribe} from 'react-native-zip-archive';
-import {backupFileName, exportDBToZip} from '../../model/assist';
-import {CachesDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
+import {CachesDirectoryPath} from 'react-native-fs';
 import {ModalDown} from '../../common/components/ModalDown';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
 import {ConditionView} from '../../common/components/ConditionView';
 import {Fonts} from '../../common/phone/fonts';
 import {shortPath} from '../../common/assistant/files';
 import {Images} from '../../common/imageResources';
+import {exportDBToZip, importZip} from '../../model/backup';
 
 type TProps = {
   database?: Database
   diaryId: string
 }
-
+//todo если я буду использовать CodePush, то нужно удалить react-native-restart и использовать reload из codePush
 enum ExportProgress {
   None='None',
   InProgress= 'InProgress',
@@ -43,6 +45,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [zipProgress, setZipProgress] = useState(0);
   const [exportProgress, setExportProgress] = useState(ExportProgress.None);
+  const [backupFilePath, setBackupFilePath] = useState('');
 
   useEffect(() => {
     const zipProgress = subscribe(({progress, filePath}) => {
@@ -62,16 +65,22 @@ export const MenuContainer_ = memo((props: TProps) => {
     try {
       setExportModalVisible(true);
       setExportProgress(ExportProgress.InProgress);
-      await exportDBToZip(database as Database);
+      const backupFilePath = await exportDBToZip(database as Database);
+      backupFilePath && setBackupFilePath(backupFilePath);
       setExportProgress(ExportProgress.Success);
 
     } catch (e) {
       console.log(e);
       setExportProgress(ExportProgress.Error);
+      setZipProgress(0);
+      setExportModalVisible(false);
     }
   };
 
-  const onPressImport = () => {};
+  const onPressImport = async () => {
+    await importZip(database as Database);
+
+  };
 
   const onPressChangeLanguage = () => {
     setLanguageModalVisible(true);
@@ -107,6 +116,7 @@ export const MenuContainer_ = memo((props: TProps) => {
       await i18n.changeLanguage(language);
       setLanguageModalVisible(false);
       dispatch(changeLanguage(language));
+      dispatch(forceUpdate());
       dispatch(changeDiaryTitle(t('diaryTitle')));
     } catch (e) {
       console.log(e);
@@ -159,7 +169,7 @@ export const MenuContainer_ = memo((props: TProps) => {
               <View style={styles.exportPathContainer}>
                 <Image source={Images.where} style={styles.imagePath}/>
                 <Text style={styles.modalBlackText}>
-                  {shortPath(DownloadDirectoryPath + '/' + backupFileName)}
+                  {shortPath(backupFilePath)}
                 </Text>
               </View>
             </>
@@ -174,6 +184,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   );
 });
 //todo на ios нужно использовать не DownloadDirectoryPath, а что-то другое...
+//todo на ios нужно включить доступ в icloud для пикера файлов, это делает когда покупаешь аккаунт азработчика
 export const MenuContainer = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
   return {
     diary: database?.collections.get(DiaryTableName).query(Q.where('is_current', true)).observe(),

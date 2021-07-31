@@ -35,19 +35,14 @@ export async function syncDB(database: Database, token: TToken, diaryId: number)
           console.error(err.response?.data || err.response || err);
           throw new Error('error pull sync');
         });
-      console.log('resPull', res);
-      console.log('lastPulledAt', lastPulledAt);
       return pulledNotesAdapter(res.data);
     },
     pushChanges: async ({changes, lastPulledAt}) => {
-      console.log('changes', changes);
       const res = await req(token).post('/note/sync', {changes, lastPulledAt})
         .catch(err => {
           console.error(err.response?.data || err.response || err);
           throw new Error('error push sync');
         });
-
-      console.log('res', res);
     },
     migrationsEnabledAtVersion: 1,
   });

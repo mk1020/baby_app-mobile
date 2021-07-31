@@ -47,10 +47,17 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
         <View style={styles.headerLeft}>
           <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
           <Space.H px={16}/>
-          <SlidesCounter slide={currSlideIndex + 1} totalCount={imagesUri.length} mode={SliderMode.FullScreen}/>
+          <SlidesCounter slide={imagesUri.length ? currSlideIndex + 1 : 0} totalCount={imagesUri.length} mode={SliderMode.FullScreen}/>
         </View>
         <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
+
+
+
+
+
+
+
 
       <ConditionView showIf={imagesUri?.length > 0}>
         <ImagesSlider

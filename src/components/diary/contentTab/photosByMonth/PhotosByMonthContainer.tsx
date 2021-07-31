@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 import {photosDataAdapter} from './assist';
 import {addNPhotos} from '../../../../model/assist';
 import {DocumentDirectoryPath} from 'react-native-fs';
-import {photoAdapter} from '../../../../model/adapters';
+import {photoAdapterJs} from '../../../../model/adapters';
 
 type TProps = {
   route?: RouteProp<RootStackList, NavigationPages.PhotosByMonth>
@@ -58,7 +58,7 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
 
   useEffect(() => {
     const newPhoto = photos?.map(photo => {
-      const adaptedPhoto = photoAdapter(photo);
+      const adaptedPhoto = photoAdapterJs(photo);
       adaptedPhoto.photo = null;
       return photo.id === deletedPhotoId ? adaptedPhoto : photo;
     });

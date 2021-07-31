@@ -27,7 +27,6 @@ export const ContentTab_ = memo((props: TProps) => {
   const {diaryId, chapters, pages} = props;
   const navigation = useNavigation();
   const {t} = useTranslation();
-
   const [currentDiaryChapters, setCurrentDiaryChapters] = useState<any[]>([]);
   const [currentDiaryPages, setCurrentDiaryPages] = useState<any[]>([]);
   const [showMenu, setShowMenu] = useState(false);
@@ -39,11 +38,9 @@ export const ContentTab_ = memo((props: TProps) => {
     chapters_ && setCurrentDiaryChapters(chapters_);
 
     const pages_ = pages?.filter(page => page.diaryId === diaryId);
-    console.log('pages_', pages_);
-
     pages_ && setCurrentDiaryPages([{name: t('photosByMonth'), id: 'photosByMonth', table: PagesTableName}, ...pages_]);
   }, [chapters, pages]);
-  console.log(currentDiaryPages);
+
   const onPressPage = (item: any) => {
     const pageDataAdapted: PageType = {
       id: item?.id,

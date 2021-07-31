@@ -41,16 +41,23 @@ export const NotePage = memo((props: TProps) => {
   const {t, i18n} = useTranslation();
   const database = useDatabase();
   const navigation = useNavigation();
-
   const {
     control,
     handleSubmit,
     formState: {errors},
     getValues,
-    trigger
-  } = useForm<IFormNote>({defaultValues: {imagesUri, ...noteData}});
+    trigger,
+    setValue,
+  } = useForm<IFormNote>({defaultValues: noteData});
   const editorRef = useRef<RichEditor>(null);
   const {isKeyboardVisible} = useKeyboard();
+
+  useEffect(() => {
+    if (deletedImagesUri.length) {
+      setValue('imagesUri', imagesUri, {shouldValidate: true});
+      deleteImagesFromCache(deletedImagesUri);
+    }
+  }, [deletedImagesUri.length]);
 
   const onPressDone = async (data: UnpackNestedValue<IFormNote>) => {
     try {
@@ -76,7 +83,6 @@ export const NotePage = memo((props: TProps) => {
 
   const onPressDelete = async () => {
     try {
-      console.log('logggg1')
       await deleteNote(getValues('id'), database);
       const imagesUri = getValues('imagesUri');
       deleteImagesFromCache(imagesUri);
@@ -110,6 +116,7 @@ export const NotePage = memo((props: TProps) => {
                 title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
                 mode={mode}
                 onLoadImage={(imageUri: string) => {
+                  console.log('[...value,', value);
                   onChange([...value, imageUri]);
                   trigger('imagesUri');
                 }}
@@ -118,8 +125,7 @@ export const NotePage = memo((props: TProps) => {
             )}
             name="imagesUri"
             rules={{required: false}}
-            defaultValue={[]}
-
+            //defaultValue={[]}
           />
           <NoteCard
             formControl={control}

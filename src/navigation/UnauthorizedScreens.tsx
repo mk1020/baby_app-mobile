@@ -12,7 +12,7 @@ import {NewPassword} from '../components/passRecovery/NewPassword';
 
 const Stack = createStackNavigator<TUnAuthPagesList>();
 export const UnauthorizedScreens = (): JSX.Element => {
-  const {t, i18n} = useTranslation();
+  const {t} = useTranslation();
 
   return (
     <Stack.Navigator>

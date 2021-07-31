@@ -2,31 +2,31 @@ import {IChapter, IDiary, INoteJS, IPage, IPhoto} from './types';
 import {INoteJSEnhanced} from '../components/diary/assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 
-
-export const diaryAdapter = (diary: any): IDiary => ({
+export const diaryAdapter = (diary: any) => ({
   id: diary.id,
-  userId: diary?.userId,
+  user_id: diary?.userId,
   name: diary?.name,
-  createdAt: diary?.createdAt,
-  updatedAt: diary?.updatedAt
+  created_at: diary?.createdAt,
+  updated_at: diary?.updatedAt
 });
-export const chapterAdapter = (chapter: any): IChapter => ({
+export const chapterAdapter = (chapter: any) => ({
   id: chapter.id,
-  diaryId: chapter?.diaryId,
+  diary_id: chapter?.diaryId,
+  name: chapter?.name,
   number: chapter?.number,
-  createdAt: chapter?.createdAt,
-  updatedAt: chapter?.updatedAt
+  created_at: chapter?.createdAt,
+  updated_at: chapter?.updatedAt
 });
-export const pageAdapter = (page: any): IPage => ({
+export const pageAdapter = (page: any) => ({
   id: page.id,
-  diaryId: page?.diaryId,
-  chapterId: page?.chapterId,
+  diary_id: page?.diaryId,
+  chapter_id: page?.chapterId,
   name: page?.name,
-  createdAt: page?.createdAt,
-  updatedAt: page?.updatedAt
+  created_at: page?.createdAt,
+  updated_at: page?.updatedAt
 });
 
-export const noteAdapter = (note: any): INoteJSEnhanced => ({
+export const noteAdapterJs = (note: any): INoteJSEnhanced => ({
   id: note?.id,
   diaryId: note?.diaryId,
   chapterId: note?.chapterId,
@@ -41,13 +41,35 @@ export const noteAdapter = (note: any): INoteJSEnhanced => ({
   updatedAt: note?.updatedAt,
 });
 
-export const photoAdapter = (photo: any): IPhoto => ({
+export const noteAdapter = (note: any) => ({
+  id: note?.id,
+  diary_id: note?.diaryId,
+  chapter_id: note?.chapterId,
+  title: note?.title,
+  bookmarked: note?.bookmarked,
+  note: note?.note,
+  photo: note?.photo,
+  tags: note?.tags,
+  page_id: note?.pageId,
+  created_at: note?.createdAt,
+  updated_at: note?.updatedAt,
+});
+
+export const photoAdapterJs = (photo: any): IPhoto => ({
   diaryId: photo.diaryId,
   id: photo.id,
   photo: photo.photo,
   date: photo.date,
   createdAt: photo.createdAt,
   updatedAt: photo.updatedAt
+});
+export const photoAdapter = (photo: any) => ({
+  diary_id: photo.diaryId,
+  id: photo.id,
+  photo: photo.photo,
+  date: photo.date,
+  created_at: photo.createdAt,
+  updated_at: photo.updatedAt
 });
 
 export const adapterByTableName = {

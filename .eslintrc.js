@@ -41,9 +41,7 @@ module.exports = {
       'error',
       'always'
     ],
-    'camelcase': [
-      'error'
-    ],
+
     'eqeqeq': [
       'error',
       'always'

@@ -26,7 +26,7 @@ const Diary_ = memo((props:TProps) => {
 
   const {diary, chapters} = props;
   const diaryTitle = useSelector((state: RootStoreType) => state.app.diaryTitle);
-
+  console.log(diary);
   const [tabIndex, setTabIndex] = useState(0);
   const diaryData = diary.length ? diary[0] : null;
   //todo возможно когда diaryId обновится, pages and chapters не обновятся..
@@ -42,7 +42,7 @@ const Diary_ = memo((props:TProps) => {
 export const Diary = withDatabase(withObservables<TProps, {}>([], ({database}) => {
   return {
     notes: database.collections.get(NotesTableName).query().observe(),
-    diary: database.collections.get(DiaryTableName).query(Q.where('is_current', true)).observe(),
+    diary: database.collections.get(DiaryTableName).query().observe(),
     chapters: database.collections.get(ChaptersTableName).query().observe()
   };
 })(Diary_));

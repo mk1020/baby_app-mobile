@@ -11,7 +11,8 @@ const initialState: TAppReducer = {
   userToken: null,
   isLoading: false,
   language: null,
-  diaryTitle: ''
+  diaryTitle: '',
+  forceUpdate: 0,
 };
 
 export const signIn = createAsyncThunk(
@@ -73,6 +74,9 @@ const appSlice = createSlice({
     changeDiaryTitle: (state: TAppReducer, action: PayloadAction<string>) => {
       state.diaryTitle = action.payload;
     },
+    forceUpdate: (state: TAppReducer) => {
+      state.forceUpdate += 1;
+    },
   },
   extraReducers: builder => {
     builder.addCase(signIn.pending, (state: TAppReducer, action: PayloadAction) => {
@@ -101,5 +105,6 @@ export const {
   setLoadingAppStatus,
   refreshToken,
   changeLanguage,
-  changeDiaryTitle
+  changeDiaryTitle,
+  forceUpdate
 } = appSlice.actions;

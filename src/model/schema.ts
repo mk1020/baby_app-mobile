@@ -48,7 +48,7 @@ export const babyAppSchema = appSchema({
         {name: 'title', type: 'string'},
         {name: 'bookmarked', type: 'boolean'},
         {name: 'note', type: 'string'},
-        {name: 'photo', type: 'string'},
+        {name: 'photo', type: 'string', isOptional: true},
         {name: 'tags', type: 'string'},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},

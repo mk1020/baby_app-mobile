@@ -1,7 +1,7 @@
 import {TFunction} from 'i18next';
 import {INoteJS} from '../../model/types';
 import {PermissionsAndroid} from 'react-native';
-import {noteAdapter} from '../../model/adapters';
+import {noteAdapterJs} from '../../model/adapters';
 
 export const getItemsPageType = (t: TFunction) => ([
   {label: t('common'), value: 1},
@@ -41,7 +41,7 @@ export interface INoteJSEnhanced extends INoteJS{
   imagesUri: string[]
 }
 export const notesAdapter = (notes: any): INoteJSEnhanced[] => {
-  return notes?.map((note: INoteJS) => noteAdapter(note));
+  return notes?.map((note: INoteJS) => noteAdapterJs(note));
 };
 
 interface IRecord {

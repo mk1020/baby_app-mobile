@@ -9,7 +9,7 @@ import {BookmarkItem} from './BookmarkItem';
 import {NavigationPages} from '../../../navigation/pages';
 import {NotePageMode} from '../contentTab/NotePage/NotePage';
 import {useNavigation} from '@react-navigation/native';
-import {noteAdapter} from '../../../model/adapters';
+import {noteAdapterJs} from '../../../model/adapters';
 
 type TProps = {
   database?: Database
@@ -20,7 +20,7 @@ export const BookmarksTab_ = memo((props: TProps) => {
   const {bookmarkedNotes} = props;
   const navigation = useNavigation();
   const onPressBookmark = (note: INoteJS) => {
-    const noteData = noteAdapter(note);
+    const noteData = noteAdapterJs(note);
     navigation.navigate(NavigationPages.NotePage, {mode: NotePageMode.Edit, noteData});
   };
 
