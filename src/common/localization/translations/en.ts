@@ -76,7 +76,7 @@ export const en = {
     exit: 'Exit',
     ru: 'Russian',
     en: 'English',
-    exportData: 'Backup',
+    exportData: 'Backup in progress',
     exportDone: 'The backup was successfully created',
     location: 'Location',
   },

@@ -20,13 +20,14 @@ export const NavContainer = memo((props: TProps) => {
   const onChangeNav = (state?: NavigationState) => {
     storeData(PERSISTENCE_NAV_KEY, state).then();
   };
+  console.log('NavContainer render');
 
   return (
     <NavigationContainer
       ref={navigationRef}
       initialState={initState}
       onStateChange={onChangeNav}
-      key={'navigation container' + forceUpdate}
+      key={'navigation container' + forceUpdate || ''}
     >
       {userToken !== null ? <AuthorizedScreens /> : <UnauthorizedScreens />}
     </NavigationContainer>
