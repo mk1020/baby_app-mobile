@@ -4,6 +4,8 @@ export const ru = {
     emailInvalid: 'Введенный email не корректен',
     passInvalid: 'Введенный пароль не корректен',
     signIn: 'Войти',
+    exitAlert: 'Выход',
+    exitMassage: 'Вы действительно хотите выйти?',
     signUp: 'Зарегистрироваться',
     password: 'Пароль',
     confirmPass: 'Подтвердите пароль',

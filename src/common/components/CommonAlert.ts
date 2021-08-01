@@ -1,10 +1,10 @@
 import {Alert} from 'react-native';
 import {TFunction} from 'i18next';
 
-export const deleteAlert = (t: TFunction, onPress: ()=> void) =>
+export const commonAlert = (t: TFunction, title: string, subTitle: string, onPress: ()=> void) =>
   Alert.alert(
-    t('deleteNoteTitle'),
-    t('deleteNoteMessage'),
+    title,
+    subTitle,
     [
       {
         text: t('cancel'),

@@ -1,14 +1,14 @@
 import React, {memo} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {Images} from '../../common/imageResources';
-import {Fonts} from '../../common/phone/fonts';
+import {Images} from '../../../common/imageResources';
+import {Fonts} from '../../../common/phone/fonts';
 import {useTranslation} from 'react-i18next';
 
 type TProps = {
    email: string
    lastSyncAt: string
 }
-export const CardUser = memo((props: TProps) => {
+export const AuthCardUser = memo((props: TProps) => {
   const {email, lastSyncAt} = props;
   const {t} = useTranslation();
 

@@ -34,4 +34,5 @@ export const Images = {
   check: <ImageURISource>require('../../assets/images/check.png'),
   language: <ImageURISource>require('../../assets/images/language.png'),
   where: <ImageURISource>require('../../assets/images/where_to_vote.png'),
+  login: <ImageURISource>require('../../assets/images/login.png'),
 };

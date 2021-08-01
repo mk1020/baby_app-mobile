@@ -15,7 +15,7 @@ import {useTranslation} from 'react-i18next';
 import {Images} from '../../../common/imageResources';
 import {deleteChapter, deletePage} from '../../../model/assist';
 import {database} from '../../../AppContainer';
-import {deleteAlert} from '../../../common/components/DeleteAlert';
+import {commonAlert} from '../../../common/components/CommonAlert';
 
 type TProps = {
   database?: Database
@@ -146,7 +146,7 @@ export const ContentTab_ = memo((props: TProps) => {
           <ButtonIconVert
             title={t('delete')}
             image={Images.delete}
-            onPress={() => deleteAlert(t, onPressDelete)}
+            onPress={() => commonAlert(t, t('deleteNoteTitle'), t('deleteNoteMessage'), onPressDelete)}
           />
         </View>
       </ModalDown>

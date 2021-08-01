@@ -45,7 +45,7 @@ export const PassRecovery = memo((props: TProps) => {
       })
       .catch((err: AxiosError) => {
         changeRecoveryState(RecoveryState.error);
-        setError('email', {message: err.response?.data, shouldFocus: true});
+        setError('email', {message: err.response?.data}, {shouldFocus: true});
       });
   };
 

@@ -2,7 +2,6 @@ import React, {memo, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ButtonIconVert} from './ButtonIconVert';
 import {Images} from '../imageResources';
-import {deleteAlert} from './DeleteAlert';
 import {ModalDown} from './ModalDown';
 import {useTranslation} from 'react-i18next';
 import {requestSavePhotoPermission} from '../../components/diary/assist';

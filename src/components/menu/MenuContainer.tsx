@@ -9,8 +9,8 @@ import {Menu} from './Menu';
 import {getLanguagesData, getSectionsData} from './assist';
 import {ModalSelectorList} from '../../common/components/ModalSelectorList';
 import {TLanguage} from '../../common/localization/localization';
-import {useDispatch} from 'react-redux';
-import {changeDiaryTitle, changeLanguage, forceUpdate} from '../../redux/appSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {changeDiaryTitle, changeLanguage, forceUpdate, signOut} from '../../redux/appSlice';
 import {subscribe} from 'react-native-zip-archive';
 import {CachesDirectoryPath} from 'react-native-fs';
 import {Fonts} from '../../common/phone/fonts';
@@ -20,6 +20,8 @@ import {exportDBToZip, importZip} from '../../model/backup';
 import {ModalDownProgress, ProgressState} from '../../common/components/ModalDownProgress';
 import DocumentPicker from 'react-native-document-picker';
 import {getStorageData, storeData} from '../../common/assistant/asyncStorage';
+import {RootStoreType} from '../../redux/rootReducer';
+import {commonAlert} from '../../common/components/CommonAlert';
 
 type TProps = {
   database?: Database
@@ -37,6 +39,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   const {diaryId, database} = props;
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
+  const userToken = useSelector((state: RootStoreType) => state.app.userToken);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
@@ -78,6 +81,7 @@ export const MenuContainer_ = memo((props: TProps) => {
     return () => zipProgress.remove();
   }, [backupProgress]);
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressDisableAds = () => {};
 
   const onPressSync = () => {
@@ -131,6 +135,7 @@ export const MenuContainer_ = memo((props: TProps) => {
     setLanguageModalVisible(true);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressNotifications = () => {};
 
   const onPressFeatureRequest = async () => {
@@ -140,8 +145,8 @@ export const MenuContainer_ = memo((props: TProps) => {
       await Linking.openURL(url);
     }
   };
-  const onPressRateApp = () => {
-  };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const onPressRateApp = () => {};
   const onPressWriteUs = async () => {
     const url = `mailto:app.mikhail.kovalchuk@gmail.com?subject=${t('writeUs')}`;
     const canOpen = await Linking.canOpenURL(url);
@@ -149,7 +154,9 @@ export const MenuContainer_ = memo((props: TProps) => {
       await Linking.openURL(url);
     }
   };
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressTermsUse =  () => {};
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressPrivacyPolicy = () => {};
 
   const onModalCloseRequest = () => {
@@ -174,6 +181,9 @@ export const MenuContainer_ = memo((props: TProps) => {
       console.log(e);
     }
   };
+  const onPressLogOut = () => {
+    commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
+  };
   const handlers = {
     onPressDisableAds,
     onPressSync,
@@ -187,13 +197,18 @@ export const MenuContainer_ = memo((props: TProps) => {
     onPressTermsUse,
     onPressPrivacyPolicy,
   };
+
   const sectionDataOpt = {
     language
   };
 
   return (
     <>
-      <Menu renderData={getSectionsData(t, handlers, sectionDataOpt)} />
+      <Menu
+        renderData={getSectionsData(t, handlers, sectionDataOpt)}
+        isAuth={userToken !== null}
+        onPressLogOut={onPressLogOut}
+      />
       <ModalSelectorList
         data={getLanguagesData(t, changeLanguage_, language)}
         onRequestClose={onModalCloseRequest}

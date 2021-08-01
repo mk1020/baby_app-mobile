@@ -10,16 +10,21 @@ import {
   Text, TouchableOpacity,
   View
 } from 'react-native';
-import {CardUser} from './CardUser';
+import {AuthCardUser} from './auth/AuthCardUser';
 import {Section, TMenuItem} from './assist';
 import {MenuItem} from './MenuItem';
 import {Fonts} from '../../common/phone/fonts';
 import {ConditionView} from '../../common/components/ConditionView';
 import {Space} from '../../common/components/Space';
 import {useTranslation} from 'react-i18next';
+import {useSelector} from 'react-redux';
+import {RootStoreType} from '../../redux/rootReducer';
+import {UnAuthCardUser} from './auth/UnAuthCardUser';
 
 type TProps = {
   renderData: Section[]
+  isAuth: boolean
+  onPressLogOut: ()=>void
 }
 
 const SectionHeader = ({title}: {title: string}) => {
@@ -28,7 +33,7 @@ const SectionHeader = ({title}: {title: string}) => {
   );
 };
 export const Menu = memo((props: TProps) => {
-  const {renderData} = props;
+  const {renderData, isAuth, onPressLogOut} = props;
   const {t} = useTranslation();
 
   const renderItems = useMemo(() => {
@@ -59,11 +64,23 @@ export const Menu = memo((props: TProps) => {
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
       >
-        <CardUser email={'mmmffjs7438g@gmail.com'} lastSyncAt={'27 июл. 18:42'}/>
+        <ConditionView showIf={isAuth}>
+          <AuthCardUser email={'mmmffjs7438g@gmail.com'} lastSyncAt={'27 июл. 18:42'}/>
+        </ConditionView>
+
+        <ConditionView showIf={!isAuth}>
+          <UnAuthCardUser />
+        </ConditionView>
         {renderItems}
-        <TouchableOpacity style={styles.buttonExit} hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}>
-          <Text style={styles.buttonExitText}>{t('exit')}</Text>
-        </TouchableOpacity>
+        <ConditionView showIf={isAuth}>
+          <TouchableOpacity
+            style={styles.buttonExit}
+            hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
+            onPress={onPressLogOut}
+          >
+            <Text style={styles.buttonExitText}>{t('exit')}</Text>
+          </TouchableOpacity>
+        </ConditionView>
       </ScrollView>
     </SafeAreaView>
   );

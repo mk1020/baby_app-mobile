@@ -19,3 +19,8 @@ todo:
 Установка JSI на android
 
 . Когда вы импортируете Watermelon Sync, ваше приложение может не компилироваться в режиме выпуска. Чтобы исправить это, настройте сборщик Metro для использования Terser вместо UglifyES. Запустить:
+
+https://mehrankhandev.medium.com/integrating-fbsdk-facebook-login-in-react-native-7b7600ce74a7
+https://ibjects.medium.com/facebook-login-tutorial-for-react-native-3b510f8bdef3
+https://github.com/thebergamo/react-native-fbsdk-next
+https://www.freeprivacypolicy.com/

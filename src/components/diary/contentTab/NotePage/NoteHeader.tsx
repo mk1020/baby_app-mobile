@@ -11,7 +11,7 @@ import {requestSavePhotoPermission} from '../../assist';
 import {DropdownMenu} from '../../../../common/components/DropdownMenu';
 import {useTranslation} from 'react-i18next';
 import {NotePageMode} from './NotePage';
-import {deleteAlert} from '../../../../common/components/DeleteAlert';
+import {commonAlert} from '../../../../common/components/CommonAlert';
 import {ModalDownPhoto} from '../../../../common/components/ModalDownPhoto';
 
 
@@ -54,7 +54,7 @@ export const NoteHeader = memo((props: TProps) => {
         <HeaderButton icon={Images.photo} onPress={onPressPhoto}/>
         <ConditionView showIf={mode === NotePageMode.Edit}>
           <View style={stylesHeader.deleteIconWrapper}>
-            <HeaderButton icon={Images.delete} onPress={() => deleteAlert(t, onPressDelete)}/>
+            <HeaderButton icon={Images.delete} onPress={() => commonAlert(t, t('deleteNoteTitle'), t('deleteNoteMessage'), onPressDelete)}/>
           </View>
         </ConditionView>
       </View>

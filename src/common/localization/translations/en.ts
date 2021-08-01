@@ -5,6 +5,8 @@ export const en = {
     passInvalid: 'Password not correct',
     signIn: 'SignIn',
     signUp: 'SignUp',
+    exitAlert: 'Exit',
+    exitMassage: 'Do you really want to leave?',
     password: 'Password',
     confirmPass: 'Confirm password',
     confirmErr: 'Password should be equal to Confirm Password',
