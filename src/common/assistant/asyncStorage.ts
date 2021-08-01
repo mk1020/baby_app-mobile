@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const storeData = async (key: string, value: any) => {
   try {
     let jsonValue;
-    if (typeof value === 'object') {
+    if (typeof value === 'object' || typeof value === 'boolean') {
       jsonValue = JSON.stringify(value);
     }
     await AsyncStorage.setItem(`${key}`, jsonValue || value);

@@ -1,34 +1,27 @@
-import React, {memo, useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
-import {ButtonIconVert} from './ButtonIconVert';
-import {Images} from '../imageResources';
-import {deleteAlert} from './DeleteAlert';
+import React, {memo} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {ModalDown} from './ModalDown';
-import {useTranslation} from 'react-i18next';
-import {requestSavePhotoPermission} from '../../components/diary/assist';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {ImagePickerResponse} from 'react-native-image-picker/src/types';
 import {ConditionView} from './ConditionView';
-import {shortPath} from '../assistant/files';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
 import {Fonts} from '../phone/fonts';
 
 export enum ProgressState {
-  None='None',
-  InProgress= 'InProgress',
-  Success= 'Success',
-  Error= 'Error',
+  None = 'None',
+  InProgress = 'InProgress',
+  Success = 'Success',
+  Error = 'Error',
 }
 type TProps = {
   onRequestClose: () => void
   isVisible: boolean
+  showAfterReload?: boolean
   progress: number
   indeterminate?: boolean
   state: ProgressState,
   title: string
-  SuccessComponent: JSX.Element
+  SuccessComponent: JSX.Element | null
   ErrorComponent: JSX.Element
 }
 export const ModalDownProgress = memo((props: TProps) => {
@@ -40,10 +33,10 @@ export const ModalDownProgress = memo((props: TProps) => {
     state,
     SuccessComponent,
     ErrorComponent,
-    title
+    title,
+    showAfterReload
   } = props;
-  console.log(progress === 0 || progress === 1 && state === ProgressState.InProgress);
-  console.log('progress', progress, 'state', state);
+
   return (
     <ModalDown
       onBackdropPress={onRequestClose}
@@ -61,7 +54,7 @@ export const ModalDownProgress = memo((props: TProps) => {
           useNativeDriver={true}
           indeterminate={progress === 0 || progress === 1 && state === ProgressState.InProgress}
         />
-        <ConditionView showIf={state === ProgressState.Success}>
+        <ConditionView showIf={(state === ProgressState.Success && showAfterReload == false) || !!showAfterReload}>
           {SuccessComponent}
         </ConditionView>
 

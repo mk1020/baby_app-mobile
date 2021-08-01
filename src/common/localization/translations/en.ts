@@ -79,5 +79,8 @@ export const en = {
     exportData: 'Backup in progress',
     exportDone: 'The backup was successfully created',
     location: 'Location',
+    waitPlease: 'Wait, please ...',
+    allReady: 'All is ready!',
+    haveNiceDay: 'Have a nice day!',
   },
 };

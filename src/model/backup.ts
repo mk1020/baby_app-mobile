@@ -12,6 +12,7 @@ import {makeId} from '../common/assistant/others';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import RNRestart from 'react-native-restart';
+import {storeData} from '../common/assistant/asyncStorage';
 
 interface DBExportJson {
   [tableName: string]: {
@@ -70,16 +71,12 @@ export const exportDBToZip = async (db: Database) => {
   }
 };
 
-export const importZip = async (db: Database) => {
+export const importZip = async (db: Database, fileUri: string) => {
   try {
-    const res = await DocumentPicker.pick({
-      type: [DocumentPicker.types.zip],
-      copyTo: 'cachesDirectory',
-    });
-    const split = res.fileCopyUri.split('/');
+    const split = fileUri.split('/');
     const resFolderPath = split[split.length - 2];
 
-    await unzip(getClearPathFile(res.fileCopyUri), CachesDirectoryPath);
+    await unzip(getClearPathFile(fileUri), CachesDirectoryPath);
     // await RNFS.readdir(CachesDirectoryPath);
     await RNFS.unlink(CachesDirectoryPath + '/' + resFolderPath);
     const dbJson = await RNFS.readFile(CachesDirectoryPath + '/' + backupDBFileName);
@@ -93,7 +90,8 @@ export const importZip = async (db: Database) => {
       sendCreatedAsUpdated: true,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      onDidPullChanges: () => {
+      onDidPullChanges: async () => {
+        await storeData('modalVisible', true);
         RNRestart.Restart();
       },
       pullChanges: async () => {

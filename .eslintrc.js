@@ -41,11 +41,6 @@ module.exports = {
       'error',
       'always'
     ],
-
-    'eqeqeq': [
-      'error',
-      'always'
-    ],
     'strict': [
       'error',
       'global'

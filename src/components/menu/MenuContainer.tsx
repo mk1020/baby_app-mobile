@@ -18,6 +18,8 @@ import {shortPath} from '../../common/assistant/files';
 import {Images} from '../../common/imageResources';
 import {exportDBToZip, importZip} from '../../model/backup';
 import {ModalDownProgress, ProgressState} from '../../common/components/ModalDownProgress';
+import DocumentPicker from 'react-native-document-picker';
+import {getStorageData, storeData} from '../../common/assistant/asyncStorage';
 
 type TProps = {
   database?: Database
@@ -28,6 +30,7 @@ type TProps = {
 type BackupProgress = {
   progress: number
   state: ProgressState,
+  showModalAfterReload?: boolean
 }
 
 export const MenuContainer_ = memo((props: TProps) => {
@@ -37,19 +40,32 @@ export const MenuContainer_ = memo((props: TProps) => {
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [backupProgress, setBackupProgress] = useState<BackupProgress>({
     progress: 0,
     state: ProgressState.None,
+    showModalAfterReload: false
   });
   const [backupFilePath, setBackupFilePath] = useState('');
 
   useEffect(() => {
-    setBackupProgress({
-      progress: 0,
-      state: ProgressState.None,
-    });
+    (async () => {
+      const res = await getStorageData('modalVisible');
+      if (res) {
+        const modalVisible = JSON.parse(res);
+        setImportModalVisible(modalVisible);
+        if (modalVisible) {
+          setBackupProgress({
+            progress: 1,
+            state: ProgressState.Success,
+            showModalAfterReload: true
+          });
+        }
+      }
+    })();
   }, []);
+
   useEffect(() => {
     const zipProgress = subscribe(({progress, filePath}) => {
       // the filePath is always empty on iOS for zipping.
@@ -67,8 +83,6 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressSync = () => {
     console.log(CachesDirectoryPath);
   };
-  console.log(backupProgress);
-  console.log(exportModalVisible);
 
   const onPressExport = async () => {
     try {
@@ -76,7 +90,6 @@ export const MenuContainer_ = memo((props: TProps) => {
       setExportModalVisible(true);
       const backupFilePath = await exportDBToZip(database as Database);
       backupFilePath && setBackupFilePath(backupFilePath);
-      console.log(backupProgress);
     } catch (e) {
       console.log(e);
       setBackupProgress({
@@ -88,7 +101,30 @@ export const MenuContainer_ = memo((props: TProps) => {
   };
 
   const onPressImport = async () => {
-    await importZip(database as Database);
+    try {
+      setImportModalVisible(true);
+      setBackupProgress({...backupProgress, state: ProgressState.InProgress});
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.zip],
+        copyTo: 'cachesDirectory',
+      });
+      await importZip(database as Database, res?.fileCopyUri);
+    } catch (e) {
+      if (DocumentPicker.isCancel(e)) {
+        setImportModalVisible(false);
+        setBackupProgress({
+          state: ProgressState.None,
+          progress: 0,
+        });
+      } else {
+        console.log(e);
+        setBackupProgress({
+          state: ProgressState.Error,
+          progress: 0,
+        });
+      }
+
+    }
   };
 
   const onPressChangeLanguage = () => {
@@ -119,10 +155,13 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onModalCloseRequest = () => {
     setLanguageModalVisible(false);
     setExportModalVisible(false);
+    setImportModalVisible(false);
     setBackupProgress({
       progress: 0,
       state: ProgressState.None
     });
+    storeData('modalVisible', false);
+
   };
   const changeLanguage_ = async (language: TLanguage) => {
     try {
@@ -176,6 +215,23 @@ export const MenuContainer_ = memo((props: TProps) => {
           <Text style={styles.errorText}>{t('oops')}</Text>
         }
       />
+      <ModalDownProgress
+        isVisible={importModalVisible}
+        state={backupProgress.state}
+        showAfterReload={backupProgress?.showModalAfterReload}
+        onRequestClose={onModalCloseRequest}
+        progress={backupProgress.progress}
+        title={t('waitPlease')}
+        SuccessComponent={
+          <ImportSuccess
+            successText={t('allReady')}
+            successSecondText={t('haveNiceDay')}
+          />
+        }
+        ErrorComponent={
+          <Text style={styles.errorText}>{t('oops')}</Text>
+        }
+      />
     </>
   );
 });
@@ -204,12 +260,28 @@ const ExportSuccess = (props: ExportSuccessProps) => {
     </>
   );
 };
+
+type ImportSuccessProps = {
+  successText: string
+  successSecondText: string
+}
+const ImportSuccess = (props: ImportSuccessProps) => {
+  return (
+    <View style={styles.importSuccessContainer}>
+      <Text style={styles.exportDoneText}>{props.successText}</Text>
+      <Text style={styles.exportDoneText}>{props.successSecondText}</Text>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   exportDoneText: {
     fontFamily: Fonts.regular,
     fontSize: 16,
     color: 'green',
     alignSelf: 'center'
+  },
+  importSuccessContainer: {
+    marginTop: 28
   },
   exportPathContainer: {
     flexDirection: 'row',
