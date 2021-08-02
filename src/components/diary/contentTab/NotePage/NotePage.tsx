@@ -107,6 +107,7 @@ export const NotePage = memo((props: TProps) => {
         ref={scrollRef}
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps={'always'}
       >
         <View>
           <Controller

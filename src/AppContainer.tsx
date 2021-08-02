@@ -13,6 +13,7 @@ import {babyAppSchema} from './model/schema';
 import {Chapter, Diary, Note, Page, Photo} from './model/Diary';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {migrations} from './model/migrations';
+import codePush from "react-native-code-push";
 
 const adapter = new SQLiteAdapter({
   schema: babyAppSchema,
@@ -32,12 +33,12 @@ export const database = new Database({
 (function setup() {
   if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    }
+         UIManager.setLayoutAnimationEnabledExperimental(true);
+     }
   }
 })();
 
-export const AppContainer = memo(() => {
+export const AppContainer = codePush(memo(() => {
 
   return (
     <ErrorBoundary>
@@ -50,4 +51,4 @@ export const AppContainer = memo(() => {
       </Provider>
     </ErrorBoundary>
   );
-});
+}));

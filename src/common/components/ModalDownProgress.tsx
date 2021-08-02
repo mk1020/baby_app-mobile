@@ -34,7 +34,7 @@ export const ModalDownProgress = memo((props: TProps) => {
     SuccessComponent,
     ErrorComponent,
     title,
-    showAfterReload
+    showAfterReload = false
   } = props;
 
   return (

@@ -1,5 +1,5 @@
 import React, {memo, useState} from 'react';
-import {Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
 import {dateFormat} from '../../assist';
 import {Controller} from 'react-hook-form';
@@ -21,7 +21,6 @@ type TProps = {
   onCursorPosition?: (offsetY: number)=> void
   editorRef?: React.RefObject<RichEditor>
 }
-
 const textNoteLineHeight = 24;
 export const NoteCard = memo((props: TProps) => {
   const {formControl, noteData, onCursorPosition, editorRef} = props;
@@ -95,7 +94,7 @@ export const NoteCard = memo((props: TProps) => {
       <Controller
         control={formControl}
         render={({field: {onChange, onBlur, value}}) => (
-          /*<TextInput
+        /*<TextInput
             style={styles.noteText}
             onBlur={onBlur}
             onChangeText={value => onChange(value)}
