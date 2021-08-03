@@ -5,14 +5,11 @@ import {adapterByTableName} from './adapters';
 import {TTables} from './types';
 import {getClearPathFile} from '../common/assistant/files';
 import {unzip, zip} from 'react-native-zip-archive';
-import DocumentPicker from 'react-native-document-picker';
 import {synchronize} from '@nozbe/watermelondb/sync';
 import {database} from '../AppContainer';
 import {makeId} from '../common/assistant/others';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import RNRestart from 'react-native-restart';
 import {storeData} from '../common/assistant/asyncStorage';
+import codePush from 'react-native-code-push';
 
 interface DBExportJson {
   [tableName: string]: {
@@ -92,7 +89,8 @@ export const importZip = async (db: Database, fileUri: string) => {
       // @ts-ignore
       onDidPullChanges: async () => {
         await storeData('modalVisible', true);
-        RNRestart.Restart();
+        // RNRestart.Restart();
+        codePush.restartApp();
       },
       pullChanges: async () => {
         return {
