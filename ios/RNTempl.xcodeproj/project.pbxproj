@@ -13,6 +13,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		20F32BE2B40740E2B717D87F /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E59D4BBA87344359ABF0B5F2 /* Roboto-Medium.ttf */; };
+		24B5F3AA26B9AA3F00823005 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */; };
 		2FA0FDBD625C4A5ABDF75A13 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A624C3A0B3849379FEE77FA /* Roboto-Regular.ttf */; };
 		34BCA028698F44AF8E1DFD5B /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34DB370EEA55490B852DFB3F /* SFUIText-Bold.ttf */; };
 		375FBA46BC144A7C83F5B29E /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE04BFC9FBAB4AD28B665B7E /* SFUIText-Regular.ttf */; };
@@ -51,6 +52,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNTempl/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNTempl/main.m; sourceTree = "<group>"; };
 		1E2AF64DCD7CE74536B202A8 /* Pods-RNTempl-RNTemplTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl-RNTemplTests.staging.xcconfig"; path = "Target Support Files/Pods-RNTempl-RNTemplTests/Pods-RNTempl-RNTemplTests.staging.xcconfig"; sourceTree = "<group>"; };
+		24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "../AppCenter-Config.plist"; sourceTree = "<group>"; };
 		24C71E2526B472F9004C2348 /* RNTempl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RNTempl.entitlements; path = RNTempl/RNTempl.entitlements; sourceTree = "<group>"; };
 		2A624C3A0B3849379FEE77FA /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		2DA5D0A242284A269C7D99BC /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */,
 				13B07FAE1A68108700A75B9A /* RNTempl */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* RNTemplTests */,
@@ -308,6 +311,7 @@
 				BC469F18EF774E0E938E15E0 /* Roboto-Bold.ttf in Resources */,
 				20F32BE2B40740E2B717D87F /* Roboto-Medium.ttf in Resources */,
 				2FA0FDBD625C4A5ABDF75A13 /* Roboto-Regular.ttf in Resources */,
+				24B5F3AA26B9AA3F00823005 /* AppCenter-Config.plist in Resources */,
 				43F8EBDF72A741ECA2FFBFF6 /* SFUIText-Bold.ttf in Resources */,
 				92AA293A1DC14DEE948582E9 /* SFUIText-Medium.ttf in Resources */,
 				375FBA46BC144A7C83F5B29E /* SFUIText-Regular.ttf in Resources */,
