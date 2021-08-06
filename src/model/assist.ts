@@ -7,7 +7,8 @@ import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
 import {noteAdapter, photoAdapterJs} from './adapters';
 import * as RNFS from 'react-native-fs';
-import {getClearPathFile} from '../common/assistant/files';
+import {getClearPathFile, getFileName} from '../common/assistant/files';
+import {TemporaryDirectoryPath} from "react-native-fs";
 
 enum ChangesEvents {
   created='created',
@@ -190,8 +191,7 @@ export const deleteImagesFromCache = async (imagesUri: string[]) => {
   if (imagesUri?.length) {
     for (const image of imagesUri) {
       if (image) {
-        const path = getClearPathFile(image);
-        await RNFS.unlink(path);
+          await RNFS.unlink(TemporaryDirectoryPath + '/' + getFileName(image));
       }
     }
   }

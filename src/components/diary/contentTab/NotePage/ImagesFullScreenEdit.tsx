@@ -45,7 +45,7 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
       <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
+          <HeaderBackButton labelVisible={false} tintColor={'#fff'} onPress={onPressBack}/>
           <Space.H px={16}/>
           <SlidesCounter slide={imagesUri.length ? currSlideIndex + 1 : 0} totalCount={imagesUri.length} mode={SliderMode.FullScreen}/>
         </View>

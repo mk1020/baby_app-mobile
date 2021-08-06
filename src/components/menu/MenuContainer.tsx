@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Image, Linking, StyleSheet, Text, View} from 'react-native';
+import {Image, Linking, Share, StyleSheet, Text, View} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database} from '@nozbe/watermelondb';
@@ -81,6 +81,22 @@ export const MenuContainer_ = memo((props: TProps) => {
     return () => zipProgress.remove();
   }, [backupProgress]);
 
+  useEffect(() => {
+    try {
+      if (backupFilePath) {
+        (async () => {
+          const result = await Share.share({
+            url: backupFilePath
+          });
+          if (result.action === 'dismissedAction') {
+            onModalCloseRequest();
+          }
+        })();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }, [backupFilePath]);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressDisableAds = () => {};
 
@@ -95,7 +111,7 @@ export const MenuContainer_ = memo((props: TProps) => {
       const backupFilePath = await exportDBToZip(database as Database);
       backupFilePath && setBackupFilePath(backupFilePath);
     } catch (e) {
-      console.log(e);
+      console.log('onPressExport catch', e);
       setBackupProgress({
         state: ProgressState.Error,
         progress: 0,
@@ -112,6 +128,7 @@ export const MenuContainer_ = memo((props: TProps) => {
         type: [DocumentPicker.types.zip],
         copyTo: 'cachesDirectory',
       });
+      console.log(res)
       await importZip(database as Database, res?.fileCopyUri);
     } catch (e) {
       if (DocumentPicker.isCancel(e)) {
@@ -266,12 +283,12 @@ const ExportSuccess = (props: ExportSuccessProps) => {
   return (
     <>
       <Text style={styles.exportDoneText}>{props.doneText}</Text>
-      <View style={styles.exportPathContainer}>
+      {/*<View style={styles.exportPathContainer}>
         <Image source={Images.where} style={styles.imagePath}/>
         <Text style={styles.modalBlackText}>
           {props.backupFilePath}
         </Text>
-      </View>
+      </View>*/}
     </>
   );
 };

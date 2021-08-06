@@ -26,7 +26,7 @@ export const ImagesFullScreen = memo((props: TProps) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <View style={styles.header}>
-        <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
+        <HeaderBackButton labelVisible={false} tintColor={'#fff'} onPress={onPressBack}/>
         <Space.H px={16}/>
         <SlidesCounter slide={currSlideIndex + 1} totalCount={imagesUri.length} mode={SliderMode.FullScreen}/>
       </View>

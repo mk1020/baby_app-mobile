@@ -197,7 +197,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     ...fieldTextStyle,
-    paddingLeft: 10
+    paddingLeft: 10,
+    height: 40
   },
   buttonsWrapper: {
     alignSelf: 'stretch',

@@ -14,6 +14,8 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
 import {fallbackLanguage, TLanguage} from './common/localization/localization';
 import {RootStoreType} from './redux/rootReducer';
+import Config from 'react-native-config';
+import codePush from "react-native-code-push";
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -30,7 +32,7 @@ type TProps = {
 export const App = memo((props: TProps) => {
   const [initialNavState, setInitialNavState] = useState<InitialState>();
   const [isAppReady, setIsAppReady] = useState(false);
-
+  console.log('Config.NODE_ENV', Config.API_URL);
   const dispatch = useDispatch();
   const scheme = useColorScheme();
   const db = useDatabase();
@@ -46,7 +48,8 @@ export const App = memo((props: TProps) => {
     restoreNav().finally(() => setIsAppReady(true));
 
     GoogleSignin.configure({
-      webClientId: googleOAuthClientId
+      webClientId: googleOAuthClientId,
+      // iosClientId
     });
   }, []);
 

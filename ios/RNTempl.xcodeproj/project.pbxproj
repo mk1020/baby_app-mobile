@@ -8,24 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* RNTemplTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RNTemplTests.m */; };
-		0E8AE24C1FA34B4F99FEDB15 /* SFUIText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C76A4B0ED8974A668B934B04 /* SFUIText-Medium.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		20F32BE2B40740E2B717D87F /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E59D4BBA87344359ABF0B5F2 /* Roboto-Medium.ttf */; };
+		242FB43426BB013F00BBEC97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 242FB43326BB013E00BBEC97 /* GoogleService-Info.plist */; };
+		247F1A7526BABBFD00A40E30 /* wmelon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247F1A7426BABBFD00A40E30 /* wmelon.swift */; };
 		24B5F3AA26B9AA3F00823005 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */; };
 		2FA0FDBD625C4A5ABDF75A13 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A624C3A0B3849379FEE77FA /* Roboto-Regular.ttf */; };
-		34BCA028698F44AF8E1DFD5B /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34DB370EEA55490B852DFB3F /* SFUIText-Bold.ttf */; };
 		375FBA46BC144A7C83F5B29E /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE04BFC9FBAB4AD28B665B7E /* SFUIText-Regular.ttf */; };
-		3D6AF57146C342BB9EB42633 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5A031D6E19C6441C8C12E88F /* Roboto-Regular.ttf */; };
 		43F8EBDF72A741ECA2FFBFF6 /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49CA16BDBED24607805DA087 /* SFUIText-Bold.ttf */; };
-		4E28B8A99B7142E685688933 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40B78064A69B4C109C4C0B4F /* Roboto-Medium.ttf */; };
-		523DBEE9583D444A8751D975 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F659F77D89814A6F964D1E20 /* Roboto-Bold.ttf */; };
 		56793AA85142C512CB95DCAC /* libPods-RNTempl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFE4121E4441682F90B5C555 /* libPods-RNTempl.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		92AA293A1DC14DEE948582E9 /* SFUIText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 035B013E56CD4F60841E9DE5 /* SFUIText-Medium.ttf */; };
 		BC469F18EF774E0E938E15E0 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DA5D0A242284A269C7D99BC /* Roboto-Bold.ttf */; };
-		D23AF7D62C9943A2BD83AC5D /* SFUIText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11434EE4BDE64E9F96E893AD /* SFUIText-Regular.ttf */; };
 		D64A9609F762EB177D58AC55 /* libPods-RNTempl-RNTemplTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A94C634C1AE96D93A29A18B0 /* libPods-RNTempl-RNTemplTests.a */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +40,6 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RNTemplTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNTemplTests.m; sourceTree = "<group>"; };
 		035B013E56CD4F60841E9DE5 /* SFUIText-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Medium.ttf"; path = "../assets/fonts/SFUIText-Medium.ttf"; sourceTree = "<group>"; };
-		11434EE4BDE64E9F96E893AD /* SFUIText-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Regular.ttf"; path = "../src/common/assets/fonts/SFUIText-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RNTempl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNTempl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RNTempl/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RNTempl/AppDelegate.m; sourceTree = "<group>"; };
@@ -52,27 +47,25 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNTempl/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNTempl/main.m; sourceTree = "<group>"; };
 		1E2AF64DCD7CE74536B202A8 /* Pods-RNTempl-RNTemplTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl-RNTemplTests.staging.xcconfig"; path = "Target Support Files/Pods-RNTempl-RNTemplTests/Pods-RNTempl-RNTemplTests.staging.xcconfig"; sourceTree = "<group>"; };
+		242FB43326BB013E00BBEC97 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		247F1A7326BABBFC00A40E30 /* RNTempl-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNTempl-Bridging-Header.h"; sourceTree = "<group>"; };
+		247F1A7426BABBFD00A40E30 /* wmelon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wmelon.swift; sourceTree = "<group>"; };
 		24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "../AppCenter-Config.plist"; sourceTree = "<group>"; };
 		24C71E2526B472F9004C2348 /* RNTempl.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = RNTempl.entitlements; path = RNTempl/RNTempl.entitlements; sourceTree = "<group>"; };
 		2A624C3A0B3849379FEE77FA /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		2DA5D0A242284A269C7D99BC /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		30B6CB93D45A057468208659 /* Pods-RNTempl-RNTemplTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl-RNTemplTests.release.xcconfig"; path = "Target Support Files/Pods-RNTempl-RNTemplTests/Pods-RNTempl-RNTemplTests.release.xcconfig"; sourceTree = "<group>"; };
-		34DB370EEA55490B852DFB3F /* SFUIText-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Bold.ttf"; path = "../src/common/assets/fonts/SFUIText-Bold.ttf"; sourceTree = "<group>"; };
-		40B78064A69B4C109C4C0B4F /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/common/assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		49CA16BDBED24607805DA087 /* SFUIText-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Bold.ttf"; path = "../assets/fonts/SFUIText-Bold.ttf"; sourceTree = "<group>"; };
-		5A031D6E19C6441C8C12E88F /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/common/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		7E4DBD34F17C7CBFA4E9C68D /* Pods-RNTempl-RNTemplTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl-RNTemplTests.debug.xcconfig"; path = "Target Support Files/Pods-RNTempl-RNTemplTests/Pods-RNTempl-RNTemplTests.debug.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RNTempl/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8E586DE4C295C479650D4BF1 /* Pods-RNTempl.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl.debug.xcconfig"; path = "Target Support Files/Pods-RNTempl/Pods-RNTempl.debug.xcconfig"; sourceTree = "<group>"; };
 		9D6B54493B0EA8EFC6BC4B86 /* Pods-RNTempl.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl.release.xcconfig"; path = "Target Support Files/Pods-RNTempl/Pods-RNTempl.release.xcconfig"; sourceTree = "<group>"; };
 		A94C634C1AE96D93A29A18B0 /* libPods-RNTempl-RNTemplTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNTempl-RNTemplTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE4121E4441682F90B5C555 /* libPods-RNTempl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNTempl.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C76A4B0ED8974A668B934B04 /* SFUIText-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Medium.ttf"; path = "../src/common/assets/fonts/SFUIText-Medium.ttf"; sourceTree = "<group>"; };
 		E59D4BBA87344359ABF0B5F2 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../assets/fonts/Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE04BFC9FBAB4AD28B665B7E /* SFUIText-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-Regular.ttf"; path = "../assets/fonts/SFUIText-Regular.ttf"; sourceTree = "<group>"; };
 		F5BA52598D4F8C4B33A8D8F2 /* Pods-RNTempl.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNTempl.staging.xcconfig"; path = "Target Support Files/Pods-RNTempl/Pods-RNTempl.staging.xcconfig"; sourceTree = "<group>"; };
-		F659F77D89814A6F964D1E20 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/common/assets/fonts/Roboto-Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +108,8 @@
 		13B07FAE1A68108700A75B9A /* RNTempl */ = {
 			isa = PBXGroup;
 			children = (
+				24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */,
+				242FB43326BB013E00BBEC97 /* GoogleService-Info.plist */,
 				24C71E2526B472F9004C2348 /* RNTempl.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -129,12 +124,6 @@
 		159FABD442F346E99DEF7F72 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F659F77D89814A6F964D1E20 /* Roboto-Bold.ttf */,
-				40B78064A69B4C109C4C0B4F /* Roboto-Medium.ttf */,
-				5A031D6E19C6441C8C12E88F /* Roboto-Regular.ttf */,
-				34DB370EEA55490B852DFB3F /* SFUIText-Bold.ttf */,
-				C76A4B0ED8974A668B934B04 /* SFUIText-Medium.ttf */,
-				11434EE4BDE64E9F96E893AD /* SFUIText-Regular.ttf */,
 				2DA5D0A242284A269C7D99BC /* Roboto-Bold.ttf */,
 				E59D4BBA87344359ABF0B5F2 /* Roboto-Medium.ttf */,
 				2A624C3A0B3849379FEE77FA /* Roboto-Regular.ttf */,
@@ -165,7 +154,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				24B5F3A926B9AA3E00823005 /* AppCenter-Config.plist */,
+				247F1A7426BABBFD00A40E30 /* wmelon.swift */,
 				13B07FAE1A68108700A75B9A /* RNTempl */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* RNTemplTests */,
@@ -173,6 +162,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				159FABD442F346E99DEF7F72 /* Resources */,
 				FB83447CD91C23E3380BF70D /* Pods */,
+				247F1A7326BABBFC00A40E30 /* RNTempl-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -260,7 +250,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1240;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 1;
@@ -302,17 +292,12 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				523DBEE9583D444A8751D975 /* Roboto-Bold.ttf in Resources */,
-				4E28B8A99B7142E685688933 /* Roboto-Medium.ttf in Resources */,
-				3D6AF57146C342BB9EB42633 /* Roboto-Regular.ttf in Resources */,
-				34BCA028698F44AF8E1DFD5B /* SFUIText-Bold.ttf in Resources */,
-				0E8AE24C1FA34B4F99FEDB15 /* SFUIText-Medium.ttf in Resources */,
-				D23AF7D62C9943A2BD83AC5D /* SFUIText-Regular.ttf in Resources */,
 				BC469F18EF774E0E938E15E0 /* Roboto-Bold.ttf in Resources */,
 				20F32BE2B40740E2B717D87F /* Roboto-Medium.ttf in Resources */,
 				2FA0FDBD625C4A5ABDF75A13 /* Roboto-Regular.ttf in Resources */,
 				24B5F3AA26B9AA3F00823005 /* AppCenter-Config.plist in Resources */,
 				43F8EBDF72A741ECA2FFBFF6 /* SFUIText-Bold.ttf in Resources */,
+				242FB43426BB013F00BBEC97 /* GoogleService-Info.plist in Resources */,
 				92AA293A1DC14DEE948582E9 /* SFUIText-Medium.ttf in Resources */,
 				375FBA46BC144A7C83F5B29E /* SFUIText-Regular.ttf in Resources */,
 			);
@@ -483,6 +468,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				247F1A7526BABBFD00A40E30 /* wmelon.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,6 +487,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7E4DBD34F17C7CBFA4E9C68D /* Pods-RNTempl-RNTemplTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -528,6 +515,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 30B6CB93D45A057468208659 /* Pods-RNTempl-RNTemplTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = RNTemplTests/Info.plist;
@@ -573,6 +561,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.RNTempl;
 				PRODUCT_NAME = RNTempl;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "RNTempl-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -603,6 +592,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.RNTempl;
 				PRODUCT_NAME = RNTempl;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "RNTempl-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -637,7 +627,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = NwIKl1j30TiXOBGDx8kdEr71jjgZTydcrX5hW;
+				CODEPUSH_KEY = QDqSSrUie3UeRennCslYO4mrYOdCG5aV33pst;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -692,6 +682,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.RNTempl;
 				PRODUCT_NAME = RNTempl;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "RNTempl-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -701,6 +692,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1E2AF64DCD7CE74536B202A8 /* Pods-RNTempl-RNTemplTests.staging.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = RNTemplTests/Info.plist;
@@ -817,7 +809,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = qE84iWb1SLg3k_1Wc6yQLzmTE3EG5k1_HJUAr;
+				CODEPUSH_KEY = "Vb5oebq-LLE5VqZH84HL0i8oKHQq2tN7T6m2q";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;

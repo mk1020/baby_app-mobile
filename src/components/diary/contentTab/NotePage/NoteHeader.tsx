@@ -30,10 +30,8 @@ export const NoteHeader = memo((props: TProps) => {
   const onPressBack = () => {
     navigation.goBack();
   };
-  const onLoadPhoto = (response: ImagePickerResponse) => {
-    if (response.assets?.length) {
-      onLoadImage && onLoadImage(response.assets[0].uri as string);
-    }
+  const onLoadPhoto = (uri: string) => {
+    onLoadImage && onLoadImage(uri);
   };
 
   const onPressPhoto = () => {

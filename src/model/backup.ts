@@ -1,9 +1,15 @@
 import {Database} from '@nozbe/watermelondb';
 import * as RNFS from 'react-native-fs';
-import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath} from 'react-native-fs';
+import {
+  CachesDirectoryPath,
+  DocumentDirectoryPath,
+  DownloadDirectoryPath,
+  LibraryDirectoryPath, MainBundlePath,
+  TemporaryDirectoryPath
+} from 'react-native-fs';
 import {adapterByTableName} from './adapters';
 import {TTables} from './types';
-import {getClearPathFile} from '../common/assistant/files';
+import {getClearPathFile, getFileName} from '../common/assistant/files';
 import {unzip, zip} from 'react-native-zip-archive';
 import {synchronize} from '@nozbe/watermelondb/sync';
 import {database} from '../AppContainer';
@@ -21,6 +27,10 @@ export const exportDBToZip = async (db: Database) => {
   const backupFolderPath = DocumentDirectoryPath + '/backup';
 
   try {
+    const isFolderExist = await RNFS.exists(backupFolderPath);
+    if (isFolderExist) {
+      await RNFS.unlink(backupFolderPath);
+    }
     const schema = await db.schema;
     const tables = Object.keys(schema?.tables);
     const batchPromises = tables.map(table => db.get(table).query().fetch());
@@ -45,9 +55,8 @@ export const exportDBToZip = async (db: Database) => {
             //copy images to folder
             const imagesUri: string[] = record.photo.split(';');
             for (const image of imagesUri) {
-              const imageSplit = image.split('/');
-              const imageName = imageSplit[imageSplit.length - 1];
-              await RNFS.copyFile(getClearPathFile(image), backupFolderPath + '/' + imageName);
+              const imageName = getFileName(image);
+              await RNFS.copyFile(TemporaryDirectoryPath + '/' + imageName, backupFolderPath + '/' + imageName);
             }
           }
         }
@@ -56,14 +65,11 @@ export const exportDBToZip = async (db: Database) => {
 
     //write db file
     await RNFS.writeFile(backupFolderPath + '/' + backupDBFileName, JSON.stringify(exportJson), 'utf8');
-
     //zip all
-    const backupFilePath = DownloadDirectoryPath + '/' + makeId(8) + '- life-book-backup.zip';
+    const backupFilePath = DocumentDirectoryPath + '/' + makeId(8) + '-life-book-backup.zip';
     await zip(backupFolderPath, backupFilePath);
     return backupFilePath;
-  } catch (e) {
-    console.log(e);
-  } finally {
+  }  finally {
     await RNFS.unlink(backupFolderPath).catch(e => console.log(e));
   }
 };
@@ -72,10 +78,9 @@ export const importZip = async (db: Database, fileUri: string) => {
   try {
     const split = fileUri.split('/');
     const resFolderPath = split[split.length - 2];
-
-    await unzip(getClearPathFile(fileUri), CachesDirectoryPath);
-    // await RNFS.readdir(CachesDirectoryPath);
-    await RNFS.unlink(CachesDirectoryPath + '/' + resFolderPath);
+    console.log(resFolderPath);
+    await unzip(fileUri, CachesDirectoryPath);
+    await RNFS.unlink(CachesDirectoryPath + '/' + resFolderPath).catch();
     const dbJson = await RNFS.readFile(CachesDirectoryPath + '/' + backupDBFileName);
     const importedDB = JSON.parse(dbJson);
     await db?.write(async () => {
@@ -89,7 +94,6 @@ export const importZip = async (db: Database, fileUri: string) => {
       // @ts-ignore
       onDidPullChanges: async () => {
         await storeData('modalVisible', true);
-        // RNRestart.Restart();
         codePush.restartApp();
       },
       pullChanges: async () => {

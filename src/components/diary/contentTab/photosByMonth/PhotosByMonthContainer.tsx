@@ -65,16 +65,14 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
     setPhotosRenderData(photosDataAdapter(newPhoto));
   }, [deletedPhotoId]);
 
-  const onLoadPhoto = async (response: ImagePickerResponse) => {
-    if (response.assets?.length) {
-      try {
-        const targetPhoto = await database.get(PhotosTableName).find(addingPhotoData.id);
-        // @ts-ignore
-        await targetPhoto.updatePhoto(response.assets[0].uri);
-        setAddingPhotoData({...addingPhotoData, photo: response.assets[0].uri || null});
-      } catch (e) {
-        console.log(e);
-      }
+  const onLoadPhoto = async (uri: string) => {
+    try {
+      const targetPhoto = await database.get(PhotosTableName).find(addingPhotoData.id);
+      // @ts-ignore
+      await targetPhoto.updatePhoto(uri);
+      setAddingPhotoData({...addingPhotoData, photo: uri || null});
+    } catch (e) {
+      console.log(e);
     }
   };
   const onPressAddTwelveCards = async () => {
@@ -100,6 +98,7 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
   const onRequestCloseModal = () => {
     setModalAddPhotoVisible(false);
     setModalAddCardsVisible(false);
+    console.log('log');
   };
 
   useLayoutEffect(() => {

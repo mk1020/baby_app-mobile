@@ -8,8 +8,9 @@ import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimp
 import {HeaderBackButton} from '@react-navigation/stack';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {PhotosTableName} from '../../../../model/schema';
-import {getClearPathFile} from '../../../../common/assistant/files';
+import {getClearPathFile, getFileName, getImagePath} from '../../../../common/assistant/files';
 import * as RNFS from 'react-native-fs';
+import {CachesDirectoryPath, TemporaryDirectoryPath} from 'react-native-fs';
 
 type TProps = {
   route: RouteProp<RootStackList, NavigationPages.ImageFullScreen>
@@ -18,7 +19,6 @@ export const ImageFullScreen = memo((props: TProps) => {
   const {route} = props;
 
   const {imageUri, imageId} = route.params;
-
   const navigation = useNavigation();
   const db = useDatabase();
 
@@ -29,10 +29,11 @@ export const ImageFullScreen = memo((props: TProps) => {
   const onPressDelete = async () => {
     try {
       const image = await db.get(PhotosTableName).find(imageId || '');
+      console.log(imageUri);
       // @ts-ignore
       await image.updatePhoto(null);
-      await RNFS.unlink(getClearPathFile(imageUri));
       navigation.navigate(NavigationPages.PhotosByMonth, {deletedPhotoId: imageId});
+      await RNFS.unlink(TemporaryDirectoryPath + '/' + getFileName(imageUri));
     } catch (e) {
       console.log(e);
     }
@@ -42,10 +43,10 @@ export const ImageFullScreen = memo((props: TProps) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={'rgb(236,157,36)'} />
       <View style={styles.header}>
-        <HeaderBackButton tintColor={'#fff'} onPress={onPressBack}/>
+        <HeaderBackButton labelVisible={false} tintColor={'#fff'} onPress={onPressBack}/>
         <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
-      <Image source={{uri: imageUri}} style={styles.image} resizeMode={'contain'}/>
+      <Image source={{uri: getImagePath(imageUri)}} style={styles.image} resizeMode={'contain'}/>
     </SafeAreaView>
   );
 });
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 16,
     paddingVertical: 8,
+    paddingLeft: 8,
     backgroundColor: 'rgb(254,183,77)'
   },
   image: {

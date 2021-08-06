@@ -21,7 +21,7 @@ type TProps = {
   indeterminate?: boolean
   state: ProgressState,
   title: string
-  SuccessComponent: JSX.Element | null
+  SuccessComponent?: JSX.Element | null
   ErrorComponent: JSX.Element
 }
 export const ModalDownProgress = memo((props: TProps) => {
@@ -31,12 +31,12 @@ export const ModalDownProgress = memo((props: TProps) => {
     indeterminate,
     progress,
     state,
-    SuccessComponent,
+    SuccessComponent = null,
     ErrorComponent,
     title,
     showAfterReload = false
   } = props;
-
+console.log()
   return (
     <ModalDown
       onBackdropPress={onRequestClose}

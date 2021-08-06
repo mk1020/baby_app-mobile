@@ -1,11 +1,12 @@
 import React, {memo, useEffect, useMemo, useState} from 'react';
-import {Dimensions, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import {TabView} from 'react-native-tab-view';
 import {Fonts} from '../../phone/fonts';
 import {Route} from 'react-native-tab-view/lib/typescript/src/types';
 import {SliderImage} from './SliderImage';
 import {ConditionView} from '../ConditionView';
 import {SlidesCounter} from './SlidesCounter';
+import {isIos} from '../../phone/utils';
 
 export enum SliderMode {
   FullScreen = 'FullScreen',
@@ -41,7 +42,6 @@ export const ImagesSlider = memo((props: TProps) => {
       />
     );
   };
-
   const onChangeIndex = (index: number) => {
     onSlideChange && onSlideChange(index);
     setIndex(index);
@@ -56,6 +56,7 @@ export const ImagesSlider = memo((props: TProps) => {
         onIndexChange={onChangeIndex}
         initialLayout={{width, height}}
         style={[mode === SliderMode.Preview ? styles.tabViewPreview : {}]}
+        key={isIos ? routes.length.toString() + 'TabView' : 'TabView key' }
       />
       <ConditionView showIf={mode === SliderMode.Preview}>
         <SlidesCounter slide={index + 1} totalCount={routes.length} mode={SliderMode.Preview}/>

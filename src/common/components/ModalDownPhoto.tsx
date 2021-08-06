@@ -7,9 +7,11 @@ import {useTranslation} from 'react-i18next';
 import {requestSavePhotoPermission} from '../../components/diary/assist';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {ImagePickerResponse} from 'react-native-image-picker/src/types';
+import {isIos} from '../phone/utils';
+import {getImagePath} from '../assistant/files';
 
 type TProps = {
-  onLoadImage: (response: ImagePickerResponse) => void
+  onLoadImage: (uri: string) => void
   onRequestClose: () => void
   isVisible: boolean
 }
@@ -18,16 +20,19 @@ export const ModalDownPhoto = memo((props: TProps) => {
   const {t} = useTranslation();
 
   const onPressCamera = async () => {
-    if (await requestSavePhotoPermission()) {
+    const hasPermission = isIos ? true : await requestSavePhotoPermission();
+    if (hasPermission)
       launchCamera({
         mediaType: 'photo',
         quality: 1,
         saveToPhotos: true,
       }, (response: ImagePickerResponse) => {
-        onLoadImage(response);
+        if (response.assets?.length) {
+          const path = getImagePath(response.assets[0].uri as string);
+          onLoadImage(path);
+        }
         !response.didCancel && onRequestClose();
       });
-    }
   };
 
   const onPressGallery = () => {
@@ -35,8 +40,10 @@ export const ModalDownPhoto = memo((props: TProps) => {
       mediaType: 'photo',
       quality: 1,
     }, (response: ImagePickerResponse) => {
-      console.log(response);
-      onLoadImage(response);
+      if (response.assets?.length) {
+        const path = getImagePath(response.assets[0].uri as string);
+        onLoadImage(path);
+      }
       !response.didCancel && onRequestClose();
     });
   };

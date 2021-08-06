@@ -117,7 +117,6 @@ export const NotePage = memo((props: TProps) => {
                 title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
                 mode={mode}
                 onLoadImage={(imageUri: string) => {
-                  console.log('[...value,', value);
                   onChange([...value, imageUri]);
                   trigger('imagesUri');
                 }}
@@ -126,7 +125,7 @@ export const NotePage = memo((props: TProps) => {
             )}
             name="imagesUri"
             rules={{required: false}}
-            //defaultValue={[]}
+            defaultValue={[]}
           />
           <NoteCard
             formControl={control}

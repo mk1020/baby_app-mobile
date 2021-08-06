@@ -13,6 +13,7 @@ import {IFormNote} from './NotePage';
 import {RichEditor} from 'react-native-pell-rich-editor';
 import {generateAssetsFontCss, getHTML} from '../../Page/assiat';
 import {Images} from '../../../../common/imageResources';
+import {Spinner} from '../../../../common/components/Spinner';
 
 
 type TProps = {
@@ -21,9 +22,14 @@ type TProps = {
   onCursorPosition?: (offsetY: number)=> void
   editorRef?: React.RefObject<RichEditor>
 }
+enum EditorLoadProgress {
+    Started = 'Started',
+    Finished = 'Finished',
+}
 const textNoteLineHeight = 24;
 export const NoteCard = memo((props: TProps) => {
   const {formControl, noteData, onCursorPosition, editorRef} = props;
+  const [editorLoadProgress, setEditorLoadProgress] = useState<EditorLoadProgress>(EditorLoadProgress.Started);
   const {t, i18n} = useTranslation();
   const navigation = useNavigation();
 
@@ -36,6 +42,12 @@ export const NoteCard = memo((props: TProps) => {
     return true;
   };
 
+  const onLoadStart = () => {
+    setEditorLoadProgress(EditorLoadProgress.Started);
+  };
+  const onLoadEnd = () => {
+    setEditorLoadProgress(EditorLoadProgress.Finished);
+  };
   const currentDate = new Date().getTime();
   const editorStyle = {
     color: '#5a5757',
@@ -114,6 +126,8 @@ export const NoteCard = memo((props: TProps) => {
             useContainer={true}
             onCursorPosition={onCursorPosition}
             editorStyle={editorStyle}
+            onLoadStart={onLoadStart}
+            onLoadEnd={onLoadEnd}
           />
         )}
         name="note"
@@ -121,6 +135,9 @@ export const NoteCard = memo((props: TProps) => {
         defaultValue=""
       />
       <Text style={styles.date}>{noteData?.createdAt ? dateFormat(noteData.createdAt) : dateFormat(currentDate)}</Text>
+      <ConditionView showIf={editorLoadProgress === EditorLoadProgress.Started}>
+        <Spinner />
+      </ConditionView>
     </View>
   );
 });
@@ -131,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 16,
     paddingHorizontal: 8,
-    paddingBottom: 8,
+    paddingVertical: 8,
     backgroundColor: '#ffffff',
     borderRadius: 8,
     marginHorizontal: 16,
@@ -152,7 +169,8 @@ const styles = StyleSheet.create({
   topBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 16
   },
   bookmarkWrapper: {
     alignSelf: 'center',

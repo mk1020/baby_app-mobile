@@ -37,9 +37,8 @@ export const database = new Database({
     }
   }
 })();
-
-export const AppContainer = memo(codePush(() => {
-
+const codePushOptions = {checkFrequency: codePush.CheckFrequency.ON_APP_START};
+export const AppContainer = codePush(codePushOptions)(() => {
   return (
     <ErrorBoundary>
       <Provider store={store}>
@@ -51,4 +50,4 @@ export const AppContainer = memo(codePush(() => {
       </Provider>
     </ErrorBoundary>
   );
-}));
+});

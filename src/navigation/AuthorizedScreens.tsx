@@ -67,7 +67,7 @@ export const AuthorizedScreens = (): JSX.Element => {
           ),
           headerLeftContainerStyle: {marginHorizontal: 16},
           headerRightContainerStyle: {marginHorizontal: 16},
-          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0, backgroundColor: 'rgb(244, 244, 236)', borderBottomWidth: 1,},
+          headerStyle: {elevation: 0, shadowOffset: {width: 0, height: 0}, shadowRadius: 0, backgroundColor: 'rgb(244, 244, 236)', borderBottomWidth: 1},
         })}
       />
       <RootStack.Screen
@@ -92,16 +92,17 @@ export const AuthorizedScreens = (): JSX.Element => {
         component={PhotosByMonthContainer}
         options={({route, navigation}) => ({
           title: t('photosByMonth'),
-          headerLeft: () => <HeaderBackButton tintColor={'#fff'} onPress={() => navigation.goBack()}/>,
+          headerLeft: () => <HeaderBackButton labelVisible={false} tintColor={'#fff'} onPress={() => navigation.goBack()}/>,
           headerTitleStyle: styles.headerTitle,
           headerRightContainerStyle: {marginRight: 16},
           headerStyle: {backgroundColor: 'rgb(254, 183, 77)'},
+          headerLeftContainerStyle: {marginLeft: 10}
         })}
       />
       <RootStack.Screen
         name={NavigationPages.ImageFullScreen}
         component={ImageFullScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false, headerBackTitleVisible: false}}
       />
     </RootStack.Navigator>
   );

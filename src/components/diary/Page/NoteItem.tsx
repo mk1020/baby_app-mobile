@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
   topBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
-
+    alignItems: 'center',
+    marginBottom: 8
   },
   bookmarkWrapper: {
     alignSelf: 'flex-start',

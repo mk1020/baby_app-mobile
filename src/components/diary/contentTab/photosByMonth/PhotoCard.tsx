@@ -3,6 +3,7 @@ import {Dimensions, Image, ImageBackground, StyleSheet, Text, TouchableHighlight
 import {Fonts} from '../../../../common/phone/fonts';
 import {ConditionView} from '../../../../common/components/ConditionView';
 import {Images} from '../../../../common/imageResources';
+import {getImagePath} from '../../../../common/assistant/files';
 
 type TProps = {
   image: string | null
@@ -13,13 +14,13 @@ const windowWidth = Dimensions.get('window').width;
 
 export const PhotoCard = memo((props: TProps) => {
   const {image, date, onPress} = props;
-
+  console.log(image, '222');
 
   return (
     <TouchableHighlight underlayColor={'#969696'} onPress={onPress}>
       <View>
         <ImageBackground
-          source={{uri: image || undefined}}
+          source={{uri: getImagePath(image as string) || undefined}}
           style={styles.container}
         >
           <ConditionView showIf={!image}>

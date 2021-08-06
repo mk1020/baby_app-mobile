@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+    flex: 1
   },
   modalView: {
     backgroundColor: 'white',
