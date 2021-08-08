@@ -35,4 +35,7 @@ export const Images = {
   language: <ImageURISource>require('../../assets/images/language.png'),
   where: <ImageURISource>require('../../assets/images/where_to_vote.png'),
   login: <ImageURISource>require('../../assets/images/login.png'),
+  addPage: <ImageURISource>require('../../assets/images/addPage.png'),
+  openBook: <ImageURISource>require('../../assets/images/openBook.png'),
+  menu: <ImageURISource>require('../../assets/images/menu.png'),
 };

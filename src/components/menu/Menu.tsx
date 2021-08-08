@@ -25,6 +25,7 @@ type TProps = {
   renderData: Section[]
   isAuth: boolean
   onPressLogOut: ()=>void
+  diaryId: string
 }
 
 const SectionHeader = ({title}: {title: string}) => {
@@ -33,7 +34,7 @@ const SectionHeader = ({title}: {title: string}) => {
   );
 };
 export const Menu = memo((props: TProps) => {
-  const {renderData, isAuth, onPressLogOut} = props;
+  const {renderData, isAuth, onPressLogOut, diaryId} = props;
   const {t} = useTranslation();
 
   const renderItems = useMemo(() => {
@@ -69,7 +70,7 @@ export const Menu = memo((props: TProps) => {
         </ConditionView>
 
         <ConditionView showIf={!isAuth}>
-          <UnAuthCardUser />
+          <UnAuthCardUser diaryId={diaryId}/>
         </ConditionView>
         {renderItems}
         <ConditionView showIf={isAuth}>

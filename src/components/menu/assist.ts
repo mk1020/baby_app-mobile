@@ -7,6 +7,7 @@ import {TLanguage} from '../../common/localization/localization';
 type Handlers = {
   onPressDisableAds: ()=> void
   onPressSync: ()=> void
+  onPressRecoverFromAcc: ()=> void
   onPressExport: ()=> void
   onPressImport: ()=> void
   onPressChangeLanguage: ()=> void
@@ -45,6 +46,11 @@ export const getSectionsData = (t: TFunction, handlers: Handlers, options: Secti
       {
         title: t('sync'),
         onPress: handlers.onPressSync,
+        icon: Images.cloudSync
+      },
+      {
+        title: t('recoverFromAccount'),
+        onPress: handlers.onPressRecoverFromAcc,
         icon: Images.cloudSync
       },
       {

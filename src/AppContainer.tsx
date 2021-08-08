@@ -14,12 +14,13 @@ import {Chapter, Diary, Note, Page, Photo} from './model/Diary';
 import DatabaseProvider from '@nozbe/watermelondb/DatabaseProvider';
 import {migrations} from './model/migrations';
 import codePush from 'react-native-code-push';
+import {isIos} from './common/phone/utils';
 
 const adapter = new SQLiteAdapter({
   schema: babyAppSchema,
   migrations,
   dbName: 'baby_app',
-  // jsi: true, /* Platform.OS === 'ios' */
+  jsi: isIos,
   // onSetUpError: error => {
   // Database failed to load -- offer the user to reload the app or log out
   // }

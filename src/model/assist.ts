@@ -1,70 +1,109 @@
-import {PullResponse} from './sync';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
-import {INote, INoteJS, IPhoto} from './types';
+import {INoteJS, IPhoto, SyncPullResult, SyncPushResult, SyncTables} from './types';
 import {IFormCretePage} from '../components/diary/AddPageModal';
 import {Database, Q} from '@nozbe/watermelondb';
 import {romanize} from '../components/diary/assist';
 import {NoteRelations} from '../navigation/types';
-import {noteAdapter, photoAdapterJs} from './adapters';
+import {adapterSyncByTableName, EnhancedToServerBD, photoAdapterJs} from './adapters';
 import * as RNFS from 'react-native-fs';
-import {getClearPathFile, getFileName} from '../common/assistant/files';
-import {TemporaryDirectoryPath} from "react-native-fs";
+import {TemporaryDirectoryPath} from 'react-native-fs';
+import {getFileName} from '../common/assistant/files';
 
 enum ChangesEvents {
-  created='created',
+  created = 'created',
   updated = 'updated',
   deleted = 'deleted'
 }
 
-
-//todo я изменил поля записи в базе и интерфейс INote... привести в порядок все тут и на беке, в связи с этим
-/* eslint-disable camelcase */
-/*const noteAdapter = (note: INote) => {
-  return {
-    id: note.id,
-    diary_id: Number(note.diary_id),
-    created_at: new Date(note.created_at).getTime(),
-    updated_at: new Date(note.updated_at).getTime(),
-    photo: note.photo || null,
-    note: note.note || null,
-    tags: note.tags || null,
-  };
-};*/
-type AdapterRes = {
+type SyncPullAdapterRes = {
   changes: {
-    [NotesTableName]: {
+    [name: string]: {
       created: [],
-      updated: INote[],
+      updated: any[],
       deleted: string[],
     }
   },
   timestamp: number
 }
-export const pulledNotesAdapter = (res: PullResponse): AdapterRes => {
-  const created = res?.changes?.[NotesTableName]?.[ChangesEvents.created];
-  const updated = res?.changes?.[NotesTableName]?.[ChangesEvents.updated];
-  const deleted = res?.changes?.[NotesTableName]?.[ChangesEvents.deleted] || [];
+const syncTables = [ChaptersTableName, PagesTableName, NotesTableName];
+export const syncPullAdapter = (res: SyncPullResult, deleteDiaryIds: string[], diaryIdServer: string): SyncPullAdapterRes => {
+  let changes: SyncPullAdapterRes | Record<string, any> = {};
 
-  let updatedNew: any = [];
-  if (created && updated) {
-    updatedNew = [...created, ...updated].map(note => noteAdapter(note));
-  }
+  syncTables.forEach(table => {
+    let updatedNew: any[] = [];
 
-  if (!res.timestamp) {
-    throw new Error('TIMESTAMP WAS NOT PASSED');
-  }
-  return {
-    changes: {
-      [NotesTableName]: {
+    const created = res?.changes?.[table]?.[ChangesEvents.created];
+    const updated = res?.changes?.[table]?.[ChangesEvents.updated];
+    const deleted = res?.changes?.[table]?.[ChangesEvents.deleted] || [];
+
+    if (created && updated) {
+      updatedNew = [...updatedNew, ...created, ...updated].map(item => adapterSyncByTableName[table as SyncTables](item));
+    }
+
+    changes = {
+      ...changes,
+      [table]: {
         created: [],
         updated: updatedNew,
         deleted
       }
-    },
+    };
+  });
+  if (deleteDiaryIds?.length && diaryIdServer && deleteDiaryIds[0] !== diaryIdServer) {
+    changes = {
+      [DiaryTableName]: {
+        created: [],
+        updated: [{
+          id: diaryIdServer,
+          name: null,
+          user_id: null,
+          is_current: true,
+          created_at: new Date().getTime(),
+          updated_at: new Date().getTime(),
+        }],
+        deleted: deleteDiaryIds
+      },
+      ...changes,
+    };
+  }
+  if (!res.timestamp) {
+    throw new Error('TIMESTAMP WAS NOT PASSED');
+  }
+  return {
+    changes,
     timestamp: new Date(res.timestamp).getTime()
   };
 };
 
+type SyncPushAdapterRes = {
+  changes: {
+    [name: string]: {
+      created: (Required<EnhancedToServerBD> & Record<string, unknown>)[],
+      updated: (Required<EnhancedToServerBD> & Record<string, unknown>)[],
+      deleted: string[],
+    }
+  },
+  lastPulledAt: number
+}
+export const syncPushAdapter = (res: SyncPushResult, userId: number | null, table: SyncTables): SyncPushAdapterRes => {
+  const created = res?.changes?.[table]?.[ChangesEvents.created];
+  const updated = res?.changes?.[table]?.[ChangesEvents.updated];
+  const deleted = res?.changes?.[table]?.[ChangesEvents.deleted] || [];
+
+  const createdNew = created?.map(item => ({...item, user_id: userId}));
+  const updatedNew = updated?.map(item => ({...item, user_id: userId}));
+
+  return {
+    changes: {
+      [table]: {
+        created: createdNew,
+        updated: updatedNew,
+        deleted
+      }
+    },
+    lastPulledAt: res.lastPulledAt
+  };
+};
 
 export const createPageAndChapter = async  (database: Database, data: IFormCretePage, diaryId: string, chapterNumber: number) => {
   await database.write(async () => {
@@ -161,7 +200,7 @@ export const createDiaryIfNotExist = async (db: Database, title?: string) => {
     const diaryCount = await diaryCollection.query().fetchCount();
     if (diaryCount === 0) {
       const diary = diaryCollection?.prepareCreate((diary: any) => {
-        diary.userId = 27;
+        diary.userId = null;
         // diary.name = title;
         diary.isCurrent = true;
       });
@@ -191,7 +230,7 @@ export const deleteImagesFromCache = async (imagesUri: string[]) => {
   if (imagesUri?.length) {
     for (const image of imagesUri) {
       if (image) {
-          await RNFS.unlink(TemporaryDirectoryPath + '/' + getFileName(image));
+        await RNFS.unlink(TemporaryDirectoryPath + '/' + getFileName(image));
       }
     }
   }

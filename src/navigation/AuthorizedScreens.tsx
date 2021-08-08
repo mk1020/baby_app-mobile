@@ -13,7 +13,7 @@ import {ImagesFullScreen} from '../components/diary/Page/ImagesFullScreen';
 import {RootStackList, TabsList} from './types';
 import {Menu} from '../components/menu/Menu';
 import {useTranslation} from 'react-i18next';
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {Fonts} from '../common/phone/fonts';
 import {ImageFullScreen} from '../components/diary/contentTab/photosByMonth/ImageFullScreen';
 import {PhotosByMonthContainer} from '../components/diary/contentTab/photosByMonth/PhotosByMonthContainer';
@@ -23,13 +23,39 @@ import {MenuContainer} from '../components/menu/MenuContainer';
 const Tabs = createBottomTabNavigator<TabsList>();
 const TabsNav = () => {
   return (
-    <Tabs.Navigator>
+    <Tabs.Navigator tabBarOptions={{showLabel: false}}>
       <Tabs.Screen
         name={NavigationTabs.Diary}
         component={Diary}
+        options={
+          {tabBarIcon: (props: {
+            focused: boolean;
+            color: string;
+            size: number;
+          }) => <Image source={Images.openBook} style={{width: 48, height: 48, tintColor: props.focused ? '#FFA100' : '#000'}}/>,
+          }
+        }
       />
-      <Tabs.Screen name={NavigationTabs.Menu} component={MenuContainer} />
-      <Tabs.Screen name={NavigationTabs.Service} component={Service} />
+      <Tabs.Screen
+        name={NavigationTabs.Menu}
+        component={MenuContainer}
+        options={
+          {tabBarIcon: (props: {
+              focused: boolean;
+              color: string;
+              size: number;
+            }) => <Image source={Images.menu} style={{width: 36, height: 36, tintColor: props.focused ? '#FFA100' : '#000'}}/>,
+          }
+        }
+      />
+      <Tabs.Screen name={NavigationTabs.Service} component={Service} options={
+        {tabBarIcon: (props: {
+            focused: boolean;
+            color: string;
+            size: number;
+          }) => <Image source={Images.cloudSync} style={{width: 36, height: 36, tintColor: props.focused ? '#FFA100' : '#000'}}/>,
+        }
+      }/>
     </Tabs.Navigator>
   );
 };

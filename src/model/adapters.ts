@@ -1,9 +1,13 @@
-import {IChapter, IDiary, INoteJS, IPage, IPhoto} from './types';
+import {IChapter, IDiary, INote, INoteJS, IPage, IPhoto} from './types';
 import {INoteJSEnhanced} from '../components/diary/assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 
+export interface EnhancedToServerBD {
+  user_id: number
+}
 export const diaryAdapter = (diary: any) => ({
   id: diary.id,
+  is_current: diary.isCurrent,
   user_id: diary?.userId,
   name: diary?.name,
   created_at: diary?.createdAt,
@@ -41,7 +45,7 @@ export const noteAdapterJs = (note: any): INoteJSEnhanced => ({
   updatedAt: note?.updatedAt,
 });
 
-export const noteAdapter = (note: any) => ({
+export const noteAdapter = (note: INoteJS) => ({
   id: note?.id,
   diary_id: note?.diaryId,
   chapter_id: note?.chapterId,
@@ -51,7 +55,7 @@ export const noteAdapter = (note: any) => ({
   photo: note?.photo,
   tags: note?.tags,
   page_id: note?.pageId,
-  created_at: note?.createdAt,
+  created_at: note.createdAt,
   updated_at: note?.updatedAt,
 });
 
@@ -78,4 +82,43 @@ export const adapterByTableName = {
   [PagesTableName]: pageAdapter,
   [NotesTableName]: noteAdapter,
   [PhotosTableName]: photoAdapter
-}
+};
+
+
+export const syncNoteAdapter = (note: INote & EnhancedToServerBD) => ({
+  id: note?.id,
+  diary_id: note?.diary_id,
+  chapter_id: note?.chapter_id,
+  title: note?.title,
+  bookmarked: note?.bookmarked,
+  note: note?.note,
+  photo: note?.photo,
+  tags: note?.tags,
+  page_id: note?.page_id,
+  created_at: new Date(note.created_at).getTime(),
+  updated_at: new Date(note.updated_at).getTime(),
+});
+
+export const syncChapterAdapter = (chapter: IChapter & EnhancedToServerBD) => ({
+  id: chapter.id,
+  diary_id: chapter?.diary_id,
+  name: chapter?.name,
+  number: chapter?.number,
+  created_at: new Date(chapter.created_at).getTime(),
+  updated_at: new Date(chapter.updated_at).getTime(),
+});
+
+export const syncPageAdapter = (page: IPage & EnhancedToServerBD) => ({
+  id: page.id,
+  diary_id: page?.diary_id,
+  chapter_id: page?.chapter_id,
+  name: page?.name,
+  created_at: new Date(page.created_at).getTime(),
+  updated_at: new Date(page.updated_at).getTime(),
+})
+
+export const adapterSyncByTableName = {
+  [ChaptersTableName]: syncChapterAdapter,
+  [PagesTableName]: syncPageAdapter,
+  [NotesTableName]: syncNoteAdapter,
+};

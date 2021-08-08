@@ -11,9 +11,10 @@ import {oAuthGoogle, setLoadingAppStatus} from '../../../redux/appSlice';
 import {Spinner} from '../../../common/components/Spinner';
 
 type TProps = {
+  diaryId: string
 }
 export const UnAuthCardUser = memo((props: TProps) => {
-  const {} = props;
+  const {diaryId} = props;
   const {t} = useTranslation();
 
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ export const UnAuthCardUser = memo((props: TProps) => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       dispatch(setLoadingAppStatus(true));
-      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!}));
+      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
       await GoogleSignin.revokeAccess();
 
     } catch (error) {

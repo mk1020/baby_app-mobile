@@ -71,6 +71,9 @@ export const Service_ = memo((props: TProps) => {
       <TouchableOpacity onPress={async () => console.log(await db.get(PhotosTableName).query().fetch())} style={styles.sign}>
         <Text>GET photos</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={async () => console.log(await db.get(DiaryTableName).query().fetch())} style={styles.sign}>
+        <Text>GET diaries</Text>
+      </TouchableOpacity>
     </View>
   );
 });

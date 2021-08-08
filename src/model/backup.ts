@@ -16,6 +16,8 @@ import {database} from '../AppContainer';
 import {makeId} from '../common/assistant/others';
 import {storeData} from '../common/assistant/asyncStorage';
 import codePush from 'react-native-code-push';
+import {isIos} from '../common/phone/utils';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 
 interface DBExportJson {
   [tableName: string]: {
@@ -66,7 +68,8 @@ export const exportDBToZip = async (db: Database) => {
     //write db file
     await RNFS.writeFile(backupFolderPath + '/' + backupDBFileName, JSON.stringify(exportJson), 'utf8');
     //zip all
-    const backupFilePath = DocumentDirectoryPath + '/' + makeId(8) + '-life-book-backup.zip';
+    const backupFolderByOS = isIos ? DocumentDirectoryPath : DownloadDirectoryPath;
+    const backupFilePath = backupFolderByOS + '/' + makeId(8) + '-life-book-backup.zip';
     await zip(backupFolderPath, backupFilePath);
     return backupFilePath;
   }  finally {
@@ -78,13 +81,17 @@ export const importZip = async (db: Database, fileUri: string) => {
   try {
     const split = fileUri.split('/');
     const resFolderPath = split[split.length - 2];
-    console.log(resFolderPath);
     await unzip(fileUri, CachesDirectoryPath);
     await RNFS.unlink(CachesDirectoryPath + '/' + resFolderPath).catch();
     const dbJson = await RNFS.readFile(CachesDirectoryPath + '/' + backupDBFileName);
     const importedDB = JSON.parse(dbJson);
     await db?.write(async () => {
-      await db?.unsafeResetDatabase();
+      //await db?.unsafeResetDatabase();
+      await database.get(NotesTableName).query().destroyAllPermanently();
+      await database.get(PagesTableName).query().destroyAllPermanently();
+      await database.get(ChaptersTableName).query().destroyAllPermanently();
+      await database.get(DiaryTableName).query().destroyAllPermanently();
+      await database.get(PhotosTableName).query().destroyAllPermanently();
     });
 
     await synchronize({
@@ -94,7 +101,7 @@ export const importZip = async (db: Database, fileUri: string) => {
       // @ts-ignore
       onDidPullChanges: async () => {
         await storeData('modalVisible', true);
-        codePush.restartApp();
+        //codePush.restartApp();
       },
       pullChanges: async () => {
         return {

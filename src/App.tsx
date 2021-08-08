@@ -32,7 +32,6 @@ type TProps = {
 export const App = memo((props: TProps) => {
   const [initialNavState, setInitialNavState] = useState<InitialState>();
   const [isAppReady, setIsAppReady] = useState(false);
-  console.log('Config.NODE_ENV', Config.API_URL);
   const dispatch = useDispatch();
   const scheme = useColorScheme();
   const db = useDatabase();
@@ -73,7 +72,6 @@ export const App = memo((props: TProps) => {
   if (!isAppReady) {
     return <Spinner />;
   }
-
   return (
     <NavContainer
       initState={initialNavState}

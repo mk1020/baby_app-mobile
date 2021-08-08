@@ -9,6 +9,7 @@ import {TLanguage} from '../common/localization/localization';
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
   userToken: null,
+  userId: null,
   isLoading: false,
   language: null,
   diaryTitle: '',
@@ -31,8 +32,9 @@ export const oAuthGoogle = createAsyncThunk(
   'oAuthGoogle/requestStatus',
   async (data: TSignInGoogle, thunkAPI) => {
     try {
+      console.log(data.diaryId);
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
-      return res.data?.token || null;
+      return res.data;
     } catch (err) {
       console.error(err.response?.data || err.response || err);
       return null;
@@ -89,8 +91,9 @@ const appSlice = createSlice({
     builder.addCase(oAuthGoogle.pending, (state: TAppReducer, action: PayloadAction) => {
       state.isLoading = true;
     });
-    builder.addCase(oAuthGoogle.fulfilled, (state: TAppReducer, action: PayloadAction<TToken | null>) => {
-      state.userToken = action.payload;
+    builder.addCase(oAuthGoogle.fulfilled, (state: TAppReducer, action: PayloadAction<TSignInRes | null>) => {
+      state.userToken = action.payload?.token || null;
+      state.userId = action.payload?.userId || null;
       state.isLoading = false;
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action: PayloadAction<boolean>) => {

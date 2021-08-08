@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Images} from '../../common/imageResources';
 import {HeaderButton} from '../../common/components/HeaderButton';
 import {Fonts} from '../../common/phone/fonts';
@@ -24,12 +24,15 @@ export const Header = memo((props: TProps) => {
 
   return (
     <View style={stylesHeader.container}>
-      <HeaderButton icon={Images.bell}/>
+      {/* <HeaderButton icon={Images.bell}/>*/}
       <View style={stylesHeader.titleWrapper}>
         <Text style={stylesHeader.title} numberOfLines={3} ellipsizeMode={'tail'}>{title}</Text>
       </View>
       <View style={stylesHeader.rightButtons}>
-        <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
+        {/*<HeaderButton icon={Images.addPage} onPress={onPressAddPage}/>*/}
+        <TouchableOpacity onPress={onPressAddPage}>
+          <Image source={Images.addPage} style={{width: 28, height: 28, tintColor: 'orange'}}/>
+        </TouchableOpacity>
       </View>
       <ConditionView showIf={modalVisible}>
         <AddPageModal onRequestClose={onModalClose} diaryId={diaryId} chapters={chapters}/>

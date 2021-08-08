@@ -2,7 +2,7 @@ import React, {memo, useEffect, useState} from 'react';
 import {Image, Linking, Share, StyleSheet, Text, View} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
-import {Database} from '@nozbe/watermelondb';
+import {Database, Q} from '@nozbe/watermelondb';
 import {DiaryTableName} from '../../model/schema';
 import {useTranslation} from 'react-i18next';
 import {Menu} from './Menu';
@@ -12,7 +12,6 @@ import {TLanguage} from '../../common/localization/localization';
 import {useDispatch, useSelector} from 'react-redux';
 import {changeDiaryTitle, changeLanguage, forceUpdate, signOut} from '../../redux/appSlice';
 import {subscribe} from 'react-native-zip-archive';
-import {CachesDirectoryPath} from 'react-native-fs';
 import {Fonts} from '../../common/phone/fonts';
 import {shortPath} from '../../common/assistant/files';
 import {Images} from '../../common/imageResources';
@@ -22,10 +21,14 @@ import DocumentPicker from 'react-native-document-picker';
 import {getStorageData, storeData} from '../../common/assistant/asyncStorage';
 import {RootStoreType} from '../../redux/rootReducer';
 import {commonAlert} from '../../common/components/CommonAlert';
+import {ConditionView} from '../../common/components/ConditionView';
+import {isIos} from '../../common/phone/utils';
+import {syncDB} from '../../model/sync';
+import {recoverFromServer} from '../../model/recoverFromServer';
 
 type TProps = {
   database?: Database
-  diaryId: string
+  diary: any
 }
 //todo если я буду использовать CodePush, то нужно удалить react-native-restart и использовать reload из codePush
 
@@ -36,10 +39,11 @@ type BackupProgress = {
 }
 
 export const MenuContainer_ = memo((props: TProps) => {
-  const {diaryId, database} = props;
+  const {database, diary} = props;
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
+  const userId = useSelector((state: RootStoreType) => state.app.userId);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
@@ -83,7 +87,7 @@ export const MenuContainer_ = memo((props: TProps) => {
 
   useEffect(() => {
     try {
-      if (backupFilePath) {
+      if (backupFilePath && isIos) {
         (async () => {
           const result = await Share.share({
             url: backupFilePath
@@ -101,7 +105,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressDisableAds = () => {};
 
   const onPressSync = () => {
-    console.log(CachesDirectoryPath);
+    syncDB(database as Database, userToken, userId).catch(console.log);
   };
 
   const onPressExport = async () => {
@@ -111,7 +115,6 @@ export const MenuContainer_ = memo((props: TProps) => {
       const backupFilePath = await exportDBToZip(database as Database);
       backupFilePath && setBackupFilePath(backupFilePath);
     } catch (e) {
-      console.log('onPressExport catch', e);
       setBackupProgress({
         state: ProgressState.Error,
         progress: 0,
@@ -128,7 +131,6 @@ export const MenuContainer_ = memo((props: TProps) => {
         type: [DocumentPicker.types.zip],
         copyTo: 'cachesDirectory',
       });
-      console.log(res)
       await importZip(database as Database, res?.fileCopyUri);
     } catch (e) {
       if (DocumentPicker.isCancel(e)) {
@@ -184,7 +186,7 @@ export const MenuContainer_ = memo((props: TProps) => {
       progress: 0,
       state: ProgressState.None
     });
-    storeData('modalVisible', false);
+    storeData('modalVisible', false).catch(console.log);
 
   };
   const changeLanguage_ = async (language: TLanguage) => {
@@ -201,6 +203,9 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressLogOut = () => {
     commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
   };
+  const onPressRecoverFromAcc = () => {
+    recoverFromServer(database as Database, userToken, userId).catch(console.log);
+  };
   const handlers = {
     onPressDisableAds,
     onPressSync,
@@ -213,18 +218,20 @@ export const MenuContainer_ = memo((props: TProps) => {
     onPressWriteUs,
     onPressTermsUse,
     onPressPrivacyPolicy,
+    onPressRecoverFromAcc
   };
 
   const sectionDataOpt = {
     language
   };
-
+  const diaryId = diary?.length ? diary[0].id : '';
   return (
     <>
       <Menu
         renderData={getSectionsData(t, handlers, sectionDataOpt)}
         isAuth={userToken !== null}
         onPressLogOut={onPressLogOut}
+        diaryId={diaryId}
       />
       <ModalSelectorList
         data={getLanguagesData(t, changeLanguage_, language)}
@@ -267,11 +274,10 @@ export const MenuContainer_ = memo((props: TProps) => {
     </>
   );
 });
-//todo на ios нужно использовать не DownloadDirectoryPath, а что-то другое...
 //todo на ios нужно включить доступ в icloud для пикера файлов, это делает когда покупаешь аккаунт азработчика
-export const MenuContainer = withDatabase(withObservables(['diaryId'], ({database, diaryId}: TProps) => {
+export const MenuContainer = withDatabase(withObservables([], ({database}: TProps) => {
   return {
-    diary: database?.collections.get(DiaryTableName).query().observe(),
+    diary: database?.collections.get(DiaryTableName).query(Q.where('is_current', true)).observe(),
   };
 })(MenuContainer_));
 
@@ -283,12 +289,14 @@ const ExportSuccess = (props: ExportSuccessProps) => {
   return (
     <>
       <Text style={styles.exportDoneText}>{props.doneText}</Text>
-      {/*<View style={styles.exportPathContainer}>
-        <Image source={Images.where} style={styles.imagePath}/>
-        <Text style={styles.modalBlackText}>
-          {props.backupFilePath}
-        </Text>
-      </View>*/}
+      <ConditionView showIf={!isIos}>
+        <View style={styles.exportPathContainer}>
+          <Image source={Images.where} style={styles.imagePath}/>
+          <Text style={styles.modalBlackText}>
+            {props.backupFilePath}
+          </Text>
+        </View>
+      </ConditionView>
     </>
   );
 };

@@ -12,7 +12,7 @@ export const babyAppSchema = appSchema({
     tableSchema({
       name: DiaryTableName,
       columns: [
-        {name: 'user_id', type: 'number'},
+        {name: 'user_id', type: 'number', isOptional: true},
         {name: 'name', type: 'string', isOptional: true},
         {name: 'is_current', type: 'boolean'},
         {name: 'created_at', type: 'number'},
@@ -49,7 +49,7 @@ export const babyAppSchema = appSchema({
         {name: 'bookmarked', type: 'boolean'},
         {name: 'note', type: 'string'},
         {name: 'photo', type: 'string', isOptional: true},
-        {name: 'tags', type: 'string'},
+        {name: 'tags', type: 'string', isIndexed: true},
         {name: 'created_at', type: 'number'},
         {name: 'updated_at', type: 'number'},
       ]
