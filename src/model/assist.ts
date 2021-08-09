@@ -25,7 +25,7 @@ type SyncPullAdapterRes = {
   },
   timestamp: number
 }
-const syncTables = [ChaptersTableName, PagesTableName, NotesTableName];
+const syncTables = [ChaptersTableName, PagesTableName, NotesTableName, PhotosTableName];
 export const syncPullAdapter = (res: SyncPullResult, deleteDiaryIds: string[], diaryIdServer: string): SyncPullAdapterRes => {
   let changes: SyncPullAdapterRes | Record<string, any> = {};
 

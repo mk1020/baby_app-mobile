@@ -56,7 +56,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   });
   const [backupFilePath, setBackupFilePath] = useState('');
 
-  useEffect(() => {
+  /*  useEffect(() => {
     (async () => {
       const res = await getStorageData('modalVisible');
       if (res) {
@@ -71,7 +71,7 @@ export const MenuContainer_ = memo((props: TProps) => {
         }
       }
     })();
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     const zipProgress = subscribe(({progress, filePath}) => {
@@ -186,8 +186,7 @@ export const MenuContainer_ = memo((props: TProps) => {
       progress: 0,
       state: ProgressState.None
     });
-    storeData('modalVisible', false).catch(console.log);
-
+    //storeData('modalVisible', false).catch(console.log);
   };
   const changeLanguage_ = async (language: TLanguage) => {
     try {

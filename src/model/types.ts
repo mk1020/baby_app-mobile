@@ -30,14 +30,7 @@ export interface INoteJS {
   updatedAt: number,
 }
 
-export interface IPhoto {
-  id: string
-  diaryId: string
-  photo: string | null
-  date: number
-  createdAt: number
-  updatedAt: number
-}
+
 export interface IDiary {
   id: string
   userId: number
@@ -79,7 +72,7 @@ export interface IPageJS {
   updatedAt: number
 }
 export type TTables = 'diaries' | 'notes' | 'chapters' | 'pages' | 'photos_by_month'
-export type SyncTables = 'notes' | 'chapters' | 'pages'
+export type SyncTables = 'notes' | 'chapters' | 'pages' | 'photos_by_month'
 
 export type ChangesByEventsPull = {
   created: any[],
@@ -107,4 +100,23 @@ type ChangesPush = {
 export type SyncPushResult = {
   changes: ChangesPush,
   lastPulledAt: number
+}
+
+
+export interface IPhoto {
+  id: string
+  diaryId: string
+  photo: string | null
+  date: number
+  createdAt: number
+  updatedAt: number
+}
+export interface IPhotoDB {
+  id: string
+  user_id: number
+  diary_id: string
+  photo: string | null
+  date: number
+  created_at: number
+  updated_at: number
 }

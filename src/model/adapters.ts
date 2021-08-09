@@ -1,4 +1,4 @@
-import {IChapter, IDiary, INote, INoteJS, IPage, IPhoto} from './types';
+import {IChapter, IDiary, INote, INoteJS, IPage, IPhoto, IPhotoDB} from './types';
 import {INoteJSEnhanced} from '../components/diary/assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 
@@ -115,10 +115,20 @@ export const syncPageAdapter = (page: IPage & EnhancedToServerBD) => ({
   name: page?.name,
   created_at: new Date(page.created_at).getTime(),
   updated_at: new Date(page.updated_at).getTime(),
-})
+});
+
+export const syncPhotoAdapter = (photo: IPhotoDB & EnhancedToServerBD) => ({
+  id: photo.id,
+  diary_id: photo?.diary_id,
+  photo: photo?.photo,
+  date: photo?.date,
+  created_at: new Date(photo.created_at).getTime(),
+  updated_at: new Date(photo.updated_at).getTime(),
+});
 
 export const adapterSyncByTableName = {
   [ChaptersTableName]: syncChapterAdapter,
   [PagesTableName]: syncPageAdapter,
   [NotesTableName]: syncNoteAdapter,
+  [PhotosTableName]: syncPhotoAdapter,
 };

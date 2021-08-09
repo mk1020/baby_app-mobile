@@ -100,7 +100,7 @@ export const importZip = async (db: Database, fileUri: string) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       onDidPullChanges: async () => {
-        await storeData('modalVisible', true);
+       // await storeData('modalVisible', true);
         //codePush.restartApp();
       },
       pullChanges: async () => {

@@ -5,7 +5,7 @@ import {req} from '../common/assistant/api';
 import {TToken} from '../redux/types';
 import {SyncPullResult} from './types';
 import {syncPullAdapter, syncPushAdapter} from './assist';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName} from './schema';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 
 
 export async function syncDB(database: Database, token: TToken | null, userId: number | null) {
@@ -33,10 +33,18 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
           userId
         }});
 
+        const photosByMonth = await req(token).get<SyncPullResult & {diaryId: string}>('/photos-by-month/sync', {params: {
+          lastPulledAt,
+          schemaVersion,
+          migration: encodeURIComponent(JSON.stringify(migration)),
+          userId
+        }});
+
         const syncChanges = {
           ...chapters.data?.changes,
           ...pages.data?.changes,
           ...notes.data?.changes,
+          ...photosByMonth.data?.changes,
         };
         const diaryId = notes.data?.diaryId;
         const diaryIds = await database.get(DiaryTableName).query().fetchIds();
@@ -58,6 +66,9 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
         const noteDTO = syncPushAdapter({changes, lastPulledAt}, userId, NotesTableName);
         await req(token).post('/notes/sync', noteDTO);
 
+        const photoDTO = syncPushAdapter({changes, lastPulledAt}, userId, PhotosTableName);
+        console.log(photoDTO);
+        await req(token).post('/photos-by-month/sync', photoDTO);
       } catch (err) {
         console.error(err.response?.data || err.response || err);
         throw new Error('error push sync');
