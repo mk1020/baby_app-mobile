@@ -41,6 +41,7 @@ export const ModalDownPhoto = memo((props: TProps) => {
       quality: 1,
     }, (response: ImagePickerResponse) => {
       if (response.assets?.length) {
+        console.log(response)
         const path = getImagePath(response.assets[0].uri as string);
         onLoadImage(path);
       }
