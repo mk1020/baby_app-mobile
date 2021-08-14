@@ -14,9 +14,11 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {googleOAuthClientId} from '../../common/consts';
 import * as RNFS from 'react-native-fs';
 import {req} from '../../common/assistant/api';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath, readdir, readFile} from 'react-native-fs';
-import {LoadType, uploadGoogle} from '../../common/drive/uploadGoogle2';
+import {LoadType, uploadGoogle} from '../../common/drive/google/uploadGoogle2';
+import {DriveGoogle} from '../../common/drive/google/DriveGoogle';
+import {download} from '../../common/drive/google/download';
 
 type TProps = {
   database?: Database
@@ -59,24 +61,46 @@ export const Service_ = memo((props: TProps) => {
 
   const upload = async () => {
     GoogleSignin.configure({
-      scopes: ['https://www.googleapis.com/auth/drive'],
+      scopes: [
+        'https://www.googleapis.com/auth/drive',
+        'https://www.googleapis.com/auth/drive.file',
+        'https://www.googleapis.com/auth/drive.readonly',
+        'https://www.googleapis.com/auth/drive.metadata.readonly',
+        'https://www.googleapis.com/auth/drive.appdata',
+        'https://www.googleapis.com/auth/drive.metadata',
+        'https://www.googleapis.com/auth/drive.photos.readonly'
+      ],
       webClientId: googleOAuthClientId,
       // iosClientId
     });
     await GoogleSignin.signIn();
     const userInfo = await GoogleSignin.getTokens();
-    // console.log(userInfo);
-    //readdir(DownloadDirectoryPath).then(console.log);
-    uploadGoogle(
-      'file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_2dde22f5-5e42-4ae0-8034-0fe1b715c4c7.jpg',
-      userInfo.accessToken,
-      LoadType.Create,
-      (loadedMB, totalMB) => console.log(`loaded - ${loadedMB}, total - ${totalMB}`)
-    ).then(e => {
-      console.log(e);
-    }).catch(e => {
-      console.log('catch', e);
-    });
+    console.log(userInfo);
+    readdir(CachesDirectoryPath).then(console.log);
+    const folder = await DriveGoogle.getFile(userInfo.accessToken, DriveGoogle.folderName).catch(console.log);
+    // uploadGoogle(
+    //   'file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_2dde22f5-5e42-4ae0-8034-0fe1b715c4c7.jpg',
+    //   userInfo.accessToken,
+    //   LoadType.Create,
+    //   (loadedMB, totalMB) => console.log(`loaded - ${loadedMB}, total - ${totalMB}`),
+    //   res?.id
+    // ).then(e => {
+    //   console.log(e);
+    // }).catch(e => {
+    //   console.log('catch', e);
+    // });
+
+    //const res = await DriveGoogle.createFolder(userInfo.accessToken, DriveGoogle.folderName);
+    const res = await DriveGoogle.listFiles(userInfo.accessToken, folder?.id).catch(
+      (e: AxiosError) => {
+        console.log(e.response);
+      }
+    );
+    //const res1 = await DriveGoogle.deleteFile(userInfo.accessToken, res?.id).catch(console.log);
+    const res1 = await DriveGoogle.download(userInfo.accessToken, '1YNAqwP3WR19ITlcbSM98jz6ocwydn3DD', 'myDownloadFile').catch(console.log);
+    console.log(res1);
+
+    //const res = await DriveGoogle.isExist(userInfo.accessToken, DriveGoogle.folderName).catch(console.log);
 
 
     // const response = await fetch('file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_2dde22f5-5e42-4ae0-8034-0fe1b715c4c7.jpg');

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {blobFromUri, getFileName} from '../assistant/files';
+import {blobFromUri, getFileName} from '../../assistant/files';
+import {getChunkSize} from './assist';
 
 export enum LoadType {
   Create = 'Create',
@@ -10,13 +11,15 @@ export const uploadGoogle =
     fileUri: string,
     accessToken: string,
     loadType: LoadType,
-    onProgress: (loadedMB: number, totalMB: number)=>void) => {
+    onProgress: (loadedMB: number, totalMB: number)=>void,
+    parentFolderID: string
+  ) => {
     const fileName = getFileName(fileUri);
     const file = await blobFromUri(fileUri);
 
     const res = await axios.request({
       url: 'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',
-      data: {name: fileName},
+      data: {name: fileName, parents: [parentFolderID]},
       headers: {
         'Authorization': 'Bearer ' + accessToken,
         'Content-Type': 'application/json; charset=UTF-8',
@@ -26,16 +29,11 @@ export const uploadGoogle =
       },
       method: loadType === LoadType.Create ? 'POST' : 'PUT'
     });
-    const minChunk = 256 * 1024;
-    const countPossibleChunks = Math.floor(file.size / minChunk);
-    const countChunks = Math.floor(countPossibleChunks /  5);
-    const chunkSize = countPossibleChunks ? countChunks * minChunk : 0;
-    const location = res.headers?.location;
+    const chunkSize = getChunkSize(file.size);
+    const location = res?.headers?.location;
     let progress = 0;
     const onProgressLoad = (e: ProgressEvent) => {
       progress += e.loaded;
-      console.log(e)
-      console.log(progress)
       onProgress(progress / 1024 / 1024, file.size / 1024 / 1024); //сколько загружено в мб
     };
     return await sendFile({location, onProgressLoad, file, offset: 0, chunkSize});
