@@ -10,5 +10,5 @@ export const listFiles = async (accessToken:string, folderId: string) => {
     method: 'GET',
     params: {q: `'${folderId}' in parents and trashed=false`},
   });
-  return res.data?.files;
+  return res.data?.files || [];
 };

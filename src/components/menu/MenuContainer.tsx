@@ -125,12 +125,12 @@ export const MenuContainer_ = memo((props: TProps) => {
 
   const onPressImport = async () => {
     try {
-      setImportModalVisible(true);
-      setBackupProgress({...backupProgress, state: ProgressState.InProgress});
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.zip],
         copyTo: 'cachesDirectory',
       });
+      setImportModalVisible(true);
+      setBackupProgress({...backupProgress, state: ProgressState.InProgress});
       await importZip(database as Database, res?.fileCopyUri);
     } catch (e) {
       if (DocumentPicker.isCancel(e)) {

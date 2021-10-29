@@ -8,6 +8,7 @@ import {download} from './download';
 
 export class DriveGoogle {
   static folderName = 'life_book'
+  static backupName = 'life_book_backup.zip'
   static uploadFile = uploadGoogle
   static createFolder = createFolder
   static isExist = isExist

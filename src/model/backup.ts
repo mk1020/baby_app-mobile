@@ -4,7 +4,7 @@ import {
   CachesDirectoryPath,
   DocumentDirectoryPath,
   DownloadDirectoryPath,
-  LibraryDirectoryPath, MainBundlePath,
+  LibraryDirectoryPath, MainBundlePath, readdir,
   TemporaryDirectoryPath
 } from 'react-native-fs';
 import {adapterByTableName} from './adapters';
@@ -18,6 +18,7 @@ import {storeData} from '../common/assistant/asyncStorage';
 import codePush from 'react-native-code-push';
 import {isIos} from '../common/phone/utils';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
+import {PermissionsAndroid} from 'react-native';
 
 interface DBExportJson {
   [tableName: string]: {
@@ -29,14 +30,20 @@ export const exportDBToZip = async (db: Database) => {
   const backupFolderPath = DocumentDirectoryPath + '/backup';
 
   try {
+    const granted = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    ]);
     const isFolderExist = await RNFS.exists(backupFolderPath);
     if (isFolderExist) {
       await RNFS.unlink(backupFolderPath);
     }
+    await RNFS.mkdir(backupFolderPath);
     const schema = await db.schema;
     const tables = Object.keys(schema?.tables);
     const batchPromises = tables.map(table => db.get(table).query().fetch());
     const collections: any[] = await Promise.all(batchPromises);
+
     //crete db json
     const exportJson: DBExportJson = {};
 
@@ -49,11 +56,8 @@ export const exportDBToZip = async (db: Database) => {
           updated: adaptedRecords,
           deleted: []
         };
-
         for (const record of adaptedRecords) {
           if (record?.photo) {
-            //create folder
-            await RNFS.mkdir(backupFolderPath);
             //copy images to folder
             const imagesUri: string[] = record.photo.split(';');
             for (const image of imagesUri) {
@@ -68,11 +72,14 @@ export const exportDBToZip = async (db: Database) => {
     //write db file
     await RNFS.writeFile(backupFolderPath + '/' + backupDBFileName, JSON.stringify(exportJson), 'utf8');
     //zip all
-    const backupFolderByOS = isIos ? DocumentDirectoryPath : DownloadDirectoryPath;
-    const backupFilePath = backupFolderByOS + '/' + makeId(8) + '-life-book-backup.zip';
-    await zip(backupFolderPath, backupFilePath);
-    return backupFilePath;
-  }  finally {
+    const backupResFolderByOS = isIos ? DocumentDirectoryPath : DownloadDirectoryPath;
+    const backupResFilePath = backupResFolderByOS + '/' + makeId(8) + '-life-book-backup.zip';
+    await zip(backupFolderPath, backupResFilePath);
+
+    return backupResFilePath;
+  } catch (e) {
+    console.log(e);
+  } finally {
     await RNFS.unlink(backupFolderPath).catch(e => console.log(e));
   }
 };
@@ -81,6 +88,13 @@ export const importZip = async (db: Database, fileUri: string) => {
   try {
     const split = fileUri.split('/');
     const resFolderPath = split[split.length - 2];
+    //delete all cached images
+    const cachedFiles = await readdir(CachesDirectoryPath);
+    for (const file of cachedFiles) {
+      if (file.includes('.jpg')) {
+        await RNFS.unlink(CachesDirectoryPath + '/' + file);
+      }
+    }
     await unzip(fileUri, CachesDirectoryPath);
     await RNFS.unlink(CachesDirectoryPath + '/' + resFolderPath).catch();
     const dbJson = await RNFS.readFile(CachesDirectoryPath + '/' + backupDBFileName);
@@ -100,7 +114,7 @@ export const importZip = async (db: Database, fileUri: string) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       onDidPullChanges: async () => {
-       // await storeData('modalVisible', true);
+        // await storeData('modalVisible', true);
         //codePush.restartApp();
       },
       pullChanges: async () => {

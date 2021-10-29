@@ -31,12 +31,11 @@ export const ModalDownProgress = memo((props: TProps) => {
     indeterminate,
     progress,
     state,
-    SuccessComponent = null,
+    SuccessComponent =  null,
     ErrorComponent,
     title,
     showAfterReload = false
   } = props;
-console.log()
   return (
     <ModalDown
       onBackdropPress={onRequestClose}
