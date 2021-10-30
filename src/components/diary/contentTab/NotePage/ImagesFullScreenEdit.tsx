@@ -29,6 +29,12 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
     changeImagesUri(_imagesUri);
   }, [_imagesUri]);
 
+  useEffect(() => {
+    if (!imagesUri.length) {
+      navigation.navigate(NavigationPages.NotePage, {imagesUri, deletedImagesUri});
+    }
+  }, [imagesUri.length]);
+
   const onPressBack = () => {
     navigation.navigate(NavigationPages.NotePage, {imagesUri, deletedImagesUri});
   };
@@ -51,13 +57,6 @@ export const ImagesFullScreenEdit = memo((props: TProps) => {
         </View>
         <HeaderButtonSimple icon={Images.delete} onPress={onPressDelete}/>
       </View>
-
-
-
-
-
-
-
 
       <ConditionView showIf={imagesUri?.length > 0}>
         <ImagesSlider

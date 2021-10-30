@@ -46,7 +46,6 @@ export const NotePage = memo((props: TProps) => {
     handleSubmit,
     formState: {errors},
     getValues,
-    trigger,
     setValue,
   } = useForm<IFormNote>({defaultValues: noteData});
   const editorRef = useRef<RichEditor>(null);
@@ -55,7 +54,6 @@ export const NotePage = memo((props: TProps) => {
   useEffect(() => {
     if (deletedImagesUri.length) {
       setValue('imagesUri', imagesUri, {shouldValidate: true});
-      deleteImagesFromCache(deletedImagesUri);
     }
   }, [deletedImagesUri.length]);
 
@@ -117,8 +115,7 @@ export const NotePage = memo((props: TProps) => {
                 title={mode === NotePageMode.Create ? t('createNote') : t('editNote')}
                 mode={mode}
                 onLoadImage={(imageUri: string) => {
-                  onChange([...value, imageUri]);
-                  trigger('imagesUri');
+                  setValue('imagesUri', [...value, imageUri], {shouldValidate: true});
                 }}
                 onPressDelete={onPressDelete}
               />
