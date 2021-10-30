@@ -1,24 +1,17 @@
-import React, {memo, useEffect, useRef, useState} from 'react';
-import {PermissionsAndroid, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {memo, useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
-import withObservables, {ObservableifyProps} from '@nozbe/with-observables';
-import {Database, Q} from '@nozbe/watermelondb';
+import withObservables from '@nozbe/with-observables';
+import {Database} from '@nozbe/watermelondb';
 import {signOut} from '../../redux/appSlice';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../../model/schema';
-import {getNotesByPageDB} from '../../model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {PhotosByMonth} from '../diary/contentTab/photosByMonth/PhotosByMonth';
-import {MediaUploader} from '../../common/drive/uploadGoogle';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {googleOAuthClientId} from '../../common/consts';
-import * as RNFS from 'react-native-fs';
-import {req} from '../../common/assistant/api';
-import axios, {AxiosError} from 'axios';
-import {CachesDirectoryPath, DocumentDirectoryPath, DownloadDirectoryPath, readdir, readFile} from 'react-native-fs';
-import {LoadType, uploadGoogle} from '../../common/drive/google/uploadGoogle2';
+import {CachesDirectoryPath, readdir} from 'react-native-fs';
+import {AxiosError} from 'axios';
 import {DriveGoogle} from '../../common/drive/google/DriveGoogle';
-import {download} from '../../common/drive/google/download';
 
 type TProps = {
   database?: Database
@@ -59,7 +52,8 @@ export const Service_ = memo((props: TProps) => {
   };
 
 
-  const upload = async () => {
+  const signInGoogle = async () => {
+    await GoogleSignin.hasPlayServices();
     GoogleSignin.configure({
       scopes: [
         'https://www.googleapis.com/auth/drive',
@@ -75,9 +69,8 @@ export const Service_ = memo((props: TProps) => {
     });
     await GoogleSignin.signIn();
     const userInfo = await GoogleSignin.getTokens();
-    console.log(userInfo);
-    readdir(CachesDirectoryPath).then(console.log);
-    const folder = await DriveGoogle.getFile(userInfo.accessToken, DriveGoogle.folderName).catch(console.log);
+
+    // const folder = await DriveGoogle.getFile(userInfo.accessToken, DriveGoogle.folderName).catch(console.log);
     // uploadGoogle(
     //   'file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_2dde22f5-5e42-4ae0-8034-0fe1b715c4c7.jpg',
     //   userInfo.accessToken,
@@ -91,14 +84,14 @@ export const Service_ = memo((props: TProps) => {
     // });
 
     //const res = await DriveGoogle.createFolder(userInfo.accessToken, DriveGoogle.folderName);
-    const res = await DriveGoogle.listFiles(userInfo.accessToken, folder?.id).catch(
+    /*const res = await DriveGoogle.listFiles(userInfo.accessToken, folder?.id).catch(
       (e: AxiosError) => {
         console.log(e.response);
       }
-    );
+    );*/
     //const res1 = await DriveGoogle.deleteFile(userInfo.accessToken, res?.id).catch(console.log);
-    const res1 = await DriveGoogle.download(userInfo.accessToken, '1YNAqwP3WR19ITlcbSM98jz6ocwydn3DD', 'myDownloadFile').catch(console.log);
-    console.log(res1);
+    //const res1 = await DriveGoogle.download(userInfo.accessToken, '1YNAqwP3WR19ITlcbSM98jz6ocwydn3DD', 'myDownloadFile').catch(console.log);
+    //console.log(res1);
 
     //const res = await DriveGoogle.isExist(userInfo.accessToken, DriveGoogle.folderName).catch(console.log);
 
@@ -120,8 +113,6 @@ export const Service_ = memo((props: TProps) => {
     //   onProgress(progress: ProgressEvent) { console.log(progress.loaded); }
     // });
     // up.upload();
-
-
   };
   return (
     <View>
@@ -150,7 +141,7 @@ export const Service_ = memo((props: TProps) => {
         <Text>GET diaries</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={upload} style={styles.sign}>
+      <TouchableOpacity onPress={signInGoogle} style={styles.sign}>
         <Text>upload</Text>
       </TouchableOpacity>
     </View>

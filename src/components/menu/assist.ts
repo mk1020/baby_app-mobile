@@ -3,11 +3,12 @@ import {ImageURISource} from 'react-native';
 import {Images} from '../../common/imageResources';
 import {TModalDataItem} from '../../common/components/ModalSelectorList';
 import {TLanguage} from '../../common/localization/localization';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {googleOAuthClientId} from '../../common/consts';
 
 type Handlers = {
   onPressDisableAds: ()=> void
-  onPressSync: ()=> void
-  onPressRecoverFromAcc: ()=> void
+  onPressSaveInternet: ()=> void
   onPressExport: ()=> void
   onPressImport: ()=> void
   onPressChangeLanguage: ()=> void
@@ -44,13 +45,8 @@ export const getSectionsData = (t: TFunction, handlers: Handlers, options: Secti
         iconTintColor: '#FFA100'
       },
       {
-        title: t('sync'),
-        onPress: handlers.onPressSync,
-        icon: Images.cloudSync
-      },
-      {
-        title: t('recoverFromAccount'),
-        onPress: handlers.onPressRecoverFromAcc,
+        title: t('cloud'),
+        onPress: handlers.onPressSaveInternet,
         icon: Images.cloudSync
       },
       {
@@ -123,3 +119,11 @@ export const getLanguagesData = (t: TFunction, handler: (lang: TLanguage) => voi
     check: currLang === 'en'
   },
 ];
+
+export const signInGoogle = async () => {
+  await GoogleSignin.hasPlayServices();
+  await GoogleSignin.signIn();
+  const userInfo = await GoogleSignin.getTokens();
+
+  return userInfo.accessToken;
+}

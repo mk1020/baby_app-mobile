@@ -1,11 +1,11 @@
 // @ts-ignore
 import {hasUnsyncedChanges, synchronize} from '@nozbe/watermelondb/sync';
 import {Database} from '@nozbe/watermelondb';
-import {req} from '../common/assistant/api';
-import {TToken} from '../redux/types';
-import {SyncPullResult} from './types';
-import {syncPullAdapter, syncPushAdapter} from './assist';
-import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
+import {req} from '../../common/assistant/api';
+import {TToken} from '../../redux/types';
+import {SyncPullResult} from '../types';
+import {syncPullAdapter, syncPushAdapter} from '../assist';
+import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../schema';
 
 
 export async function syncDB(database: Database, token: TToken | null, userId: number | null) {

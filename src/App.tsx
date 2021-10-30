@@ -47,10 +47,15 @@ export const App = memo((props: TProps) => {
     restoreNav().finally(() => setIsAppReady(true));
 
     GoogleSignin.configure({
-      scopes: ['https://www.googleapis.com/auth/drive'],
+      scopes: [
+        'https://www.googleapis.com/auth/drive',
+        'https://www.googleapis.com/auth/drive.file',
+        'https://www.googleapis.com/auth/drive.readonly',
+        'https://www.googleapis.com/auth/drive.metadata.readonly',
+        'https://www.googleapis.com/auth/drive.appdata',
+        'https://www.googleapis.com/auth/drive.metadata',
+      ],
       webClientId: googleOAuthClientId,
-
-      // iosClientId
     });
   }, []);
 

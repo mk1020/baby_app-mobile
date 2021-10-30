@@ -128,11 +128,13 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
         onBackButtonPress={onRequestCloseModal}
         isVisible={modalAddCardsVisible}
       >
+        <View style={{paddingHorizontal: 28}}>
         <ButtonIconVert
           title={t('addTwelveCards')}
           image={Images.playlistAdd}
           onPress={onPressAddTwelveCards}
         />
+        </View>
       </ModalDown>
     </>
   );

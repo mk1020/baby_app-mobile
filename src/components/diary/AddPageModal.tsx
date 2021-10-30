@@ -76,6 +76,7 @@ export const AddPageModal = memo((props: TProps) => {
       <ScrollView
         contentContainerStyle={styles.scrollViewContainer}
         showsVerticalScrollIndicator={false}
+        style={{paddingHorizontal: 28}}
       >
         <Controller
           control={control}

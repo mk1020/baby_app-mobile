@@ -4,6 +4,7 @@ export type TColorScheme = 'light' | 'dark';
 
 export type TAppReducer = {
   colorScheme: TColorScheme;
+  googleAccessToken: string | null,
   userToken: TToken | null;
   userId: number | null;
   isLoading: boolean;
@@ -19,7 +20,7 @@ export type TSignIn = {
 
 export type TSignInGoogle = {
   oAuthIdToken: string;
-  diaryId: string
+  diaryId?: string
 };
 
 export enum ColorSchemes {

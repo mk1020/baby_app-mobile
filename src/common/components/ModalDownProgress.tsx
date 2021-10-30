@@ -6,6 +6,7 @@ import {ConditionView} from './ConditionView';
 // @ts-ignore
 import ProgressBar from 'react-native-progress/Bar';
 import {Fonts} from '../phone/fonts';
+import {useTranslation} from 'react-i18next';
 
 export enum ProgressState {
   None = 'None',
@@ -21,52 +22,70 @@ type TProps = {
   indeterminate?: boolean
   state: ProgressState,
   title: string
+  subtitle?: string
   SuccessComponent?: JSX.Element | null
   ErrorComponent: JSX.Element
 }
 export const ModalDownProgress = memo((props: TProps) => {
+
   const {
     isVisible,
     onRequestClose,
-    indeterminate,
-    progress,
-    state,
-    SuccessComponent =  null,
-    ErrorComponent,
-    title,
-    showAfterReload = false
+    ...other
   } = props;
+
   return (
     <ModalDown
       onBackdropPress={onRequestClose}
       onBackButtonPress={onRequestClose}
       isVisible={isVisible}
     >
-      <View style={styles.exportModalContainer}>
-        <Text style={styles.exportTitle}>{title}</Text>
-        <ProgressBar
-          progress={progress}
-          width={null}
-          height={15}
-          borderColor={'orange'}
-          color={'rgb(236,157,36)'}
-          useNativeDriver={true}
-          indeterminate={progress === 0 || progress === 1 && state === ProgressState.InProgress}
-        />
-        <ConditionView showIf={(state === ProgressState.Success && showAfterReload == false) || !!showAfterReload}>
-          {SuccessComponent}
-        </ConditionView>
-
-        <ConditionView showIf={state === ProgressState.Error}>
-          {ErrorComponent}
-        </ConditionView>
-      </View>
+      <ModalProgressContent {...other} />
     </ModalDown>
   );
 });
+
+export const ModalProgressContent = (props: any) => {
+  const {t, i18n} = useTranslation();
+
+  const {
+    progress,
+    state,
+    SuccessComponent =  null,
+    ErrorComponent,
+    title,
+    showAfterReload = false,
+    subtitle = t('waitPlease')
+  } = props;
+
+  return (
+    <View style={styles.exportModalContainer}>
+      <Text style={styles.exportTitle}>{title}</Text>
+      <ProgressBar
+        progress={progress}
+        width={null}
+        height={15}
+        borderColor={'orange'}
+        color={'rgb(236,157,36)'}
+        useNativeDriver={true}
+        indeterminate={progress === 0 || progress === 1 && state === ProgressState.InProgress}
+      />
+      <Text style={styles.exportTitle}>{subtitle}</Text>
+
+      <ConditionView showIf={(state === ProgressState.Success && showAfterReload == false) || !!showAfterReload}>
+        {SuccessComponent}
+      </ConditionView>
+
+      <ConditionView showIf={state === ProgressState.Error}>
+        {ErrorComponent}
+      </ConditionView>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   exportModalContainer: {
     justifyContent: 'center',
+    paddingHorizontal: 28
   },
   exportTitle: {
     alignSelf: 'center',
@@ -74,6 +93,4 @@ const styles = StyleSheet.create({
     color: '#31A0B2',
     marginBottom: 2
   },
-
-
 });

@@ -1,12 +1,12 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Image, Linking, Share, StyleSheet, Text, View} from 'react-native';
+import {Image, Linking, Share, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
 import {DiaryTableName} from '../../model/schema';
 import {useTranslation} from 'react-i18next';
 import {Menu} from './Menu';
-import {getLanguagesData, getSectionsData} from './assist';
+import {getLanguagesData, getSectionsData, signInGoogle} from './assist';
 import {ModalSelectorList} from '../../common/components/ModalSelectorList';
 import {TLanguage} from '../../common/localization/localization';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,13 +18,14 @@ import {Images} from '../../common/imageResources';
 import {exportDBToZip, importZip} from '../../model/backup';
 import {ModalDownProgress, ProgressState} from '../../common/components/ModalDownProgress';
 import DocumentPicker from 'react-native-document-picker';
-import {getStorageData, storeData} from '../../common/assistant/asyncStorage';
 import {RootStoreType} from '../../redux/rootReducer';
 import {commonAlert} from '../../common/components/CommonAlert';
 import {ConditionView} from '../../common/components/ConditionView';
 import {isIos} from '../../common/phone/utils';
-import {syncDB} from '../../model/sync';
-import {recoverFromServer} from '../../model/recoverFromServer';
+import {syncDB} from '../../model/remoteSave/sync';
+import {ModalDown} from '../../common/components/ModalDown';
+import {saveInGoogleDrive} from '../../model/remoteSave/google';
+import {ModalSaveData} from './ModalSaveData';
 
 type TProps = {
   database?: Database
@@ -32,7 +33,7 @@ type TProps = {
 }
 //todo если я буду использовать CodePush, то нужно удалить react-native-restart и использовать reload из codePush
 
-type BackupProgress = {
+export type Progress = {
   progress: number
   state: ProgressState,
   showModalAfterReload?: boolean
@@ -43,47 +44,34 @@ export const MenuContainer_ = memo((props: TProps) => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
+  const googleAccessToken = useSelector((state: RootStoreType) => state.app.googleAccessToken);
   const userId = useSelector((state: RootStoreType) => state.app.userId);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportModalVisible, setExportModalVisible] = useState(false);
-  const [backupProgress, setBackupProgress] = useState<BackupProgress>({
+  const [saveModalVisible, setSaveModalVisible] = useState(false);
+  const [uploadingMode, setUploadingMode] = useState(false);
+  const [progress, setProgress] = useState<Progress>({
     progress: 0,
     state: ProgressState.None,
     showModalAfterReload: false
   });
   const [backupFilePath, setBackupFilePath] = useState('');
 
-  /*  useEffect(() => {
-    (async () => {
-      const res = await getStorageData('modalVisible');
-      if (res) {
-        const modalVisible = JSON.parse(res);
-        setImportModalVisible(modalVisible);
-        if (modalVisible) {
-          setBackupProgress({
-            progress: 1,
-            state: ProgressState.Success,
-            showModalAfterReload: true
-          });
-        }
-      }
-    })();
-  }, []);*/
 
   useEffect(() => {
     const zipProgress = subscribe(({progress, filePath}) => {
       // the filePath is always empty on iOS for zipping.
       if (progress === 1) {
-        setBackupProgress({state: ProgressState.Success, progress});
+        setProgress({state: ProgressState.Success, progress});
       } else {
-        setBackupProgress({state: ProgressState.InProgress, progress});
+        setProgress({state: ProgressState.InProgress, progress});
       }
     });
     return () => zipProgress.remove();
-  }, [backupProgress]);
+  }, [progress]);
 
   useEffect(() => {
     try {
@@ -110,12 +98,12 @@ export const MenuContainer_ = memo((props: TProps) => {
 
   const onPressExport = async () => {
     try {
-      setBackupProgress({...backupProgress, state: ProgressState.InProgress});
+      setProgress({...progress, state: ProgressState.InProgress});
       setExportModalVisible(true);
       const backupFilePath = await exportDBToZip(database as Database);
       backupFilePath && setBackupFilePath(backupFilePath);
     } catch (e) {
-      setBackupProgress({
+      setProgress({
         state: ProgressState.Error,
         progress: 0,
       });
@@ -130,18 +118,18 @@ export const MenuContainer_ = memo((props: TProps) => {
         copyTo: 'cachesDirectory',
       });
       setImportModalVisible(true);
-      setBackupProgress({...backupProgress, state: ProgressState.InProgress});
+      setProgress({...progress, state: ProgressState.InProgress});
       await importZip(database as Database, res?.fileCopyUri);
     } catch (e) {
       if (DocumentPicker.isCancel(e)) {
         setImportModalVisible(false);
-        setBackupProgress({
+        setProgress({
           state: ProgressState.None,
           progress: 0,
         });
       } else {
         console.log(e);
-        setBackupProgress({
+        setProgress({
           state: ProgressState.Error,
           progress: 0,
         });
@@ -182,7 +170,9 @@ export const MenuContainer_ = memo((props: TProps) => {
     setLanguageModalVisible(false);
     setExportModalVisible(false);
     setImportModalVisible(false);
-    setBackupProgress({
+    setSaveModalVisible(false);
+    setUploadingMode(false);
+    setProgress({
       progress: 0,
       state: ProgressState.None
     });
@@ -202,12 +192,31 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressLogOut = () => {
     commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
   };
-  const onPressRecoverFromAcc = () => {
-    recoverFromServer(database as Database, userToken, userId).catch(console.log);
+  const onPressUploadGoogle = async () => {
+    try {
+      const accessToken = await signInGoogle();
+      setUploadingMode(true);
+      await saveInGoogleDrive(database as Database, accessToken, (loadedMB, totalMB) => {
+        setProgress({
+          state: loadedMB !== totalMB ? ProgressState.InProgress : ProgressState.Success,
+          progress: loadedMB / totalMB
+        });
+      });
+    } catch (e) {
+      setProgress({
+        state: ProgressState.Error,
+        progress: 0,
+      });
+    }
+
+  };
+
+  const onPressSaveInternet = () => {
+    setSaveModalVisible(true);
   };
   const handlers = {
     onPressDisableAds,
-    onPressSync,
+    onPressSaveInternet,
     onPressExport,
     onPressImport,
     onPressChangeLanguage,
@@ -217,7 +226,6 @@ export const MenuContainer_ = memo((props: TProps) => {
     onPressWriteUs,
     onPressTermsUse,
     onPressPrivacyPolicy,
-    onPressRecoverFromAcc
   };
 
   const sectionDataOpt = {
@@ -239,9 +247,9 @@ export const MenuContainer_ = memo((props: TProps) => {
       />
       <ModalDownProgress
         isVisible={exportModalVisible}
-        state={backupProgress.state}
+        state={progress.state}
         onRequestClose={onModalCloseRequest}
-        progress={backupProgress.progress}
+        progress={progress.progress}
         title={t('exportData')}
         SuccessComponent={
           <ExportSuccess
@@ -255,10 +263,10 @@ export const MenuContainer_ = memo((props: TProps) => {
       />
       <ModalDownProgress
         isVisible={importModalVisible}
-        state={backupProgress.state}
-        showAfterReload={backupProgress?.showModalAfterReload}
+        state={progress.state}
+        showAfterReload={progress?.showModalAfterReload}
         onRequestClose={onModalCloseRequest}
-        progress={backupProgress.progress}
+        progress={progress.progress}
         title={t('waitPlease')}
         SuccessComponent={
           <ImportSuccess
@@ -269,6 +277,14 @@ export const MenuContainer_ = memo((props: TProps) => {
         ErrorComponent={
           <Text style={styles.errorText}>{t('oops')}</Text>
         }
+      />
+
+      <ModalSaveData
+        isVisible={saveModalVisible}
+        progress={progress}
+        onModalCloseRequest={onModalCloseRequest}
+        onPressSync={onPressSync}
+        onPressUploadGoogle={onPressUploadGoogle}
       />
     </>
   );
@@ -287,7 +303,7 @@ type ExportSuccessProps = {
 const ExportSuccess = (props: ExportSuccessProps) => {
   return (
     <>
-      <Text style={styles.exportDoneText}>{props.doneText}</Text>
+      <Text style={styles.doneText}>{props.doneText}</Text>
       <ConditionView showIf={!isIos}>
         <View style={styles.exportPathContainer}>
           <Image source={Images.where} style={styles.imagePath}/>
@@ -307,13 +323,14 @@ type ImportSuccessProps = {
 const ImportSuccess = (props: ImportSuccessProps) => {
   return (
     <View style={styles.importSuccessContainer}>
-      <Text style={styles.exportDoneText}>{props.successText}</Text>
-      <Text style={styles.exportDoneText}>{props.successSecondText}</Text>
+      <Text style={styles.doneText}>{props.successText}</Text>
+      <Text style={styles.doneText}>{props.successSecondText}</Text>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
-  exportDoneText: {
+  doneText: {
     fontFamily: Fonts.regular,
     fontSize: 16,
     color: 'green',

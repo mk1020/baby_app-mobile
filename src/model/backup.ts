@@ -28,6 +28,8 @@ interface DBExportJson {
 export const backupDBFileName = 'db.json';
 export const exportDBToZip = async (db: Database) => {
   const backupFolderPath = DocumentDirectoryPath + '/backup';
+  const backupResFolderByOS = isIos ? DocumentDirectoryPath : DownloadDirectoryPath;
+  const backupResFilePath = backupResFolderByOS + '/' + makeId(8) + '-life-book-backup.zip';
 
   try {
     const granted = await PermissionsAndroid.requestMultiple([
@@ -72,16 +74,15 @@ export const exportDBToZip = async (db: Database) => {
     //write db file
     await RNFS.writeFile(backupFolderPath + '/' + backupDBFileName, JSON.stringify(exportJson), 'utf8');
     //zip all
-    const backupResFolderByOS = isIos ? DocumentDirectoryPath : DownloadDirectoryPath;
-    const backupResFilePath = backupResFolderByOS + '/' + makeId(8) + '-life-book-backup.zip';
     await zip(backupFolderPath, backupResFilePath);
-
-    return backupResFilePath;
   } catch (e) {
     console.log(e);
   } finally {
     await RNFS.unlink(backupFolderPath).catch(e => console.log(e));
   }
+
+  return backupResFilePath;
+
 };
 
 export const importZip = async (db: Database, fileUri: string) => {
