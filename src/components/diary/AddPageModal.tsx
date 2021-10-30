@@ -110,7 +110,7 @@ export const AddPageModal = memo((props: TProps) => {
               render={({field: {onChange, onBlur, value}}) => (
                 <View style={[styles.inputWrapper, errors.newChapter && styles.fieldErrView]}>
                   <TextInput
-                    placeholder={'Название главы'}
+                    placeholder={t('chapterTitle')}
                     onChangeText={value => onChange(value)}
                     value={value}
                     style={styles.input}
@@ -131,7 +131,7 @@ export const AddPageModal = memo((props: TProps) => {
           render={({field: {onChange, onBlur, value}}) => (
             <View style={[styles.inputWrapper, errors.pageName && styles.fieldErrView]}>
               <TextInput
-                placeholder={'Название страницы'}
+                placeholder={t('pageTitle')}
                 onChangeText={value => onChange(value)}
                 value={value}
                 style={styles.input}

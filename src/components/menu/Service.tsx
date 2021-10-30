@@ -144,6 +144,12 @@ export const Service_ = memo((props: TProps) => {
       <TouchableOpacity onPress={signInGoogle} style={styles.sign}>
         <Text>upload</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={async () => {
+        console.log(await readdir(CachesDirectoryPath));
+      }} style={styles.sign}>
+        <Text>readdir</Text>
+      </TouchableOpacity>
     </View>
   );
 });

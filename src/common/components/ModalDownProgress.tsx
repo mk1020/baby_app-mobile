@@ -45,7 +45,7 @@ export const ModalDownProgress = memo((props: TProps) => {
   );
 });
 
-export const ModalProgressContent = (props: any) => {
+export const ModalProgressContent = (props: Omit<TProps, 'onRequestClose' | 'isVisible'>) => {
   const {t, i18n} = useTranslation();
 
   const {
@@ -55,8 +55,11 @@ export const ModalProgressContent = (props: any) => {
     ErrorComponent,
     title,
     showAfterReload = false,
-    subtitle = t('waitPlease')
+    subtitle
   } = props;
+
+  console.log('progress', progress);
+  console.log('state', state);
 
   return (
     <View style={styles.exportModalContainer}>

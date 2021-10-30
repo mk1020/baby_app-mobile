@@ -1,7 +1,6 @@
 import React, {memo, useState} from 'react';
 import {Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Fonts} from '../../../common/phone/fonts';
-import {dateFormat} from '../assist';
 import {ImagesSlider, SliderMode} from '../../../common/components/ImagesSlider/ImagesSlider';
 import {ConditionView} from '../../../common/components/ConditionView';
 import {NavigationPages} from '../../../navigation/pages';
@@ -10,6 +9,7 @@ import {parseHTML} from '../../../common/assistant/others';
 import {Images} from '../../../common/imageResources';
 import {setBookmarkToNote} from '../../../model/assist';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
+import {dateFormat} from '../../../common/assistant/date';
 
 type TProps = {
   id: string

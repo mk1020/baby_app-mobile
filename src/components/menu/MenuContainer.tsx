@@ -1,5 +1,5 @@
 import React, {memo, useEffect, useState} from 'react';
-import {Image, Linking, Share, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {Image, Linking, Share, StyleSheet, Text, View} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import {Database, Q} from '@nozbe/watermelondb';
@@ -23,20 +23,30 @@ import {commonAlert} from '../../common/components/CommonAlert';
 import {ConditionView} from '../../common/components/ConditionView';
 import {isIos} from '../../common/phone/utils';
 import {syncDB} from '../../model/remoteSave/sync';
-import {ModalDown} from '../../common/components/ModalDown';
-import {saveInGoogleDrive} from '../../model/remoteSave/google';
+import {downloadFromGoogle, saveInGoogleDrive} from '../../model/remoteSave/google';
 import {ModalSaveData} from './ModalSaveData';
+import {DownloadProgressCallbackResult} from 'react-native-fs';
 
 type TProps = {
   database?: Database
   diary: any
 }
-//todo если я буду использовать CodePush, то нужно удалить react-native-restart и использовать reload из codePush
+
+export enum ProgressActions {
+  Zip = 'Zip',
+  Download = 'Download'
+}
+export enum ProcessType {
+  Pull = 'Pull',
+  Push = 'Push'
+}
 
 export type Progress = {
   progress: number
   state: ProgressState,
+  action?: ProgressActions | null,
   showModalAfterReload?: boolean
+  processType?: ProcessType | null
 }
 
 export const MenuContainer_ = memo((props: TProps) => {
@@ -44,7 +54,6 @@ export const MenuContainer_ = memo((props: TProps) => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
-  const googleAccessToken = useSelector((state: RootStoreType) => state.app.googleAccessToken);
   const userId = useSelector((state: RootStoreType) => state.app.userId);
 
   const language =  i18n.language as TLanguage;
@@ -52,22 +61,22 @@ export const MenuContainer_ = memo((props: TProps) => {
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [saveModalVisible, setSaveModalVisible] = useState(false);
-  const [uploadingMode, setUploadingMode] = useState(false);
   const [progress, setProgress] = useState<Progress>({
     progress: 0,
     state: ProgressState.None,
+    action: null,
+    processType: null,
     showModalAfterReload: false
   });
   const [backupFilePath, setBackupFilePath] = useState('');
 
 
   useEffect(() => {
-    const zipProgress = subscribe(({progress, filePath}) => {
-      // the filePath is always empty on iOS for zipping.
-      if (progress === 1) {
-        setProgress({state: ProgressState.Success, progress});
+    const zipProgress = subscribe(res => {
+      if (res.progress === 1) {
+        setProgress({...progress, state: ProgressState.Success, progress: res.progress, action: ProgressActions.Zip});
       } else {
-        setProgress({state: ProgressState.InProgress, progress});
+        setProgress({...progress, state: ProgressState.InProgress, progress: res.progress, action: ProgressActions.Zip});
       }
     });
     return () => zipProgress.remove();
@@ -98,7 +107,7 @@ export const MenuContainer_ = memo((props: TProps) => {
 
   const onPressExport = async () => {
     try {
-      setProgress({...progress, state: ProgressState.InProgress});
+      setProgress({...progress, state: ProgressState.InProgress, action: ProgressActions.Zip});
       setExportModalVisible(true);
       const backupFilePath = await exportDBToZip(database as Database);
       backupFilePath && setBackupFilePath(backupFilePath);
@@ -106,6 +115,8 @@ export const MenuContainer_ = memo((props: TProps) => {
       setProgress({
         state: ProgressState.Error,
         progress: 0,
+        action: null,
+        processType: null
       });
       setExportModalVisible(false);
     }
@@ -118,7 +129,7 @@ export const MenuContainer_ = memo((props: TProps) => {
         copyTo: 'cachesDirectory',
       });
       setImportModalVisible(true);
-      setProgress({...progress, state: ProgressState.InProgress});
+      setProgress({...progress, state: ProgressState.InProgress, action: ProgressActions.Zip});
       await importZip(database as Database, res?.fileCopyUri);
     } catch (e) {
       if (DocumentPicker.isCancel(e)) {
@@ -126,12 +137,16 @@ export const MenuContainer_ = memo((props: TProps) => {
         setProgress({
           state: ProgressState.None,
           progress: 0,
+          action: null,
+          processType: null
         });
       } else {
         console.log(e);
         setProgress({
           state: ProgressState.Error,
           progress: 0,
+          action: null,
+          processType: null
         });
       }
 
@@ -171,10 +186,11 @@ export const MenuContainer_ = memo((props: TProps) => {
     setExportModalVisible(false);
     setImportModalVisible(false);
     setSaveModalVisible(false);
-    setUploadingMode(false);
     setProgress({
       progress: 0,
-      state: ProgressState.None
+      state: ProgressState.None,
+      action: null,
+      processType: null
     });
     //storeData('modalVisible', false).catch(console.log);
   };
@@ -195,25 +211,53 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressUploadGoogle = async () => {
     try {
       const accessToken = await signInGoogle();
-      setUploadingMode(true);
-      await saveInGoogleDrive(database as Database, accessToken, (loadedMB, totalMB) => {
-        setProgress({
-          state: loadedMB !== totalMB ? ProgressState.InProgress : ProgressState.Success,
-          progress: loadedMB / totalMB
+      await saveInGoogleDrive(database as Database, accessToken,
+        (loadedMB, totalMB) => {
+          console.log('total', totalMB);
+          console.log('loadedMB', loadedMB);
+          setProgress({
+            state: loadedMB !== totalMB ? ProgressState.InProgress : ProgressState.Success,
+            progress: loadedMB / totalMB,
+            action: ProgressActions.Download,
+            processType: ProcessType.Push
+          });
         });
-      });
     } catch (e) {
       setProgress({
         state: ProgressState.Error,
         progress: 0,
+        action: null,
+        processType: null
       });
     }
-
   };
 
   const onPressSaveInternet = () => {
     setSaveModalVisible(true);
   };
+
+  const onPressDownloadGoogle = async () => {
+    try {
+      const accessToken = await signInGoogle();
+      await downloadFromGoogle(accessToken, database as Database,
+        ({bytesWritten, contentLength}: DownloadProgressCallbackResult) => {
+          setProgress({
+            state: bytesWritten !== contentLength ? ProgressState.InProgress : ProgressState.Success,
+            progress: bytesWritten / contentLength,
+            action: ProgressActions.Download,
+            processType: ProcessType.Pull
+          });
+        });
+    } catch (e) {
+      setProgress({
+        state: ProgressState.Error,
+        progress: 0,
+        action: null,
+        processType: null
+      });
+    }
+  };
+
   const handlers = {
     onPressDisableAds,
     onPressSaveInternet,
@@ -285,6 +329,7 @@ export const MenuContainer_ = memo((props: TProps) => {
         onModalCloseRequest={onModalCloseRequest}
         onPressSync={onPressSync}
         onPressUploadGoogle={onPressUploadGoogle}
+        onPressDownloadGoogle={onPressDownloadGoogle}
       />
     </>
   );

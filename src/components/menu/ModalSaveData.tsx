@@ -2,10 +2,9 @@ import {ModalDown} from '../../common/components/ModalDown';
 import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import React from 'react';
 import {Fonts} from '../../common/phone/fonts';
-import {Progress} from './MenuContainer';
+import {ProcessType, Progress, ProgressActions} from './MenuContainer';
 import {ConditionView} from '../../common/components/ConditionView';
 import {ModalProgressContent, ProgressState} from '../../common/components/ModalDownProgress';
-import {shortPath} from '../../common/assistant/files';
 import {useTranslation} from 'react-i18next';
 
 type SaveProps = {
@@ -42,6 +41,7 @@ type Props = {
   onModalCloseRequest: ()=> void
   onPressSync: ()=> void
   onPressUploadGoogle: ()=> void
+  onPressDownloadGoogle: ()=> void
   isVisible: boolean
 }
 export const ModalSaveData = (props: Props) => {
@@ -50,7 +50,8 @@ export const ModalSaveData = (props: Props) => {
     isVisible,
     onModalCloseRequest,
     onPressSync,
-    onPressUploadGoogle
+    onPressUploadGoogle,
+    onPressDownloadGoogle
   } = props;
   const {t, i18n} = useTranslation();
 
@@ -80,7 +81,7 @@ export const ModalSaveData = (props: Props) => {
               />
               <SaveModalItem
                 title={'Get from Google'}
-                handler={onPressSync}
+                handler={onPressDownloadGoogle}
                 color={'#039be5'}
                 highlightColor={'#006db3'}
               />
@@ -93,11 +94,18 @@ export const ModalSaveData = (props: Props) => {
             state={progress.state}
             progress={progress.progress}
             title={t('execution')}
+            subtitle={progress.action === ProgressActions.Download ? t('loading') : t('waitPlease')}
             SuccessComponent={
-              <SaveSuccess
-                successText={t('allReady')}
-                successSecondText={t('haveNiceDay')}
-              />
+              progress.action === ProgressActions.Zip &&
+                progress.processType === ProcessType.Pull ||
+              progress.action === ProgressActions.Download &&
+              progress.processType === ProcessType.Push                ?
+                (
+                  <SaveSuccess
+                    successText={t('allReady')}
+                    successSecondText={t('haveNiceDay')}
+                  />
+                ) : null
             }
             ErrorComponent={
               <Text style={styles.errorText}>{t('oops')}</Text>

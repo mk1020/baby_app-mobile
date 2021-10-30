@@ -70,13 +70,6 @@ export const getRecordsByYearsAndMonth = (records: (Required<IRecord> & INoteJSE
   return result;
 };
 
-export const dateFormat = (timestamp: number) => {
-  const date = new Date(timestamp);
-  const day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
-  const month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth();
-  return `${day}.${month}.${date.getFullYear()}`;
-};
-
 export const requestSavePhotoPermission = async () => {
   try {
     const granted = await PermissionsAndroid.request(

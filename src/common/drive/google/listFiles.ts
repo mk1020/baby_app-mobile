@@ -8,7 +8,7 @@ export const listFiles = async (accessToken:string, folderId: string) => {
       'Content-Type': 'application/json'
     },
     method: 'GET',
-    params: {q: `'${folderId}' in parents and trashed=false`},
+    params: {q: `'${folderId}' in parents and trashed=false`, orderBy: 'createdTime desc'},
   });
   return res.data?.files || [];
 };

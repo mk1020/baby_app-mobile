@@ -86,6 +86,9 @@ export const en = {
     waitPlease: 'Wait please',
     allReady: 'All is ready!',
     haveNiceDay: 'Have a nice day!',
-    recoverFromAccount: 'Recover data from account'
+    recoverFromAccount: 'Recover data from account',
+    pageTitle: 'Page title',
+    chapterTitle: 'Chapter title',
+    loading: 'Loading'
   },
 };

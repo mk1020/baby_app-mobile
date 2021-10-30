@@ -1,10 +1,15 @@
-import axios from 'axios';
-import {downloadFile, TemporaryDirectoryPath} from 'react-native-fs';
+import {CachesDirectoryPath, downloadFile, DownloadProgressCallbackResult} from 'react-native-fs';
 
-export const download = async (accessToken:string, fileId: string, fileName: string) => {
+export const download = async (
+  accessToken:string,
+  fileId: string,
+  fileName: string,
+  path: string,
+  onProgress: (res: DownloadProgressCallbackResult)=> void
+) => {
   const res = await downloadFile({
     fromUrl: `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
-    toFile: TemporaryDirectoryPath + '/' + fileName,
+    toFile: path,
     headers: {
       'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
@@ -12,7 +17,7 @@ export const download = async (accessToken:string, fileId: string, fileName: str
     background: true,
     cacheable: false,
     progressInterval: 1000,
-    progress: progress => console.log(progress.bytesWritten)
+    progress: onProgress
   }).promise;
   return res;
 };

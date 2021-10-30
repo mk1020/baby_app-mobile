@@ -195,9 +195,6 @@ module.exports = {
     'no-console': [
       'off'
     ],
-    'no-useless-concat': [
-      'error'
-    ],
     'no-useless-escape': [
       'error'
     ],

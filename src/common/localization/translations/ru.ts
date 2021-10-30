@@ -69,6 +69,8 @@ export const ru = {
     disableAds: 'Отключить рекламу',
     changeLanguage: 'Сменить язык',
     notifications: 'Напоминания',
+    pageTitle: 'Название страницы',
+    chapterTitle: 'Название главы',
     execution: 'Выполнение',
     newFeatureRequest: 'Запрос новой функции',
     rateApp: 'Оценить приложение',
@@ -87,5 +89,6 @@ export const ru = {
     waitPlease: 'Подождите, пожалуйста ...',
     allReady: 'Все готово!',
     haveNiceDay: 'Хорошего Вам дня!',
+    loading: 'Загрузка'
   },
 };

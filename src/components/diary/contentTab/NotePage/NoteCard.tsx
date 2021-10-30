@@ -1,7 +1,6 @@
 import React, {memo, useState} from 'react';
 import {Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, Keyboard} from 'react-native';
 import {Fonts} from '../../../../common/phone/fonts';
-import {dateFormat} from '../../assist';
 import {Controller} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {ImagesSlider, SliderMode} from '../../../../common/components/ImagesSlider/ImagesSlider';
@@ -14,6 +13,7 @@ import {RichEditor} from 'react-native-pell-rich-editor';
 import {generateAssetsFontCss, getHTML} from '../../Page/assiat';
 import {Images} from '../../../../common/imageResources';
 import {Spinner} from '../../../../common/components/Spinner';
+import {dateFormat} from '../../../../common/assistant/date';
 
 
 type TProps = {
