@@ -44,7 +44,7 @@ const TabsNav = () => {
               focused: boolean;
               color: string;
               size: number;
-            }) => <Image source={Images.menu} style={{width: 36, height: 36, tintColor: props.focused ? '#FFA100' : '#000'}}/>,
+            }) => <Image source={Images.menu} style={{width: 32, height: 32, tintColor: props.focused ? '#FFA100' : '#000'}}/>,
           }
         }
       />

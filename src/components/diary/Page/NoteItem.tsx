@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
   bookmarkWrapper: {
     alignSelf: 'flex-start',
     flexShrink: 1,
-    marginLeft: 8
+    marginLeft: 8,
+    marginTop: 10
   },
   bookmark: {
     width: 24,
@@ -135,7 +136,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#41C3CD',
-    flex: 1
+    flex: 1,
+    marginVertical: 10
   },
   date: {
     fontFamily: Fonts.regular,

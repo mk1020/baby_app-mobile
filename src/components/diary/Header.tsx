@@ -29,10 +29,7 @@ export const Header = memo((props: TProps) => {
         <Text style={stylesHeader.title} numberOfLines={3} ellipsizeMode={'tail'}>{title}</Text>
       </View>
       <View style={stylesHeader.rightButtons}>
-        {/*<HeaderButton icon={Images.addPage} onPress={onPressAddPage}/>*/}
-        <TouchableOpacity onPress={onPressAddPage}>
-          <Image source={Images.addPage} style={{width: 28, height: 28, tintColor: 'orange'}}/>
-        </TouchableOpacity>
+        <HeaderButton icon={Images.add} onPress={onPressAddPage}/>
       </View>
       <ConditionView showIf={modalVisible}>
         <AddPageModal onRequestClose={onModalClose} diaryId={diaryId} chapters={chapters}/>

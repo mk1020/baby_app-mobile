@@ -65,13 +65,13 @@ export const Menu = memo((props: TProps) => {
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
       >
-        <ConditionView showIf={isAuth}>
+        {/*<ConditionView showIf={isAuth}>
           <AuthCardUser email={'mmmffjs7438g@gmail.com'} lastSyncAt={'27 июл. 18:42'}/>
         </ConditionView>
 
         <ConditionView showIf={!isAuth}>
           <UnAuthCardUser diaryId={diaryId}/>
-        </ConditionView>
+        </ConditionView>*/}
         {renderItems}
         <ConditionView showIf={isAuth}>
           <TouchableOpacity
