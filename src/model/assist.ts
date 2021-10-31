@@ -224,6 +224,8 @@ export const createDiaryIfNotExist = async (db: Database, title?: string) => {
       );
     }
   });
+  const diary = await db.get(DiaryTableName).query().fetchIds();
+  return diary[0];
 };
 
 export const deleteImagesFromCache = async (imagesUri: string[]) => {

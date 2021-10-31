@@ -10,7 +10,7 @@ import {getLanguagesData, getSectionsData, signInGoogle} from './assist';
 import {ModalSelectorList} from '../../common/components/ModalSelectorList';
 import {TLanguage} from '../../common/localization/localization';
 import {useDispatch, useSelector} from 'react-redux';
-import {changeDiaryTitle, changeLanguage, forceUpdate, signOut} from '../../redux/appSlice';
+import {changeDiaryTitle, changeLanguage, forceUpdate, oAuthGoogle, setLoadingAppStatus, signOut} from '../../redux/appSlice';
 import {subscribe} from 'react-native-zip-archive';
 import {Fonts} from '../../common/phone/fonts';
 import {shortPath} from '../../common/assistant/files';
@@ -26,6 +26,8 @@ import {syncDB} from '../../model/remoteSave/sync';
 import {downloadFromGoogle, saveInGoogleDrive} from '../../model/remoteSave/google';
 import {ModalSaveData} from './ModalSaveData';
 import {DownloadProgressCallbackResult} from 'react-native-fs';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {SaveDataToPhoneContainer} from './SaveDataToPhoneContainer';
 
 type TProps = {
   database?: Database
@@ -34,11 +36,14 @@ type TProps = {
 
 export enum ProgressActions {
   Zip = 'Zip',
-  Download = 'Download'
+  Download = 'Download',
+  Sync = 'Sync'
 }
 export enum ProcessType {
   Pull = 'Pull',
-  Push = 'Push'
+  Push = 'Push',
+  Import = 'Import',
+  Export = 'Export'
 }
 
 export type Progress = {
@@ -53,14 +58,13 @@ export const MenuContainer_ = memo((props: TProps) => {
   const {database, diary} = props;
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const userToken = useSelector((state: RootStoreType) => state.app.userToken);
-  const userId = useSelector((state: RootStoreType) => state.app.userId);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
-  const [importModalVisible, setImportModalVisible] = useState(false);
-  const [exportModalVisible, setExportModalVisible] = useState(false);
+  const [importStarted, setImportStarted] = useState(false);
+  const [exportStarted, setExportStarted] = useState(false);
   const [saveModalVisible, setSaveModalVisible] = useState(false);
+
   const [progress, setProgress] = useState<Progress>({
     progress: 0,
     state: ProgressState.None,
@@ -68,8 +72,6 @@ export const MenuContainer_ = memo((props: TProps) => {
     processType: null,
     showModalAfterReload: false
   });
-  const [backupFilePath, setBackupFilePath] = useState('');
-
 
   useEffect(() => {
     const zipProgress = subscribe(res => {
@@ -82,76 +84,8 @@ export const MenuContainer_ = memo((props: TProps) => {
     return () => zipProgress.remove();
   }, [progress]);
 
-  useEffect(() => {
-    try {
-      if (backupFilePath && isIos) {
-        (async () => {
-          const result = await Share.share({
-            url: backupFilePath
-          });
-          if (result.action === 'dismissedAction') {
-            onModalCloseRequest();
-          }
-        })();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }, [backupFilePath]);
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressDisableAds = () => {};
-
-  const onPressSync = () => {
-    syncDB(database as Database, userToken, userId).catch(console.log);
-  };
-
-  const onPressExport = async () => {
-    try {
-      setProgress({...progress, state: ProgressState.InProgress, action: ProgressActions.Zip});
-      setExportModalVisible(true);
-      const backupFilePath = await exportDBToZip(database as Database);
-      backupFilePath && setBackupFilePath(backupFilePath);
-    } catch (e) {
-      setProgress({
-        state: ProgressState.Error,
-        progress: 0,
-        action: null,
-        processType: null
-      });
-      setExportModalVisible(false);
-    }
-  };
-
-  const onPressImport = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.zip],
-        copyTo: 'cachesDirectory',
-      });
-      setImportModalVisible(true);
-      setProgress({...progress, state: ProgressState.InProgress, action: ProgressActions.Zip});
-      await importZip(database as Database, res?.fileCopyUri);
-    } catch (e) {
-      if (DocumentPicker.isCancel(e)) {
-        setImportModalVisible(false);
-        setProgress({
-          state: ProgressState.None,
-          progress: 0,
-          action: null,
-          processType: null
-        });
-      } else {
-        console.log(e);
-        setProgress({
-          state: ProgressState.Error,
-          progress: 0,
-          action: null,
-          processType: null
-        });
-      }
-
-    }
-  };
 
   const onPressChangeLanguage = () => {
     setLanguageModalVisible(true);
@@ -181,19 +115,6 @@ export const MenuContainer_ = memo((props: TProps) => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onPressPrivacyPolicy = () => {};
 
-  const onModalCloseRequest = () => {
-    setLanguageModalVisible(false);
-    setExportModalVisible(false);
-    setImportModalVisible(false);
-    setSaveModalVisible(false);
-    setProgress({
-      progress: 0,
-      state: ProgressState.None,
-      action: null,
-      processType: null
-    });
-    //storeData('modalVisible', false).catch(console.log);
-  };
   const changeLanguage_ = async (language: TLanguage) => {
     try {
       await i18n.changeLanguage(language);
@@ -208,54 +129,45 @@ export const MenuContainer_ = memo((props: TProps) => {
   const onPressLogOut = () => {
     commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
   };
-  const onPressUploadGoogle = async () => {
-    try {
-      const accessToken = await signInGoogle();
-      await saveInGoogleDrive(database as Database, accessToken,
-        (loadedMB, totalMB) => {
-          console.log('total', totalMB);
-          console.log('loadedMB', loadedMB);
-          setProgress({
-            state: loadedMB !== totalMB ? ProgressState.InProgress : ProgressState.Success,
-            progress: loadedMB / totalMB,
-            action: ProgressActions.Download,
-            processType: ProcessType.Push
-          });
-        });
-    } catch (e) {
-      setProgress({
-        state: ProgressState.Error,
-        progress: 0,
-        action: null,
-        processType: null
-      });
-    }
-  };
 
   const onPressSaveInternet = () => {
     setSaveModalVisible(true);
   };
 
-  const onPressDownloadGoogle = async () => {
-    try {
-      const accessToken = await signInGoogle();
-      await downloadFromGoogle(accessToken, database as Database,
-        ({bytesWritten, contentLength}: DownloadProgressCallbackResult) => {
-          setProgress({
-            state: bytesWritten !== contentLength ? ProgressState.InProgress : ProgressState.Success,
-            progress: bytesWritten / contentLength,
-            action: ProgressActions.Download,
-            processType: ProcessType.Pull
-          });
-        });
-    } catch (e) {
-      setProgress({
-        state: ProgressState.Error,
-        progress: 0,
-        action: null,
-        processType: null
-      });
-    }
+  const onPressExport = () => {
+    setExportStarted(true);
+    setProgress({
+      progress: 0,
+      state: ProgressState.None,
+      action: null,
+      processType: ProcessType.Export
+    });
+  };
+  const onPressImport = async () => {
+    setImportStarted(true);
+    setProgress({
+      progress: 0,
+      state: ProgressState.None,
+      action: null,
+      processType: ProcessType.Import
+    });
+  };
+
+  const onImportExportCloseRequest = () => {
+    setProgress({
+      progress: 0,
+      state: ProgressState.None,
+      action: null,
+      processType: null
+    });
+    setImportStarted(false);
+    setExportStarted(false);
+  };
+
+  const onModalCloseRequest = () => {
+    setProgress({...progress, state: ProgressState.None});
+    setLanguageModalVisible(false);
+    setSaveModalVisible(false);
   };
 
   const handlers = {
@@ -280,56 +192,30 @@ export const MenuContainer_ = memo((props: TProps) => {
     <>
       <Menu
         renderData={getSectionsData(t, handlers, sectionDataOpt)}
-        isAuth={userToken !== null}
+        //isAuth={userToken !== null}
         onPressLogOut={onPressLogOut}
-        diaryId={diaryId}
+        //diaryId={diaryId}
       />
       <ModalSelectorList
         data={getLanguagesData(t, changeLanguage_, language)}
         onRequestClose={onModalCloseRequest}
         isVisible={languageModalVisible}
       />
-      <ModalDownProgress
-        isVisible={exportModalVisible}
-        state={progress.state}
-        onRequestClose={onModalCloseRequest}
-        progress={progress.progress}
-        title={t('exportData')}
-        SuccessComponent={
-          <ExportSuccess
-            backupFilePath={shortPath(backupFilePath)}
-            doneText={t('exportDone')}
-          />
-        }
-        ErrorComponent={
-          <Text style={styles.errorText}>{t('oops')}</Text>
-        }
-      />
-      <ModalDownProgress
-        isVisible={importModalVisible}
-        state={progress.state}
-        showAfterReload={progress?.showModalAfterReload}
-        onRequestClose={onModalCloseRequest}
-        progress={progress.progress}
-        title={t('waitPlease')}
-        SuccessComponent={
-          <ImportSuccess
-            successText={t('allReady')}
-            successSecondText={t('haveNiceDay')}
-          />
-        }
-        ErrorComponent={
-          <Text style={styles.errorText}>{t('oops')}</Text>
-        }
+      <SaveDataToPhoneContainer
+        progress={progress}
+        setProgress={setProgress}
+        onModalCloseRequest={onImportExportCloseRequest}
+        database={database}
+        exportStarted={exportStarted}
+        importStarted={importStarted}
       />
 
       <ModalSaveData
         isVisible={saveModalVisible}
         progress={progress}
         onModalCloseRequest={onModalCloseRequest}
-        onPressSync={onPressSync}
-        onPressUploadGoogle={onPressUploadGoogle}
-        onPressDownloadGoogle={onPressDownloadGoogle}
+        database={database}
+        setProgress={setProgress}
       />
     </>
   );
@@ -341,38 +227,9 @@ export const MenuContainer = withDatabase(withObservables([], ({database}: TProp
   };
 })(MenuContainer_));
 
-type ExportSuccessProps = {
-  backupFilePath: string
-  doneText: string
-}
-const ExportSuccess = (props: ExportSuccessProps) => {
-  return (
-    <>
-      <Text style={styles.doneText}>{props.doneText}</Text>
-      <ConditionView showIf={!isIos}>
-        <View style={styles.exportPathContainer}>
-          <Image source={Images.where} style={styles.imagePath}/>
-          <Text style={styles.modalBlackText}>
-            {props.backupFilePath}
-          </Text>
-        </View>
-      </ConditionView>
-    </>
-  );
-};
 
-type ImportSuccessProps = {
-  successText: string
-  successSecondText: string
-}
-const ImportSuccess = (props: ImportSuccessProps) => {
-  return (
-    <View style={styles.importSuccessContainer}>
-      <Text style={styles.doneText}>{props.successText}</Text>
-      <Text style={styles.doneText}>{props.successSecondText}</Text>
-    </View>
-  );
-};
+
+
 
 const styles = StyleSheet.create({
   doneText: {

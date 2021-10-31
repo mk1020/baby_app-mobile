@@ -11,6 +11,7 @@ const initialState: TAppReducer = {
   userToken: null,
   googleAccessToken: null,
   userId: null,
+  diaryId: null,
   isLoading: false,
   language: null,
   diaryTitle: '',
@@ -33,6 +34,7 @@ export const oAuthGoogle = createAsyncThunk(
   'oAuthGoogle/requestStatus',
   async (data: TSignInGoogle, thunkAPI) => {
     try {
+      console.log(data)
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
       return res.data;
     } catch (err) {
@@ -66,6 +68,9 @@ const appSlice = createSlice({
     },
     setGoogleAccessToken: (state, action: PayloadAction<string>) => {
       state.googleAccessToken = action.payload;
+    },
+    setDiaryId: (state, action: PayloadAction<string>) => {
+      state.diaryId = action.payload;
     },
     setLoadingAppStatus: (state: TAppReducer, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -113,5 +118,6 @@ export const {
   changeLanguage,
   changeDiaryTitle,
   forceUpdate,
-  setGoogleAccessToken
+  setGoogleAccessToken,
+  setDiaryId
 } = appSlice.actions;

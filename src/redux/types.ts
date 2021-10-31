@@ -7,6 +7,7 @@ export type TAppReducer = {
   googleAccessToken: string | null,
   userToken: TToken | null;
   userId: number | null;
+  diaryId: string | null
   isLoading: boolean;
   language: TLanguage | null
   diaryTitle: string,
@@ -20,7 +21,7 @@ export type TSignIn = {
 
 export type TSignInGoogle = {
   oAuthIdToken: string;
-  diaryId?: string
+  diaryId: string
 };
 
 export enum ColorSchemes {

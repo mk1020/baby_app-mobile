@@ -1,11 +1,20 @@
 import {ModalDown} from '../../common/components/ModalDown';
 import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import React from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {Fonts} from '../../common/phone/fonts';
 import {ProcessType, Progress, ProgressActions} from './MenuContainer';
 import {ConditionView} from '../../common/components/ConditionView';
 import {ModalProgressContent, ProgressState} from '../../common/components/ModalDownProgress';
 import {useTranslation} from 'react-i18next';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {oAuthGoogle} from '../../redux/appSlice';
+import {syncDB} from '../../model/remoteSave/sync';
+import {Database} from '@nozbe/watermelondb';
+import {signInGoogle} from './assist';
+import {downloadFromGoogle, saveInGoogleDrive} from '../../model/remoteSave/google';
+import {DownloadProgressCallbackResult} from 'react-native-fs';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootStoreType} from '../../redux/rootReducer';
 
 type SaveProps = {
   color: string
@@ -37,23 +46,92 @@ const SaveSuccess = (props: SuccessProps) => {
 };
 
 type Props = {
-  progress: Progress
   onModalCloseRequest: ()=> void
-  onPressSync: ()=> void
-  onPressUploadGoogle: ()=> void
-  onPressDownloadGoogle: ()=> void
   isVisible: boolean
+  progress: Progress
+  database: any;
+  setProgress: Dispatch<SetStateAction<Progress>>
 }
 export const ModalSaveData = (props: Props) => {
-  const {
-    progress,
-    isVisible,
-    onModalCloseRequest,
-    onPressSync,
-    onPressUploadGoogle,
-    onPressDownloadGoogle
-  } = props;
+  const {isVisible, onModalCloseRequest, progress, database, setProgress} = props;
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
+  const userToken = useSelector((state: RootStoreType) => state.app.userToken);
+  const userId = useSelector((state: RootStoreType) => state.app.userId);
+  const diaryId = useSelector((state: RootStoreType) => state.app.diaryId);
+  //const [syncStarted, setSyncStarted] = useState(false);
+
+  const onPressSync = async () => {
+    try {
+      //setSyncStarted(true);
+      setProgress({
+        progress: 0,
+        state: ProgressState.InProgress,
+        action: ProgressActions.Sync
+      });
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId: diaryId!}));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (userToken && userId) {
+        await syncDB(database, userToken, userId).then(console.log).catch(console.log);
+      }
+    })();
+  }, [userToken, userId]);
+
+  const onPressUploadGoogle = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const accessToken = await signInGoogle();
+      await saveInGoogleDrive(database as Database, accessToken,
+        (loadedMB, totalMB) => {
+          console.log('total', totalMB);
+          console.log('loadedMB', loadedMB);
+          setProgress({
+            state: loadedMB !== totalMB ? ProgressState.InProgress : ProgressState.Success,
+            progress: loadedMB / totalMB,
+            action: ProgressActions.Download,
+            processType: ProcessType.Push
+          });
+        });
+    } catch (e) {
+      setProgress({
+        state: ProgressState.Error,
+        progress: 0,
+        action: null,
+        processType: null
+      });
+    }
+  };
+
+  const onPressDownloadGoogle = async () => {
+    try {
+      const accessToken = await signInGoogle();
+      await GoogleSignin.hasPlayServices();
+      await downloadFromGoogle(accessToken, database as Database,
+        ({bytesWritten, contentLength}: DownloadProgressCallbackResult) => {
+          setProgress({
+            state: bytesWritten !== contentLength ? ProgressState.InProgress : ProgressState.Success,
+            progress: bytesWritten / contentLength,
+            action: ProgressActions.Download,
+            processType: ProcessType.Pull
+          });
+        });
+    } catch (e) {
+      setProgress({
+        state: ProgressState.Error,
+        progress: 0,
+        action: null,
+        processType: null
+      });
+    }
+  };
 
   return (
     <ModalDown

@@ -6,7 +6,7 @@ import {NavContainer} from './navigation/NavRoot';
 import {ColorSchemes, TColorScheme} from './redux/types';
 import {googleOAuthClientId} from './common/consts';
 import {Spinner} from './common/components/Spinner';
-import {changeDiaryTitle, changeLanguage, setColorScheme} from './redux/appSlice';
+import {changeDiaryTitle, changeLanguage, setColorScheme, setDiaryId} from './redux/appSlice';
 import {restoreNavState} from './navigation/utils';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {createDiaryIfNotExist} from './model/assist';
@@ -14,8 +14,6 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
 import {fallbackLanguage, TLanguage} from './common/localization/localization';
 import {RootStoreType} from './redux/rootReducer';
-import Config from 'react-native-config';
-import codePush from "react-native-code-push";
 
 (function setup() {
   if (Platform.OS === 'android') {
@@ -69,7 +67,10 @@ export const App = memo((props: TProps) => {
   }, [diaryTitle]);
 
   useEffect(() => {
-    createDiaryIfNotExist(db, t('diaryTitle'));
+    (async () => {
+      const diaryId = await createDiaryIfNotExist(db, t('diaryTitle'));
+      dispatch(setDiaryId(diaryId));
+    })();
   }, []);
 
   useEffect(() => {

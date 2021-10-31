@@ -39,7 +39,6 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
           migration: encodeURIComponent(JSON.stringify(migration)),
           userId
         }});
-
         const syncChanges = {
           ...chapters.data?.changes,
           ...pages.data?.changes,
@@ -48,8 +47,9 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
         };
         const diaryId = notes.data?.diaryId;
         const diaryIds = await database.get(DiaryTableName).query().fetchIds();
-        return syncPullAdapter({changes: syncChanges, timestamp: notes.data?.timestamp}, diaryIds, diaryId);
-
+        const a = syncPullAdapter({changes: syncChanges, timestamp: notes.data?.timestamp}, diaryIds, diaryId);
+        console.log('11111', a);
+        return Promise.resolve(a);
       } catch (err) {
         console.error(err.response?.data || err.response || err);
         throw new Error('error pull sync');
@@ -57,6 +57,7 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
     },
     pushChanges: async ({changes, lastPulledAt}) => {
       try {
+        console.log('pushhh');
         const chapterDTO = syncPushAdapter({changes, lastPulledAt}, userId, ChaptersTableName);
         await req(token).post('/chapters/sync', chapterDTO);
 

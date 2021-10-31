@@ -23,9 +23,9 @@ import {UnAuthCardUser} from './auth/UnAuthCardUser';
 
 type TProps = {
   renderData: Section[]
-  isAuth: boolean
+  isAuth?: boolean
   onPressLogOut: ()=>void
-  diaryId: string
+  diaryId?: string
 }
 
 const SectionHeader = ({title}: {title: string}) => {
@@ -73,7 +73,7 @@ export const Menu = memo((props: TProps) => {
           <UnAuthCardUser diaryId={diaryId}/>
         </ConditionView>*/}
         {renderItems}
-        <ConditionView showIf={isAuth}>
+     {/*   <ConditionView showIf={isAuth}>
           <TouchableOpacity
             style={styles.buttonExit}
             hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
@@ -81,7 +81,7 @@ export const Menu = memo((props: TProps) => {
           >
             <Text style={styles.buttonExitText}>{t('exit')}</Text>
           </TouchableOpacity>
-        </ConditionView>
+        </ConditionView>*/}
       </ScrollView>
     </SafeAreaView>
   );
