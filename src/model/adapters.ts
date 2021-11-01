@@ -121,7 +121,7 @@ export const syncPhotoAdapter = (photo: IPhotoDB & EnhancedToServerBD) => ({
   id: photo.id,
   diary_id: photo?.diary_id,
   photo: photo?.photo,
-  date: photo?.date,
+  date: new Date(photo?.date).getTime(),
   created_at: new Date(photo.created_at).getTime(),
   updated_at: new Date(photo.updated_at).getTime(),
 });

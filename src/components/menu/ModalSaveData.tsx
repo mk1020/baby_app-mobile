@@ -58,6 +58,7 @@ export const ModalSaveData = (props: Props) => {
   const dispatch = useDispatch();
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
   const userId = useSelector((state: RootStoreType) => state.app.userId);
+  const deletedPhotos = useSelector((state: RootStoreType) => state.app.deletedPhotos);
   const diaryId = useSelector((state: RootStoreType) => state.app.diaryId);
   //const [syncStarted, setSyncStarted] = useState(false);
 
@@ -79,11 +80,14 @@ export const ModalSaveData = (props: Props) => {
 
   useEffect(() => {
     (async () => {
-      if (userToken && userId) {
-        await syncDB(database, userToken, userId).then(console.log).catch(console.log);
+      if (userToken && userId &&
+        progress.state === ProgressState.InProgress &&
+      progress.action === ProgressActions.Sync) {
+        console.log('call sync db');
+        await syncDB(database, userToken, userId, deletedPhotos).then(console.log).catch(console.log);
       }
     })();
-  }, [userToken, userId]);
+  }, [userToken, userId, progress]);
 
   const onPressUploadGoogle = async () => {
     try {

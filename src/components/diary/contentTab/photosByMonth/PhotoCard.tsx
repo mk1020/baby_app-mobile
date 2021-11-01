@@ -14,7 +14,6 @@ const windowWidth = Dimensions.get('window').width;
 
 export const PhotoCard = memo((props: TProps) => {
   const {image, date, onPress} = props;
-  console.log(image, '222');
 
   return (
     <TouchableHighlight underlayColor={'#969696'} onPress={onPress}>

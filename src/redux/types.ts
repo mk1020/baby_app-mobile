@@ -11,7 +11,8 @@ export type TAppReducer = {
   isLoading: boolean;
   language: TLanguage | null
   diaryTitle: string,
-  forceUpdate: number
+  forceUpdate: number,
+  deletedPhotos: string[]
 };
 
 export type TSignIn = {
@@ -35,7 +36,7 @@ export type TSignInRes = {
 }
 
 export type TToken = {
-  token: number,
+  token: string,
   expires: any;
 }
 

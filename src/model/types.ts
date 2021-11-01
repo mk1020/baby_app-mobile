@@ -102,7 +102,6 @@ export type SyncPushResult = {
   lastPulledAt: number
 }
 
-
 export interface IPhoto {
   id: string
   diaryId: string

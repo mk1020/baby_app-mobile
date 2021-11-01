@@ -4,11 +4,12 @@ import {Database} from '@nozbe/watermelondb';
 import {req} from '../../common/assistant/api';
 import {TToken} from '../../redux/types';
 import {SyncPullResult} from '../types';
-import {syncPullAdapter, syncPushAdapter} from '../assist';
+import {ChangesEvents, deleteImagesFromCache, syncPullAdapter, syncPushAdapter} from '../assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../schema';
+import {database} from '../../AppContainer';
 
 
-export async function syncDB(database: Database, token: TToken | null, userId: number | null) {
+export async function syncDB(database: Database, token: TToken | null, userId: number | null, deletedPhotos: string[]) {
   await synchronize({
     database,
     sendCreatedAsUpdated: true,
@@ -47,9 +48,17 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
         };
         const diaryId = notes.data?.diaryId;
         const diaryIds = await database.get(DiaryTableName).query().fetchIds();
-        const a = syncPullAdapter({changes: syncChanges, timestamp: notes.data?.timestamp}, diaryIds, diaryId);
-        console.log('11111', a);
-        return Promise.resolve(a);
+        const adaptedChanges =  syncPullAdapter({changes: syncChanges, timestamp: notes.data?.timestamp}, diaryIds, diaryId);
+
+        if (photosByMonth.data?.changes?.[PhotosTableName]?.[ChangesEvents.created]?.length ||
+          photosByMonth.data?.changes?.[PhotosTableName]?.[ChangesEvents.updated]?.length) {
+          await database?.write(async () => {
+            await database.get(PhotosTableName).query().destroyAllPermanently();
+          });
+        }
+        //deleteImagesFromCache();
+        console.log(syncChanges);
+        return adaptedChanges;
       } catch (err) {
         console.error(err.response?.data || err.response || err);
         throw new Error('error pull sync');
@@ -57,7 +66,6 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
     },
     pushChanges: async ({changes, lastPulledAt}) => {
       try {
-        console.log('pushhh');
         const chapterDTO = syncPushAdapter({changes, lastPulledAt}, userId, ChaptersTableName);
         await req(token).post('/chapters/sync', chapterDTO);
 
@@ -68,8 +76,10 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
         await req(token).post('/notes/sync', noteDTO);
 
         const photoDTO = syncPushAdapter({changes, lastPulledAt}, userId, PhotosTableName);
-        console.log(photoDTO);
         await req(token).post('/photos-by-month/sync', photoDTO);
+
+        console.log('photoDTO', photoDTO);
+        await req(token).delete('/photos', {data: {deletedPhotos}});
       } catch (err) {
         console.error(err.response?.data || err.response || err);
         throw new Error('error push sync');
@@ -79,6 +89,7 @@ export async function syncDB(database: Database, token: TToken | null, userId: n
   });
 }
 
+//todo сделать метод который будет раз в месяц получать все фотки из таблиц и сверять с кешэм, чтобы удалить ненужные из кэша
 export async function checkUnsyncedChanges(database: Database) {
   return await hasUnsyncedChanges({
     database

@@ -9,7 +9,7 @@ import * as RNFS from 'react-native-fs';
 import {TemporaryDirectoryPath} from 'react-native-fs';
 import {getFileName} from '../common/assistant/files';
 
-enum ChangesEvents {
+export enum ChangesEvents {
   created = 'created',
   updated = 'updated',
   deleted = 'deleted'
@@ -39,7 +39,7 @@ export const syncPullAdapter = (res: SyncPullResult, deleteDiaryIds: string[], d
     if (created && updated) {
       updatedNew = [...updatedNew, ...created, ...updated].map(item => adapterSyncByTableName[table as SyncTables](item));
     }
-
+    console.log('updatedNew', updatedNew);
     changes = {
       ...changes,
       [table]: {
@@ -178,9 +178,11 @@ export const getNotesByPageDB = async (pageId: string, db: Database) => {
 export const deleteNote = async (id: string, db: any) => {
   const notes = db.get(NotesTableName);
   const targetNote = await notes.find(id || '');
-  console.log('log', id);
-  console.log('id', id);
-  console.log('targetNote', targetNote);
+  await targetNote.deleteNote();
+};
+export const deletePhoto = async (id: string, db: any) => {
+  const notes = db.get(NotesTableName);
+  const targetNote = await notes.find(id || '');
   await targetNote.deleteNote();
 };
 
@@ -206,8 +208,8 @@ export const createDiaryIfNotExist = async (db: Database, title?: string) => {
       });
       const photosCollection = db?.get(PhotosTableName);
       const prepareCreatePhotos = [];
+      const nowMonth = new Date().getMonth();
       for (let i = 0; i < 12; i++) {
-        const nowMonth = new Date().getMonth();
         const nextDate = new Date().setMonth(nowMonth + i);
         prepareCreatePhotos.push(
           photosCollection.prepareCreate(photo => {
@@ -279,9 +281,8 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
     if (photosAdapted?.length) {
       const lastDate = new Date(photosAdapted[photosAdapted.length - 1].date);
       const necessaryDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
-
+      const nowMonth = new Date(necessaryDate).getMonth();
       for (let i = 0; i < n; i++) {
-        const nowMonth = new Date(necessaryDate).getMonth();
         const nextDate = new Date(necessaryDate).setMonth(nowMonth + i);
         prepareCreatePhotos.push(
           photos.prepareCreate((photo: any) => {

@@ -16,6 +16,7 @@ const initialState: TAppReducer = {
   language: null,
   diaryTitle: '',
   forceUpdate: 0,
+  deletedPhotos: []
 };
 
 export const signIn = createAsyncThunk(
@@ -34,7 +35,6 @@ export const oAuthGoogle = createAsyncThunk(
   'oAuthGoogle/requestStatus',
   async (data: TSignInGoogle, thunkAPI) => {
     try {
-      console.log(data)
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
       return res.data;
     } catch (err) {
@@ -65,6 +65,9 @@ const appSlice = createSlice({
   reducers: {
     setColorScheme: (state, action: PayloadAction<TColorScheme>) => {
       state.colorScheme = action.payload;
+    },
+    addDeletedPhotos: (state, action: PayloadAction<string[]>) => {
+      state.deletedPhotos = [...state.deletedPhotos, ...action.payload];
     },
     setGoogleAccessToken: (state, action: PayloadAction<string>) => {
       state.googleAccessToken = action.payload;
@@ -119,5 +122,6 @@ export const {
   changeDiaryTitle,
   forceUpdate,
   setGoogleAccessToken,
-  setDiaryId
+  setDiaryId,
+  addDeletedPhotos
 } = appSlice.actions;

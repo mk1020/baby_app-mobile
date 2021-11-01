@@ -16,6 +16,8 @@ import {ConditionView} from '../../../../common/components/ConditionView';
 import {useKeyboard} from '../../../../common/hooks/useKeyboard';
 import {ButtonFilled, ButtonModes} from '../../../../common/components/ButtonFilled';
 import {Space} from '../../../../common/components/Space';
+import {useDispatch} from 'react-redux';
+import {addDeletedPhotos} from '../../../../redux/appSlice';
 
 export interface IFormNote extends INoteJS{
   imagesUri: string[]
@@ -50,6 +52,7 @@ export const NotePage = memo((props: TProps) => {
   } = useForm<IFormNote>({defaultValues: noteData});
   const editorRef = useRef<RichEditor>(null);
   const {isKeyboardVisible} = useKeyboard();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (deletedImagesUri.length) {
@@ -74,6 +77,7 @@ export const NotePage = memo((props: TProps) => {
         deleteImagesFromCache(deletedImagesUri);
         navigation.goBack();
       }
+      dispatch(addDeletedPhotos(deletedImagesUri));
     } catch (e) {
       console.log(e);
     }

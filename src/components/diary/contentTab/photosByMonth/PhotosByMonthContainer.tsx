@@ -98,7 +98,6 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
   const onRequestCloseModal = () => {
     setModalAddPhotoVisible(false);
     setModalAddCardsVisible(false);
-    console.log('log');
   };
 
   useLayoutEffect(() => {
@@ -129,11 +128,11 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
         isVisible={modalAddCardsVisible}
       >
         <View style={{paddingHorizontal: 28}}>
-        <ButtonIconVert
-          title={t('addTwelveCards')}
-          image={Images.playlistAdd}
-          onPress={onPressAddTwelveCards}
-        />
+          <ButtonIconVert
+            title={t('addTwelveCards')}
+            image={Images.playlistAdd}
+            onPress={onPressAddTwelveCards}
+          />
         </View>
       </ModalDown>
     </>

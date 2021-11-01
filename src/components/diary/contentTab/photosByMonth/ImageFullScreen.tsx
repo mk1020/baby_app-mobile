@@ -11,6 +11,8 @@ import {PhotosTableName} from '../../../../model/schema';
 import {getClearPathFile, getFileName, getImagePath} from '../../../../common/assistant/files';
 import * as RNFS from 'react-native-fs';
 import {CachesDirectoryPath, TemporaryDirectoryPath} from 'react-native-fs';
+import {useDispatch} from 'react-redux';
+import {addDeletedPhotos} from '../../../../redux/appSlice';
 
 type TProps = {
   route: RouteProp<RootStackList, NavigationPages.ImageFullScreen>
@@ -21,6 +23,7 @@ export const ImageFullScreen = memo((props: TProps) => {
   const {imageUri, imageId} = route.params;
   const navigation = useNavigation();
   const db = useDatabase();
+  const dispatch = useDispatch();
 
   const onPressBack = () => {
     navigation.goBack();
@@ -28,8 +31,8 @@ export const ImageFullScreen = memo((props: TProps) => {
 
   const onPressDelete = async () => {
     try {
+      dispatch(addDeletedPhotos([getFileName(imageUri)]));
       const image = await db.get(PhotosTableName).find(imageId || '');
-      console.log(imageUri);
       // @ts-ignore
       await image.updatePhoto(null);
       navigation.navigate(NavigationPages.PhotosByMonth, {deletedPhotoId: imageId});
