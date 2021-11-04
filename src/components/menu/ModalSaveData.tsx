@@ -1,6 +1,6 @@
 import {ModalDown} from '../../common/components/ModalDown';
 import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, memo, SetStateAction, useEffect, useState} from 'react';
 import {Fonts} from '../../common/phone/fonts';
 import {ProcessType, Progress, ProgressActions} from './MenuContainer';
 import {ConditionView} from '../../common/components/ConditionView';
@@ -15,6 +15,7 @@ import {downloadFromGoogle, saveInGoogleDrive} from '../../model/remoteSave/goog
 import {DownloadProgressCallbackResult} from 'react-native-fs';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootStoreType} from '../../redux/rootReducer';
+import {TFunction} from 'i18next';
 
 type SaveProps = {
   color: string
@@ -44,7 +45,24 @@ const SaveSuccess = (props: SuccessProps) => {
     </View>
   );
 };
-
+export enum SyncActions {
+  Download= 'Download',
+  Upload = 'Upload',
+  Other = 'Other'
+}
+const progressSubtitle = (t:TFunction) => ({
+  [ProgressActions.Download]: t('loading'),
+  [ProgressActions.Zip]: t('waitPlease'),
+  [SyncActions.Download]: t('downloadPhotos'),
+  [SyncActions.Upload]: t('uploadPhotos'),
+  [SyncActions.Other]: t('waitPlease')
+});
+export type SyncProgress = {
+  totalFiles: number
+  processedFiles: number
+  state: ProgressState
+  action: SyncActions
+}
 type Props = {
   onModalCloseRequest: ()=> void
   isVisible: boolean
@@ -52,7 +70,7 @@ type Props = {
   database: any;
   setProgress: Dispatch<SetStateAction<Progress>>
 }
-export const ModalSaveData = (props: Props) => {
+export const ModalSaveData = memo((props: Props) => {
   const {isVisible, onModalCloseRequest, progress, database, setProgress} = props;
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
@@ -60,19 +78,27 @@ export const ModalSaveData = (props: Props) => {
   const userId = useSelector((state: RootStoreType) => state.app.userId);
   const deletedPhotos = useSelector((state: RootStoreType) => state.app.deletedPhotos);
   const diaryId = useSelector((state: RootStoreType) => state.app.diaryId);
-  //const [syncStarted, setSyncStarted] = useState(false);
+
+  const [syncProgress, setSyncProgress] = useState<SyncProgress>({
+    totalFiles: 1,
+    processedFiles: 0,
+    state: ProgressState.None,
+    action: SyncActions.Other
+  });
 
   const onPressSync = async () => {
     try {
-      //setSyncStarted(true);
-      setProgress({
-        progress: 0,
+      setSyncProgress({
+        totalFiles: 1,
+        processedFiles: 0,
         state: ProgressState.InProgress,
-        action: ProgressActions.Sync
+        action: SyncActions.Other
       });
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId: diaryId!}));
+      if (!userToken?.token) {
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId: diaryId!}));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -80,14 +106,27 @@ export const ModalSaveData = (props: Props) => {
 
   useEffect(() => {
     (async () => {
-      if (userToken && userId &&
-        progress.state === ProgressState.InProgress &&
-      progress.action === ProgressActions.Sync) {
-        console.log('call sync db');
-        await syncDB(database, userToken, userId, deletedPhotos).then(console.log).catch(console.log);
+      if (userToken?.token && userId &&
+        syncProgress.state === ProgressState.InProgress) {
+        await syncDB(database, userToken, userId, deletedPhotos,
+          (total = 1, processed: number, action: SyncActions) => {
+            setSyncProgress({
+              totalFiles: total,
+              processedFiles: processed,
+              action,
+              state: ProgressState.InProgress
+            });
+          }).catch(console.log);
+        setSyncProgress({
+          totalFiles: 1,
+          processedFiles: 1,
+          action: SyncActions.Other,
+          state: ProgressState.Success
+        });
+        console.log('sync finish!');
       }
     })();
-  }, [userToken, userId, progress]);
+  }, [userToken?.token, userId, syncProgress.state]);
 
   const onPressUploadGoogle = async () => {
     try {
@@ -108,7 +147,7 @@ export const ModalSaveData = (props: Props) => {
       setProgress({
         state: ProgressState.Error,
         progress: 0,
-        action: null,
+        action: ProgressActions.Other,
         processType: null
       });
     }
@@ -131,12 +170,21 @@ export const ModalSaveData = (props: Props) => {
       setProgress({
         state: ProgressState.Error,
         progress: 0,
-        action: null,
+        action: ProgressActions.Other,
         processType: null
       });
     }
   };
 
+  const modalCloseHandler = () => {
+    onModalCloseRequest();
+    setSyncProgress({
+      totalFiles: 1,
+      processedFiles: 0,
+      state: ProgressState.None,
+      action: SyncActions.Other
+    });
+  };
   return (
     <ModalDown
       onBackdropPress={onModalCloseRequest}
@@ -171,17 +219,20 @@ export const ModalSaveData = (props: Props) => {
           </View>
         </ConditionView>
 
-        <ConditionView showIf={progress.state !== ProgressState.None}>
+        <ConditionView showIf={progress.state !== ProgressState.None || syncProgress.state !== ProgressState.None}>
           <ModalProgressContent
-            state={progress.state}
-            progress={progress.progress}
+            state={syncProgress.state !== ProgressState.None ? syncProgress.state : progress.state}
+            progress={syncProgress.state !== ProgressState.None ?
+              syncProgress.processedFiles / syncProgress.totalFiles : progress.progress
+            }
             title={t('execution')}
-            subtitle={progress.action === ProgressActions.Download ? t('loading') : t('waitPlease')}
+            subtitle={progressSubtitle(t)[syncProgress.state !== ProgressState.None ? syncProgress.action : progress.action]}
             SuccessComponent={
               progress.action === ProgressActions.Zip &&
-                progress.processType === ProcessType.Pull ||
+              progress.processType === ProcessType.Pull ||
               progress.action === ProgressActions.Download &&
-              progress.processType === ProcessType.Push                ?
+              progress.processType === ProcessType.Push  ||
+              syncProgress.state === ProgressState.Success ?
                 (
                   <SaveSuccess
                     successText={t('allReady')}
@@ -197,7 +248,7 @@ export const ModalSaveData = (props: Props) => {
       </>
     </ModalDown>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

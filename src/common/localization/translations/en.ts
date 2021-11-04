@@ -89,6 +89,8 @@ export const en = {
     recoverFromAccount: 'Recover data from account',
     pageTitle: 'Page title',
     chapterTitle: 'Chapter title',
-    loading: 'Loading'
+    loading: 'Loading',
+    uploadPhotos: 'Uploading photos',
+    downloadPhotos: 'Downloading photos',
   },
 };

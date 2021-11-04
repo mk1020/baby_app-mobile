@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ButtonIconVert} from './ButtonIconVert';
 import {Images} from '../imageResources';
@@ -41,7 +41,7 @@ export const ModalDownPhoto = memo((props: TProps) => {
       quality: 1,
     }, (response: ImagePickerResponse) => {
       if (response.assets?.length) {
-        console.log(response)
+        console.log(response);
         const path = getImagePath(response.assets[0].uri as string);
         onLoadImage(path);
       }

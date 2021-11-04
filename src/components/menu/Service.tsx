@@ -10,8 +10,7 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {googleOAuthClientId} from '../../common/consts';
 import {CachesDirectoryPath, readdir} from 'react-native-fs';
-import {AxiosError} from 'axios';
-import {DriveGoogle} from '../../common/drive/google/DriveGoogle';
+import {downloadFromS3, uploadOnS3} from '../../model/remoteSave/s3Bucket';
 
 type TProps = {
   database?: Database
@@ -141,9 +140,17 @@ export const Service_ = memo((props: TProps) => {
         <Text>GET diaries</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={signInGoogle} style={styles.sign}>
+      <TouchableOpacity onPress={async () => {
+        try {
+          await uploadOnS3('file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_54ec1687-f78b-4ade-8f99-150f7b440124.jpg');
+          //await downloadFromS3();
+        } catch (e) {
+          console.log(e);
+        }
+      }} style={styles.sign}>
         <Text>upload</Text>
       </TouchableOpacity>
+
 
       <TouchableOpacity onPress={async () => {
         console.log(await readdir(CachesDirectoryPath));

@@ -12,7 +12,7 @@ export type TAppReducer = {
   language: TLanguage | null
   diaryTitle: string,
   forceUpdate: number,
-  deletedPhotos: string[]
+  deletedPhotos: string[] //uri's photos
 };
 
 export type TSignIn = {

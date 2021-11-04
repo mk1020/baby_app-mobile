@@ -24,3 +24,8 @@ https://mehrankhandev.medium.com/integrating-fbsdk-facebook-login-in-react-nativ
 https://ibjects.medium.com/facebook-login-tutorial-for-react-native-3b510f8bdef3
 https://github.com/thebergamo/react-native-fbsdk-next
 https://www.freeprivacypolicy.com/
+
+текущие недоработки:
+1) если в процессе синхронизации произойдет сбой сети или пользователь закроет приложение,
+это вполне возможно приведет к багам
+2) на s3 кажется заливаются файлы без проверки, т.е даже если они там уже есть, что неоптимально

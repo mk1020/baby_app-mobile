@@ -57,7 +57,7 @@ export const SaveDataToPhoneContainer = (props: TProps) => {
             setProgress({
               state: ProgressState.None,
               progress: 0,
-              action: null,
+              action: ProgressActions.Other,
               processType: null
             });
           } else {
@@ -65,7 +65,7 @@ export const SaveDataToPhoneContainer = (props: TProps) => {
             setProgress({
               state: ProgressState.Error,
               progress: 0,
-              action: null,
+              action: ProgressActions.Other,
               processType: null
             });
           }
@@ -86,7 +86,7 @@ export const SaveDataToPhoneContainer = (props: TProps) => {
           setProgress({
             state: ProgressState.Error,
             progress: 0,
-            action: null,
+            action: ProgressActions.Other,
             processType: null
           });
         }

@@ -1,4 +1,4 @@
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import {Image, Linking, Share, StyleSheet, Text, View} from 'react-native';
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
@@ -37,7 +37,7 @@ type TProps = {
 export enum ProgressActions {
   Zip = 'Zip',
   Download = 'Download',
-  Sync = 'Sync'
+  Other = 'Other'
 }
 export enum ProcessType {
   Pull = 'Pull',
@@ -49,7 +49,7 @@ export enum ProcessType {
 export type Progress = {
   progress: number
   state: ProgressState,
-  action?: ProgressActions | null,
+  action: ProgressActions,
   showModalAfterReload?: boolean
   processType?: ProcessType | null
 }
@@ -68,7 +68,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   const [progress, setProgress] = useState<Progress>({
     progress: 0,
     state: ProgressState.None,
-    action: null,
+    action: ProgressActions.Other,
     processType: null,
     showModalAfterReload: false
   });
@@ -139,7 +139,7 @@ export const MenuContainer_ = memo((props: TProps) => {
     setProgress({
       progress: 0,
       state: ProgressState.None,
-      action: null,
+      action: ProgressActions.Other,
       processType: ProcessType.Export
     });
   };
@@ -148,7 +148,7 @@ export const MenuContainer_ = memo((props: TProps) => {
     setProgress({
       progress: 0,
       state: ProgressState.None,
-      action: null,
+      action: ProgressActions.Other,
       processType: ProcessType.Import
     });
   };
@@ -157,18 +157,18 @@ export const MenuContainer_ = memo((props: TProps) => {
     setProgress({
       progress: 0,
       state: ProgressState.None,
-      action: null,
+      action: ProgressActions.Other,
       processType: null
     });
     setImportStarted(false);
     setExportStarted(false);
   };
 
-  const onModalCloseRequest = () => {
+  const onModalCloseRequest = useCallback(() => {
     setProgress({...progress, state: ProgressState.None});
     setLanguageModalVisible(false);
     setSaveModalVisible(false);
-  };
+  }, [progress]);
 
   const handlers = {
     onPressDisableAds,

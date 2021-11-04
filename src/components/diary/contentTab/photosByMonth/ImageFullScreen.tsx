@@ -7,7 +7,7 @@ import {RootStackList} from '../../../../navigation/types';
 import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimple';
 import {HeaderBackButton} from '@react-navigation/stack';
 import {useDatabase} from '@nozbe/watermelondb/hooks';
-import {PhotosTableName} from '../../../../model/schema';
+import {NotesTableName, PhotosTableName} from '../../../../model/schema';
 import {getClearPathFile, getFileName, getImagePath} from '../../../../common/assistant/files';
 import * as RNFS from 'react-native-fs';
 import {CachesDirectoryPath, TemporaryDirectoryPath} from 'react-native-fs';
@@ -32,9 +32,13 @@ export const ImageFullScreen = memo((props: TProps) => {
   const onPressDelete = async () => {
     try {
       dispatch(addDeletedPhotos([getFileName(imageUri)]));
-      const image = await db.get(PhotosTableName).find(imageId || '');
-      // @ts-ignore
-      await image.updatePhoto(null);
+      await db.write(async () => {
+        const photos = db?.get(PhotosTableName);
+        const targetPhoto = await photos.find(imageId || '');
+        await targetPhoto.update((photo: any) => {
+          photo.photo = null;
+        });
+      });
       navigation.navigate(NavigationPages.PhotosByMonth, {deletedPhotoId: imageId});
       await RNFS.unlink(TemporaryDirectoryPath + '/' + getFileName(imageUri));
     } catch (e) {

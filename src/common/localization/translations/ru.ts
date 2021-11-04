@@ -89,6 +89,8 @@ export const ru = {
     waitPlease: 'Подождите, пожалуйста ...',
     allReady: 'Все готово!',
     haveNiceDay: 'Хорошего Вам дня!',
-    loading: 'Загрузка'
+    loading: 'Загрузка',
+    uploadPhotos: 'Загрузка фотографий в хранилище',
+    downloadPhotos: 'Скачивание фотографий на телефон',
   },
 };

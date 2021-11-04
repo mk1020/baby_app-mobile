@@ -7,6 +7,7 @@ import {ConditionView} from './ConditionView';
 import ProgressBar from 'react-native-progress/Bar';
 import {Fonts} from '../phone/fonts';
 import {useTranslation} from 'react-i18next';
+import {SyncActions, SyncProgress} from '../../components/menu/ModalSaveData';
 
 export enum ProgressState {
   None = 'None',
@@ -49,18 +50,17 @@ export const ModalProgressContent = (props: Omit<TProps, 'onRequestClose' | 'isV
   const {t, i18n} = useTranslation();
 
   const {
-    progress,
     state,
     SuccessComponent =  null,
     ErrorComponent,
     title,
     showAfterReload = false,
-    subtitle
+    subtitle,
+    progress
   } = props;
 
-  console.log('progress', progress);
   console.log('state', state);
-
+  console.log('progress', progress);
   return (
     <View style={styles.exportModalContainer}>
       <Text style={styles.exportTitle}>{title}</Text>
@@ -71,11 +71,15 @@ export const ModalProgressContent = (props: Omit<TProps, 'onRequestClose' | 'isV
         borderColor={'orange'}
         color={'rgb(236,157,36)'}
         useNativeDriver={true}
-        indeterminate={progress === 0 || progress === 1 && state === ProgressState.InProgress}
+        indeterminate={
+          progress === 0 ||
+          progress === 1 &&
+          state === ProgressState.InProgress
+        }
       />
       <Text style={styles.exportTitle}>{subtitle}</Text>
 
-      <ConditionView showIf={(state === ProgressState.Success && showAfterReload == false) || !!showAfterReload}>
+      <ConditionView showIf={(state === ProgressState.Success && showAfterReload == false)}>
         {SuccessComponent}
       </ConditionView>
 
