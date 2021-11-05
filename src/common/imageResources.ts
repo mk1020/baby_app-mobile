@@ -38,4 +38,5 @@ export const Images = {
   addPage: <ImageURISource>require('../../assets/images/addPage.png'),
   openBook: <ImageURISource>require('../../assets/images/openBook.png'),
   menu: <ImageURISource>require('../../assets/images/menu.png'),
+  exit: <ImageURISource>require('../../assets/images/exit.png'),
 };

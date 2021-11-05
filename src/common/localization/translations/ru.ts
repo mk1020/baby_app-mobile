@@ -92,5 +92,8 @@ export const ru = {
     loading: 'Загрузка',
     uploadPhotos: 'Загрузка фотографий в хранилище',
     downloadPhotos: 'Скачивание фотографий на телефон',
+    account: 'Аккаунт',
+    never: 'никогда',
+    unAuthSync: 'Для синхронизации необходимо войти'
   },
 };

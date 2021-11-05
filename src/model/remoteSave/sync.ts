@@ -9,6 +9,8 @@ import {_changes, syncPullAdapter, syncPushAdapter} from '../assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../schema';
 import {deletePhotosFromS3_URI, downloadNewPhotosS3, uploadNewPhotosOnS3} from './s3Bucket';
 import {SyncActions} from '../../components/menu/ModalSaveData';
+import {Dispatch} from 'redux';
+import {setLastSyncAt} from '../../redux/appSlice';
 
 
 export async function syncDB(
@@ -16,7 +18,8 @@ export async function syncDB(
   token: TToken | null,
   userId: number | null,
   deletedPhotos: string[],
-  onProgress: (total: number, processed: number, action: SyncActions)=> void
+  dispatch: Dispatch,
+  onProgress: (total: number, processed: number, action: SyncActions)=> void,
 ) {
   await synchronize({
     database,
@@ -24,7 +27,7 @@ export async function syncDB(
     pullChanges: async ({lastPulledAt, schemaVersion, migration}) => {
       try {
         console.log('pull');
-        const syncRes = await req(token).get<SyncPullResult & {diaryId: string}>('/sync', {params: {
+        const syncRes = await req(token, dispatch).get<SyncPullResult & {diaryId: string}>('/sync', {params: {
           lastPulledAt,
           schemaVersion,
           migration: encodeURIComponent(JSON.stringify(migration)),
@@ -89,7 +92,7 @@ export async function syncDB(
           onProgress
         );
 
-        await req(token).post('/sync', syncDTO);
+        await req(token, dispatch).post('/sync', syncDTO);
       } catch (err) {
         console.error(err.response?.data || err.response || err);
         throw new Error('error push sync');
@@ -97,6 +100,7 @@ export async function syncDB(
     },
     migrationsEnabledAtVersion: 1,
   });
+  dispatch(setLastSyncAt(new Date().getTime()));
 }
 
 //todo сделать метод который будет раз в месяц получать все фотки из таблиц и сверять с кешэм, чтобы удалить ненужные из кэша

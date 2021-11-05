@@ -1,31 +1,25 @@
 import React, {memo, useMemo} from 'react';
-import {
-  FlatList,
-  ListRenderItemInfo,
-  SafeAreaView, ScrollView,
-  SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
-  StyleSheet,
-  Text, TouchableOpacity,
-  View
-} from 'react-native';
+import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {AuthCardUser} from './auth/AuthCardUser';
-import {Section, TMenuItem} from './assist';
+import {Section} from './assist';
 import {MenuItem} from './MenuItem';
 import {Fonts} from '../../common/phone/fonts';
 import {ConditionView} from '../../common/components/ConditionView';
 import {Space} from '../../common/components/Space';
 import {useTranslation} from 'react-i18next';
-import {useSelector} from 'react-redux';
-import {RootStoreType} from '../../redux/rootReducer';
+import {useDispatch} from 'react-redux';
 import {UnAuthCardUser} from './auth/UnAuthCardUser';
+import {dateFormat} from '../../common/assistant/date';
+import {Images} from '../../common/imageResources';
+import {commonAlert} from '../../common/components/CommonAlert';
+import {signOut} from '../../redux/appSlice';
 
 type TProps = {
   renderData: Section[]
-  isAuth?: boolean
-  onPressLogOut: ()=>void
-  diaryId?: string
+  isAuth: boolean
+  diaryId: string
+  lastSyncedAt: number
+  email: string
 }
 
 const SectionHeader = ({title}: {title: string}) => {
@@ -34,8 +28,9 @@ const SectionHeader = ({title}: {title: string}) => {
   );
 };
 export const Menu = memo((props: TProps) => {
-  const {renderData, isAuth, onPressLogOut, diaryId} = props;
+  const {renderData, isAuth, diaryId, lastSyncedAt, email} = props;
   const {t} = useTranslation();
+  const dispatch = useDispatch();
 
   const renderItems = useMemo(() => {
     return renderData.map((section, index) => (
@@ -59,29 +54,33 @@ export const Menu = memo((props: TProps) => {
     ));
   }, [renderData]);
 
+  const onPressLogOut = () => {
+    commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
       >
-        {/*<ConditionView showIf={isAuth}>
-          <AuthCardUser email={'mmmffjs7438g@gmail.com'} lastSyncAt={'27 июл. 18:42'}/>
-        </ConditionView>
-
-        <ConditionView showIf={!isAuth}>
-          <UnAuthCardUser diaryId={diaryId}/>
-        </ConditionView>*/}
+        <View style={styles.sectionContainer}>
+          <SectionHeader title={t('account')} />
+          <View style={styles.section}>
+            <ConditionView showIf={!isAuth}>
+              <UnAuthCardUser diaryId={diaryId}/>
+            </ConditionView>
+            <ConditionView showIf={isAuth}>
+              <View>
+                <AuthCardUser email={email} lastSyncAt={lastSyncedAt ? dateFormat(lastSyncedAt, true) : t('never')}/>
+                <TouchableOpacity style={styles.exitContainer} onPress={onPressLogOut}>
+                  <Image source={Images.exit} style={styles.exitIcon}/>
+                </TouchableOpacity>
+              </View>
+            </ConditionView>
+          </View>
+        </View>
         {renderItems}
-     {/*   <ConditionView showIf={isAuth}>
-          <TouchableOpacity
-            style={styles.buttonExit}
-            hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
-            onPress={onPressLogOut}
-          >
-            <Text style={styles.buttonExitText}>{t('exit')}</Text>
-          </TouchableOpacity>
-        </ConditionView>*/}
       </ScrollView>
     </SafeAreaView>
   );
@@ -93,6 +92,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 8,
     paddingHorizontal: 8
+  },
+  exitContainer: {
+    position: 'absolute',
+    right: 15,
+    top: -12,
+    zIndex: 1,
+  },
+  exitIcon: {
+    width: 64,
+    height: 64
   },
   flatListContainer: {
     paddingBottom: 24
@@ -108,16 +117,7 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
-    paddingVertical: 8
+    paddingVertical: 8,
   },
   sectionContainer: {},
-  buttonExit: {
-    marginTop: 8,
-    alignSelf: 'center',
-  },
-  buttonExitText: {
-    fontFamily: Fonts.bold,
-    color: 'red',
-    fontSize: 16,
-  },
 });

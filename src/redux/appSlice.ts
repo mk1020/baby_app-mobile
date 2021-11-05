@@ -16,7 +16,9 @@ const initialState: TAppReducer = {
   language: null,
   diaryTitle: '',
   forceUpdate: 0,
-  deletedPhotos: []
+  deletedPhotos: [],
+  lastSyncAt: 0,
+  userEmail: '',
 };
 
 export const signIn = createAsyncThunk(
@@ -87,6 +89,9 @@ const appSlice = createSlice({
     changeDiaryTitle: (state: TAppReducer, action: PayloadAction<string>) => {
       state.diaryTitle = action.payload;
     },
+    setLastSyncAt: (state: TAppReducer, action: PayloadAction<number>) => {
+      state.lastSyncAt = action.payload;
+    },
     forceUpdate: (state: TAppReducer) => {
       state.forceUpdate += 1;
     },
@@ -106,6 +111,7 @@ const appSlice = createSlice({
       state.userToken = action.payload?.token || null;
       state.userId = action.payload?.userId || null;
       state.isLoading = false;
+      state.userEmail = action.payload?.email || '';
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action: PayloadAction<boolean>) => {
       action.payload && (state.userToken = null);
@@ -123,5 +129,6 @@ export const {
   forceUpdate,
   setGoogleAccessToken,
   setDiaryId,
-  addDeletedPhotos
+  addDeletedPhotos,
+  setLastSyncAt
 } = appSlice.actions;

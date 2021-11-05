@@ -11,7 +11,7 @@ const isNeedUpdate = (token?: TToken) => {
   if (token) {
     const expires = new Date(token.expires).getTime();
     const curDate = new Date().getTime();
-    if (expires - curDate > msInDay * 7) {
+    if ((expires - curDate - msInDay * 7) <= 0) {
       return true;
     } else {
       return false;

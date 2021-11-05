@@ -58,6 +58,9 @@ export const MenuContainer_ = memo((props: TProps) => {
   const {database, diary} = props;
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
+  const userToken = useSelector((state: RootStoreType) => state.app.userToken);
+  const lastSyncedAt = useSelector((state: RootStoreType) => state.app.lastSyncAt);
+  const email = useSelector((state: RootStoreType) => state.app.userEmail);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
@@ -126,9 +129,6 @@ export const MenuContainer_ = memo((props: TProps) => {
       console.log(e);
     }
   };
-  const onPressLogOut = () => {
-    commonAlert(t, t('exitAlert'), t('exitMassage'), () => dispatch(signOut()));
-  };
 
   const onPressSaveInternet = () => {
     setSaveModalVisible(true);
@@ -192,9 +192,10 @@ export const MenuContainer_ = memo((props: TProps) => {
     <>
       <Menu
         renderData={getSectionsData(t, handlers, sectionDataOpt)}
-        //isAuth={userToken !== null}
-        onPressLogOut={onPressLogOut}
-        //diaryId={diaryId}
+        isAuth={userToken !== null}
+        diaryId={diaryId}
+        lastSyncedAt={lastSyncedAt}
+        email={email}
       />
       <ModalSelectorList
         data={getLanguagesData(t, changeLanguage_, language)}

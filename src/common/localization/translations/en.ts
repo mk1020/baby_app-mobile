@@ -92,5 +92,8 @@ export const en = {
     loading: 'Loading',
     uploadPhotos: 'Uploading photos',
     downloadPhotos: 'Downloading photos',
+    account: 'Account',
+    never: 'never',
+    unAuthSync: 'To synchronize, you need to log in'
   },
 };

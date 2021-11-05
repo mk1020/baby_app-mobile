@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Images} from '../../../common/imageResources';
 import {Fonts} from '../../../common/phone/fonts';
 import {useTranslation} from 'react-i18next';
@@ -16,7 +16,7 @@ export const AuthCardUser = memo((props: TProps) => {
     <View style={styles.container}>
       <Image source={Images.user} style={styles.imageAccount}/>
       <Text style={styles.email}>{email}</Text>
-      <Text style={styles.lastSync}>{t('lastSync')} {lastSyncAt}</Text>
+      <Text style={styles.lastSync}>{t('lastSync')}: {lastSyncAt}</Text>
     </View>
   );
 });
@@ -27,11 +27,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    borderRadius: 10
+    borderRadius: 10,
   },
   imageAccount: {
-    height: 64,
-    width: 64,
+    height: 48,
+    width: 48,
     tintColor: '#FFA100'
   },
   email: {

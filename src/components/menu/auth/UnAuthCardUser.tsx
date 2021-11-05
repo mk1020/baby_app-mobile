@@ -25,9 +25,8 @@ export const UnAuthCardUser = memo((props: TProps) => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      dispatch(setLoadingAppStatus(true));
+      //dispatch(setLoadingAppStatus(true));
       dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
-      await GoogleSignin.revokeAccess();
 
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -47,7 +46,7 @@ export const UnAuthCardUser = memo((props: TProps) => {
       <Image source={Images.login} style={styles.imageLogin}/>
       <GoogleSigninButton
         //style={{width: 48, height: 48, shadowOpacity: 1, elevation: 0, borderWidth: 0}}
-        size={GoogleSigninButton.Size.Icon}
+        size={GoogleSigninButton.Size.Wide}
         color={GoogleSigninButton.Color.Dark}
         onPress={onOAuthGoogle}
         //disabled={this.state.isSigninInProgress}

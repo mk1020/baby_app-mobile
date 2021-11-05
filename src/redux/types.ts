@@ -13,6 +13,8 @@ export type TAppReducer = {
   diaryTitle: string,
   forceUpdate: number,
   deletedPhotos: string[] //uri's photos
+  lastSyncAt: number,
+  userEmail: string,
 };
 
 export type TSignIn = {
@@ -32,7 +34,8 @@ export enum ColorSchemes {
 
 export type TSignInRes = {
   userId: number,
-  token: TToken
+  token: TToken,
+  email: string
 }
 
 export type TToken = {

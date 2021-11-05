@@ -22,15 +22,18 @@ type SaveProps = {
   highlightColor: string
   title: string
   handler: ()=> void
+  errStyle?: boolean
 }
 type SuccessProps = {
   successText: string
   successSecondText: string
 }
 
-const SaveModalItem = ({title, handler, color, highlightColor}: SaveProps) => {
+const SaveModalItem = ({title, handler, color, highlightColor, errStyle}: SaveProps) => {
+  const errorStyle = {borderWidth: 3, borderColor: 'red'};
+
   return (
-    <TouchableHighlight style={[styles.container, {backgroundColor: color}]} onPress={handler} underlayColor={highlightColor}>
+    <TouchableHighlight style={[styles.container, {backgroundColor: color}, errStyle && errorStyle]} onPress={handler} underlayColor={highlightColor}>
       <View style={{padding: 8}}>
         <Text style={{fontFamily: Fonts.bold, fontSize: 16}}>{title}</Text>
       </View>
@@ -87,28 +90,19 @@ export const ModalSaveData = memo((props: Props) => {
   });
 
   const onPressSync = async () => {
-    try {
-      setSyncProgress({
-        totalFiles: 1,
-        processedFiles: 0,
-        state: ProgressState.InProgress,
-        action: SyncActions.Other
-      });
-      if (!userToken?.token) {
-        await GoogleSignin.hasPlayServices();
-        const userInfo = await GoogleSignin.signIn();
-        dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId: diaryId!}));
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    setSyncProgress({
+      totalFiles: 1,
+      processedFiles: 0,
+      state: ProgressState.InProgress,
+      action: SyncActions.Other
+    });
   };
 
   useEffect(() => {
     (async () => {
       if (userToken?.token && userId &&
         syncProgress.state === ProgressState.InProgress) {
-        await syncDB(database, userToken, userId, deletedPhotos,
+        await syncDB(database, userToken, userId, deletedPhotos, dispatch,
           (total = 1, processed: number, action: SyncActions) => {
             setSyncProgress({
               totalFiles: total,
@@ -130,6 +124,13 @@ export const ModalSaveData = memo((props: Props) => {
 
   const onPressUploadGoogle = async () => {
     try {
+      setSyncProgress({
+        totalFiles: 1,
+        processedFiles: 0,
+        state: ProgressState.None,
+        action: SyncActions.Other
+      });
+
       await GoogleSignin.hasPlayServices();
       const accessToken = await signInGoogle();
       await saveInGoogleDrive(database as Database, accessToken,
@@ -155,6 +156,13 @@ export const ModalSaveData = memo((props: Props) => {
 
   const onPressDownloadGoogle = async () => {
     try {
+      setSyncProgress({
+        totalFiles: 1,
+        processedFiles: 0,
+        state: ProgressState.None,
+        action: SyncActions.Other
+      });
+
       const accessToken = await signInGoogle();
       await GoogleSignin.hasPlayServices();
       await downloadFromGoogle(accessToken, database as Database,
@@ -193,13 +201,14 @@ export const ModalSaveData = memo((props: Props) => {
     >
       <>
         <ConditionView showIf={progress.state === ProgressState.None}>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
             <View>
               <SaveModalItem
                 title={'Fast sync with server'}
                 handler={onPressSync}
                 color={'#ffb300'}
                 highlightColor={'#c68400'}
+                errStyle={syncProgress.state === ProgressState.InProgress && !userToken}
               />
             </View>
             <View>
@@ -216,10 +225,16 @@ export const ModalSaveData = memo((props: Props) => {
                 highlightColor={'#006db3'}
               />
             </View>
+            <ConditionView showIf={syncProgress.state === ProgressState.InProgress && !userToken}>
+              <Text style={styles.authErr}>{t('unAuthSync')}</Text>
+            </ConditionView>
           </View>
         </ConditionView>
 
-        <ConditionView showIf={progress.state !== ProgressState.None || syncProgress.state !== ProgressState.None}>
+        <ConditionView showIf={
+          progress.state !== ProgressState.None ||
+          syncProgress.state !== ProgressState.None && !!userToken
+        }>
           <ModalProgressContent
             state={syncProgress.state !== ProgressState.None ? syncProgress.state : progress.state}
             progress={syncProgress.state !== ProgressState.None ?
@@ -263,6 +278,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'red',
     alignSelf: 'center'
+  },
+  authErr: {
+    fontFamily: Fonts.regular,
+    fontSize: 14,
+    color: 'red',
   },
   successContainer: {
     marginTop: 28
