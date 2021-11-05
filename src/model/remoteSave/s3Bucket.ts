@@ -25,7 +25,7 @@ export const uploadOnS3 = (filePath: string, contentType: string) => {
     const arrayBuffer = decode(base64);
     s3bucket.createBucket(() => {
       const params = {
-        Bucket: 's3:life-book-backet',
+        Bucket: Config.S3IMAGESBUCKET,
         Key: name,
         Body: arrayBuffer,
         ContentDisposition: contentDeposition,
@@ -49,7 +49,7 @@ export const downloadFromS3 = (fileName: string, contentType: string, onProgress
       region: Config.S3REGION
     });
 
-    const params = {Bucket: 's3:life-book-backet', Key: fileName};
+    const params = {Bucket: Config.S3IMAGESBUCKET, Key: fileName};
     s3bucket.getSignedUrl('getObject', params, (err, url) => {
       console.log('Your generated pre-signed URL is', url);
       if (url) {
@@ -63,7 +63,7 @@ export const downloadFromS3 = (fileName: string, contentType: string, onProgress
           cacheable: false,
           progressInterval: 1000,
           progress: onProgress
-        }).promise.then(data => resolve(data)).catch(err => reject(err));
+        }).promise.then(data => resolve(data))/*.catch(err => reject(err))*/;
       }
     });
   });
@@ -78,7 +78,7 @@ export const deleteFromS3 = (fileName: string) => {
       signatureVersion: 'v4',
       region: Config.S3REGION
     });
-    const params = {Bucket: 's3:life-book-backet', Key: fileName};
+    const params = {Bucket: Config.S3IMAGESBUCKET, Key: fileName};
 
     s3bucket.deleteObject(params, (err: AWSError, data: S3.Types.DeleteObjectOutput) => {
       if (err) reject(err); else resolve(data);
@@ -94,7 +94,7 @@ export const isFileExistS3 = (fileName: string) => {
     signatureVersion: 'v4',
     region: Config.S3REGION
   });
-  const params = {Bucket: 's3:life-book-backet', Key: fileName};
+  const params = {Bucket: Config.S3IMAGESBUCKET, Key: fileName};
   s3bucket.headObject(params);
 };
 
@@ -104,7 +104,7 @@ export const downloadNewPhotosS3 = async (photos: any[], onProgress: (total: num
 
   for (let i = 0; i < photoNames.length; i++) {
     if (!existedPhotos.includes(photoNames[i]) && photoNames[i]) {
-      const downloaded = await downloadFromS3(photoNames[i], 'image/jpeg').catch(err => console.log('file not exit in s3', photoNames[i]));
+      const downloaded = await downloadFromS3(photoNames[i], 'image/jpeg')/*.catch(err => console.log('file not exit in s3', photoNames[i]))*/;
       console.log('downloaded', downloaded);
       onProgress(photoNames.length, i + 1, SyncActions.Download);
     }
@@ -112,13 +112,18 @@ export const downloadNewPhotosS3 = async (photos: any[], onProgress: (total: num
 };
 
 export const uploadNewPhotosOnS3 = async (photos: any[], onProgress: (total: number, processed: number, action: SyncActions)=> void) => {
-  const photosForUpload = photos.filter(photo => !!photo?.photo).map(photo => photo.photo);
+  const photosForUploadDirty: string[] = photos.filter(photo => !!photo?.photo).map(photo => photo.photo);
+  let photosForUpload: string[] = [];
+
+  photosForUploadDirty.forEach(item => {
+    const splitedPhoto = item.split(';');
+    photosForUpload = [...photosForUpload, ...splitedPhoto];
+  });
+
   for (let i = 0; i < photosForUpload.length; i++) {
-    if (photosForUpload[i]) {
-      const uploaded = await uploadOnS3(photosForUpload[i], 'image/jpeg').catch(err => console.log('upload error', err));
-      onProgress(photosForUpload.length, i + 1, SyncActions.Upload);
-      console.log(uploaded);
-    }
+    const uploaded = await uploadOnS3(photosForUpload[i], 'image/jpeg');
+    onProgress(photosForUpload.length, i + 1, SyncActions.Upload);
+    console.log(uploaded);
   }
 };
 

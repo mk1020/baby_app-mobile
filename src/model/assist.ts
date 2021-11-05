@@ -8,6 +8,7 @@ import {adapterSyncByTableName, EnhancedToServerBD, photoAdapterJs} from './adap
 import * as RNFS from 'react-native-fs';
 import {TemporaryDirectoryPath} from 'react-native-fs';
 import {getFileName} from '../common/assistant/files';
+import {AxiosResponse} from 'axios';
 
 export enum ChangesEvents {
   created = 'created',
@@ -76,14 +77,11 @@ export const syncPullAdapter = (res: SyncPullResult, deleteDiaryIds: string[], d
 };
 
 type SyncPushAdapterRes = {
-  changes: {
     [name: string]: {
       created: (Required<EnhancedToServerBD> & Record<string, unknown>)[],
       updated: (Required<EnhancedToServerBD> & Record<string, unknown>)[],
       deleted: string[],
     }
-  },
-  lastPulledAt: number
 }
 export const syncPushAdapter = (res: SyncPushResult, userId: number | null, table: SyncTables): SyncPushAdapterRes => {
   const created = res?.changes?.[table]?.[ChangesEvents.created];
@@ -94,14 +92,11 @@ export const syncPushAdapter = (res: SyncPushResult, userId: number | null, tabl
   const updatedNew = updated?.map(item => ({...item, user_id: userId}));
 
   return {
-    changes: {
-      [table]: {
-        created: createdNew,
-        updated: updatedNew,
-        deleted
-      }
-    },
-    lastPulledAt: res.lastPulledAt
+    [table]: {
+      created: createdNew,
+      updated: updatedNew,
+      deleted
+    }
   };
 };
 
@@ -296,5 +291,6 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
   });
 };
 
-
-
+export const _changes = (res: AxiosResponse<SyncPullResult>, tableName: string) => (
+  res.data?.changes?.[tableName]
+);

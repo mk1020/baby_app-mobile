@@ -187,8 +187,8 @@ export const ModalSaveData = memo((props: Props) => {
   };
   return (
     <ModalDown
-      onBackdropPress={onModalCloseRequest}
-      onBackButtonPress={onModalCloseRequest}
+      onBackdropPress={modalCloseHandler}
+      onBackButtonPress={modalCloseHandler}
       isVisible={isVisible}
     >
       <>

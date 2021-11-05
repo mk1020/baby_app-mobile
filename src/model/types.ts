@@ -99,7 +99,6 @@ type ChangesPush = {
 }
 export type SyncPushResult = {
   changes: ChangesPush,
-  lastPulledAt: number
 }
 
 export interface IPhoto {

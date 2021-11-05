@@ -6,6 +6,7 @@ declare module 'react-native-config' {
     S3SECRETACCESSKEY: string;
     S3ENDPOINT: string;
     S3REGION: string;
+    S3IMAGESBUCKET: string
   }
 
   const Config: Env;
