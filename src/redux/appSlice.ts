@@ -19,6 +19,7 @@ const initialState: TAppReducer = {
   deletedPhotos: [],
   lastSyncAt: 0,
   userEmail: '',
+  isAuthError: false
 };
 
 export const signIn = createAsyncThunk(
@@ -40,7 +41,8 @@ export const oAuthGoogle = createAsyncThunk(
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
       return res.data;
     } catch (err) {
-      console.error(err.response?.data || err.response || err);
+      console.log(err.message);
+      console.error(err.response || err.response || err);
       return null;
     }
   },
@@ -50,14 +52,17 @@ export const signOut = createAsyncThunk<boolean, undefined, {state: RootStoreTyp
   'signOut/requestStatus', async (payload, thunkAPI) => {
     let res;
     try {
-      res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
       await GoogleSignin.signOut();
+      res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
       //await GoogleSignin.revokeAccess();
-    } catch (err) {
-      console.error(err.response?.data || err.response || err);
-      return false;
-    } finally {
       return !!res?.data;
+    } catch (err) {
+      console.error(err.message);
+      if (err.message === 'Network Error') {
+        return true;
+      } else {
+        return false;
+      }
     }
   });
 
@@ -112,9 +117,14 @@ const appSlice = createSlice({
       state.userId = action.payload?.userId || null;
       state.isLoading = false;
       state.userEmail = action.payload?.email || '';
+      state.isAuthError = !action.payload;
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action: PayloadAction<boolean>) => {
-      action.payload && (state.userToken = null);
+      if (action.payload) {
+        state.userToken = null;
+        state.userEmail = '';
+        state.userId = null;
+      }
     });
   },
 });

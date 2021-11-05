@@ -61,6 +61,7 @@ export const MenuContainer_ = memo((props: TProps) => {
   const userToken = useSelector((state: RootStoreType) => state.app.userToken);
   const lastSyncedAt = useSelector((state: RootStoreType) => state.app.lastSyncAt);
   const email = useSelector((state: RootStoreType) => state.app.userEmail);
+  const isAuthError = useSelector((state: RootStoreType) => state.app.isAuthError);
 
   const language =  i18n.language as TLanguage;
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
@@ -196,6 +197,7 @@ export const MenuContainer_ = memo((props: TProps) => {
         diaryId={diaryId}
         lastSyncedAt={lastSyncedAt}
         email={email}
+        isAuthError={isAuthError}
       />
       <ModalSelectorList
         data={getLanguagesData(t, changeLanguage_, language)}

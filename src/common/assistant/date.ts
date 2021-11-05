@@ -5,5 +5,5 @@ export const dateFormat = (timestamp: number, withTime?: boolean) => {
 
   const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
   const min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-  return `${day}.${month}.${date.getFullYear()}` + (withTime ? `-${hours}:${min}` : '');
+  return `${day}.${month}.${date.getFullYear()}` + (withTime ? `, ${hours}:${min}` : '');
 };

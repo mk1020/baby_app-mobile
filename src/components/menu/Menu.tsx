@@ -13,6 +13,7 @@ import {dateFormat} from '../../common/assistant/date';
 import {Images} from '../../common/imageResources';
 import {commonAlert} from '../../common/components/CommonAlert';
 import {signOut} from '../../redux/appSlice';
+import {ProgressState} from '../../common/components/ModalDownProgress';
 
 type TProps = {
   renderData: Section[]
@@ -20,6 +21,7 @@ type TProps = {
   diaryId: string
   lastSyncedAt: number
   email: string
+  isAuthError: boolean
 }
 
 const SectionHeader = ({title}: {title: string}) => {
@@ -28,7 +30,7 @@ const SectionHeader = ({title}: {title: string}) => {
   );
 };
 export const Menu = memo((props: TProps) => {
-  const {renderData, isAuth, diaryId, lastSyncedAt, email} = props;
+  const {renderData, isAuth, diaryId, lastSyncedAt, email, isAuthError} = props;
   const {t} = useTranslation();
   const dispatch = useDispatch();
 
@@ -68,7 +70,12 @@ export const Menu = memo((props: TProps) => {
           <SectionHeader title={t('account')} />
           <View style={styles.section}>
             <ConditionView showIf={!isAuth}>
-              <UnAuthCardUser diaryId={diaryId}/>
+              <>
+                <UnAuthCardUser diaryId={diaryId}/>
+                <ConditionView showIf={isAuthError}>
+                  <Text style={styles.authErr}>{t('authUnavailable')}</Text>
+                </ConditionView>
+              </>
             </ConditionView>
             <ConditionView showIf={isAuth}>
               <View>
@@ -98,6 +105,12 @@ const styles = StyleSheet.create({
     right: 15,
     top: -12,
     zIndex: 1,
+  },
+  authErr: {
+    fontFamily: Fonts.regular,
+    fontSize: 14,
+    color: 'red',
+    alignSelf: 'center'
   },
   exitIcon: {
     width: 64,

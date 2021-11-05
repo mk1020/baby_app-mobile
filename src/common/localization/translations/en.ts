@@ -94,6 +94,7 @@ export const en = {
     downloadPhotos: 'Downloading photos',
     account: 'Account',
     never: 'never',
-    unAuthSync: 'To synchronize, you need to log in'
+    unAuthSync: 'To synchronize, you need to log in',
+    authUnavailable: 'Authorization is currently unavailable'
   },
 };
