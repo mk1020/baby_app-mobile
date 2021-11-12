@@ -29,7 +29,7 @@ const updateToken = (token: TToken, dispatch: Dispatch) => {
 };
 export const req = (token: TToken | null, dispatch?: Dispatch): AxiosInstance => {
   const inst = axios.create({
-    baseURL:  'Config.API_URL',
+    baseURL:  Config.API_URL,
     headers: {token: token?.token}
   });
 
