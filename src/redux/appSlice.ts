@@ -5,6 +5,7 @@ import {RootStoreType} from './rootReducer';
 import {req} from '../common/assistant/api';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {TLanguage} from '../common/localization/localization';
+import {Alert} from 'react-native';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
@@ -39,9 +40,11 @@ export const oAuthGoogle = createAsyncThunk(
   async (data: TSignInGoogle, thunkAPI) => {
     try {
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
+      Alert.alert('', 'after req' + JSON.stringify(err, null, 2));
       return res.data;
     } catch (err) {
-      console.log(err.message);
+      Alert.alert('', JSON.stringify(err, null, 2));
+      console.log(err.response?.data);
       console.error(err.response || err.response || err);
       return null;
     }

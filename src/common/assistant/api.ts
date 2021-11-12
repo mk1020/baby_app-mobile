@@ -21,7 +21,6 @@ const isNeedUpdate = (token?: TToken) => {
 const updateToken = (token: TToken, dispatch: Dispatch) => {
   axios.post(`${Config.API_URL}/token`, {}, {headers: {token: token.token}})
     .then(res => {
-      console.log('upres', res);
       dispatch(refreshToken(res.data));
     })
     .catch((err: AxiosError) => {
@@ -30,7 +29,7 @@ const updateToken = (token: TToken, dispatch: Dispatch) => {
 };
 export const req = (token: TToken | null, dispatch?: Dispatch): AxiosInstance => {
   const inst = axios.create({
-    baseURL:  Config.API_URL,
+    baseURL:  'Config.API_URL',
     headers: {token: token?.token}
   });
 

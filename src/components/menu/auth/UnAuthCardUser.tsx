@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Alert, Image, StyleSheet, Text, View} from 'react-native';
 import {Images} from '../../../common/imageResources';
 import {Fonts} from '../../../common/phone/fonts';
 import {useTranslation} from 'react-i18next';
@@ -23,9 +23,15 @@ export const UnAuthCardUser = memo((props: TProps) => {
 
   const onOAuthGoogle = async () => {
     try {
+      Alert.alert('', 'before google serv');
+
       await GoogleSignin.hasPlayServices();
+      Alert.alert('', 'after google serv');
+
       const userInfo = await GoogleSignin.signIn();
       //dispatch(setLoadingAppStatus(true));
+      Alert.alert('', 'after google signin');
+
       dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
 
     } catch (error) {
