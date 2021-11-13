@@ -23,14 +23,9 @@ export const UnAuthCardUser = memo((props: TProps) => {
 
   const onOAuthGoogle = async () => {
     try {
-      Alert.alert('', 'before google serv');
-
       await GoogleSignin.hasPlayServices();
-      Alert.alert('', 'after google serv');
-
       const userInfo = await GoogleSignin.signIn();
       //dispatch(setLoadingAppStatus(true));
-      Alert.alert('', 'after google signin');
 
       dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
 

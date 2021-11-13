@@ -40,10 +40,10 @@ export const oAuthGoogle = createAsyncThunk(
   async (data: TSignInGoogle, thunkAPI) => {
     try {
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
-      Alert.alert('', 'after req' + JSON.stringify(err, null, 2));
       return res.data;
     } catch (err) {
-      Alert.alert('', JSON.stringify(err, null, 2));
+      Alert.alert('', JSON.stringify(err.response, null, 2));
+      Alert.alert('', JSON.stringify(err.response?.data, null, 2));
       console.log(err.response?.data);
       console.error(err.response || err.response || err);
       return null;

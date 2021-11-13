@@ -6,10 +6,18 @@ import {CachesDirectoryPath, DownloadProgressCallbackResult, readdir} from 'reac
 
 // просто загрузить все на гугл диск
 export async function saveInGoogleDrive(database: Database, accessToken: string, onProgress: (loadedMB: number, totalMB: number)=>void) {
-  const appFolder = await DriveGoogle.getFile(accessToken, DriveGoogle.folderName);
-  if (!appFolder) await DriveGoogle.createFolder(accessToken, DriveGoogle.folderName);
+  const appFolder = await DriveGoogle.getFile(accessToken, DriveGoogle.folderName).catch((e)=>{
+      console.log(e)
+  });
+  console.log('appFolder', accessToken, DriveGoogle.folderName)
+  if (!appFolder) {
+      await DriveGoogle.createFolder(accessToken, DriveGoogle.folderName).catch(()=>{
+          console.log('error creating folder')
+      });
+  }
   const path = await exportDBToZip(database);
   await DriveGoogle.uploadFile('file://' + path, accessToken, LoadType.Create, onProgress, appFolder?.id);
+  console.log('end file')
 }
 
 export const downloadFromGoogle = async (accessToken: string, db: Database, onProgress: (res: DownloadProgressCallbackResult)=> void) => {

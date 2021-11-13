@@ -9,7 +9,9 @@ export const getFile = async (accessToken:string, name: string) => {
     },
     method: 'GET',
     params: {q: `name='${name}' and trashed=false`},
+  }).catch((e)=>{
+      console.log(e)
   });
 
-  return res.data?.files?.length && res.data.files[0];
+  return res && res?.data && res.data?.files?.length && res.data.files[0];
 };
