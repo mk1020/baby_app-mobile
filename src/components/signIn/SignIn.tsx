@@ -42,7 +42,8 @@ export const SignIn = memo((props:TProps) => {
       const userInfo = await GoogleSignin.signIn();
       dispatch(setLoadingAppStatus(true));
       dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!}));
-      await GoogleSignin.revokeAccess();
+      //await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
 
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {

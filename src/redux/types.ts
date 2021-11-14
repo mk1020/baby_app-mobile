@@ -15,7 +15,9 @@ export type TAppReducer = {
   deletedPhotos: string[] //uri's photos
   lastSyncAt: number,
   userEmail: string,
+  lastUserEmail: string,
   isAuthError: boolean
+  notificationAfterChangeAccWasShown: boolean
 };
 
 export type TSignIn = {

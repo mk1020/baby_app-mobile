@@ -79,7 +79,10 @@ export const Menu = memo((props: TProps) => {
             </ConditionView>
             <ConditionView showIf={isAuth}>
               <View>
-                <AuthCardUser email={email} lastSyncAt={lastSyncedAt ? dateFormat(lastSyncedAt, true) : t('never')}/>
+                <AuthCardUser
+                  email={email}
+                  lastSyncAt={lastSyncedAt ? dateFormat(lastSyncedAt, true) : ''}
+                />
                 <TouchableOpacity style={styles.exitContainer} onPress={onPressLogOut}>
                   <Image source={Images.exit} style={styles.exitIcon}/>
                 </TouchableOpacity>

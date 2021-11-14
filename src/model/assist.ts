@@ -9,6 +9,7 @@ import * as RNFS from 'react-native-fs';
 import {TemporaryDirectoryPath} from 'react-native-fs';
 import {getFileName} from '../common/assistant/files';
 import {AxiosResponse} from 'axios';
+import {database} from '../AppContainer';
 
 export enum ChangesEvents {
   created = 'created',
@@ -273,24 +274,42 @@ export const addNPhotos = async (n: number, diaryId: string, db: any) => {
       return a.date - b.date;
     });
 
+    let lastDate: Date;
     if (photosAdapted?.length) {
-      const lastDate = new Date(photosAdapted[photosAdapted.length - 1].date);
-      const necessaryDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
-      const nowMonth = new Date(necessaryDate).getMonth();
-      for (let i = 0; i < n; i++) {
-        const nextDate = new Date(necessaryDate).setMonth(nowMonth + i);
-        prepareCreatePhotos.push(
-          photos.prepareCreate((photo: any) => {
-            photo.date = nextDate;
-            photo.diaryId = diaryId;
-          })
-        );
-      }
-      await db.batch(...prepareCreatePhotos);
+      lastDate = new Date(photosAdapted[photosAdapted.length - 1].date);
+    } else {
+      const lastDateTimestamp = new Date().setMonth(new Date().getMonth() - 1);
+      lastDate = new Date(lastDateTimestamp);
     }
+    const necessaryDate = new Date(lastDate).setMonth(lastDate.getMonth() + 1);
+    const nowMonth = new Date(necessaryDate).getMonth();
+    for (let i = 0; i < n; i++) {
+      const nextDate = new Date(necessaryDate).setMonth(nowMonth + i);
+      prepareCreatePhotos.push(
+        photos.prepareCreate((photo: any) => {
+          photo.date = nextDate;
+          photo.diaryId = diaryId;
+        })
+      );
+    }
+    console.log(prepareCreatePhotos)
+    await db.batch(...prepareCreatePhotos);
   });
 };
 
 export const _changes = (res: AxiosResponse<SyncPullResult>, tableName: string) => (
   res.data?.changes?.[tableName]
 );
+
+export const clearDatabase = async (db: any, withDiaryTable = true) => {
+  await db?.write(async () => {
+    //await db?.unsafeResetDatabase();
+    await database.get(NotesTableName).query().destroyAllPermanently();
+    await database.get(PagesTableName).query().destroyAllPermanently();
+    await database.get(ChaptersTableName).query().destroyAllPermanently();
+    await database.get(PhotosTableName).query().destroyAllPermanently();
+    if (withDiaryTable) {
+      await database.get(DiaryTableName).query().destroyAllPermanently();
+    }
+  });
+};

@@ -9,6 +9,9 @@ import {RootStoreType} from '../../../redux/rootReducer';
 import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-google-signin/google-signin';
 import {oAuthGoogle, setLoadingAppStatus} from '../../../redux/appSlice';
 import {Spinner} from '../../../common/components/Spinner';
+import {commonAlert} from '../../../common/components/CommonAlert';
+import {clearDatabase} from '../../../model/assist';
+import {useDatabase} from "@nozbe/watermelondb/hooks";
 
 type TProps = {
   diaryId: string
@@ -16,19 +19,30 @@ type TProps = {
 export const UnAuthCardUser = memo((props: TProps) => {
   const {diaryId} = props;
   const {t} = useTranslation();
+  const database = useDatabase();
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isLoading = useSelector((state: RootStoreType) => state.app.isLoading);
+  const lastUserEmail = useSelector((state: RootStoreType) => state.app.lastUserEmail);
 
   const onOAuthGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       //dispatch(setLoadingAppStatus(true));
-
-      dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
-
+      if (userInfo.user.email !== lastUserEmail) {
+        commonAlert(t, t('warning'), t('warningChangeAcc'), async () => {
+          dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
+          await clearDatabase(database, false);
+        },
+        async () => {
+          //await GoogleSignin.revokeAccess().catch();
+          await GoogleSignin.signOut();
+        });
+      } else {
+        dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
+      }
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         dispatch(setLoadingAppStatus(false));

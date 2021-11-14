@@ -3,6 +3,7 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Images} from '../../../common/imageResources';
 import {Fonts} from '../../../common/phone/fonts';
 import {useTranslation} from 'react-i18next';
+import {ConditionView} from '../../../common/components/ConditionView';
 
 type TProps = {
    email: string
@@ -16,7 +17,9 @@ export const AuthCardUser = memo((props: TProps) => {
     <View style={styles.container}>
       <Image source={Images.user} style={styles.imageAccount}/>
       <Text style={styles.email}>{email}</Text>
-      <Text style={styles.lastSync}>{t('lastSync')}: {lastSyncAt}</Text>
+      <ConditionView showIf={!!lastSyncAt}>
+        <Text style={styles.lastSync}>{t('lastSync')}: {lastSyncAt}</Text>
+      </ConditionView>
     </View>
   );
 });

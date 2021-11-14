@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
-import {useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import {Controller, useForm} from 'react-hook-form';
 import {UnpackNestedValue} from 'react-hook-form/dist/types/form';
 import {emailRegex, passRegex} from '../../common/consts';
 import {isEmptyObj} from '../../common/assistant/others';
-import axios, {AxiosError} from 'axios';
+import {AxiosError} from 'axios';
 import {ConditionView} from '../../common/components/ConditionView';
 import {useNavigation} from '@react-navigation/native';
 import {NavigationPages} from '../../navigation/pages';

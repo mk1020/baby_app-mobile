@@ -20,6 +20,7 @@ import {isIos} from '../common/phone/utils';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from './schema';
 import {PermissionsAndroid} from 'react-native';
 import {dateFormat} from '../common/assistant/date';
+import {clearDatabase} from './assist';
 
 interface DBExportJson {
   [tableName: string]: {
@@ -95,14 +96,7 @@ export const importZip = async (db: Database, fileUri: string) => {
   await RNFS.unlink(CachesDirectoryPath + '/' + backupDBFileName);
 
   const importedDB = JSON.parse(dbJson);
-  await db?.write(async () => {
-    //await db?.unsafeResetDatabase();
-    await database.get(NotesTableName).query().destroyAllPermanently();
-    await database.get(PagesTableName).query().destroyAllPermanently();
-    await database.get(ChaptersTableName).query().destroyAllPermanently();
-    await database.get(DiaryTableName).query().destroyAllPermanently();
-    await database.get(PhotosTableName).query().destroyAllPermanently();
-  });
+  await clearDatabase(db);
 
   await synchronize({
     database,

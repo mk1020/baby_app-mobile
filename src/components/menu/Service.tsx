@@ -142,6 +142,7 @@ export const Service_ = memo((props: TProps) => {
 
       <TouchableOpacity onPress={async () => {
         try {
+          // @ts-ignore
           await uploadOnS3('file:///data/user/0/com.rntempl/cache/rn_image_picker_lib_temp_54ec1687-f78b-4ade-8f99-150f7b440124.jpg');
           //await downloadFromS3();
         } catch (e) {

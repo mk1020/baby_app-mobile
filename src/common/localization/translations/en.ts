@@ -95,6 +95,10 @@ export const en = {
     account: 'Account',
     never: 'never',
     unAuthSync: 'To synchronize, you need to log in',
-    authUnavailable: 'Authorization is currently unavailable'
+    authUnavailable: 'Authorization is currently unavailable',
+    warning: 'Warning',
+    attention: 'Attention',
+    warningChangeAcc: 'You have changed your account. If you continue, all data stored locally will be deleted. We recommend that you save everything!',
+    notificAfterChangeAcc: 'You can synchronize or download your data in another way convenient for you!',
   },
 };

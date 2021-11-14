@@ -100,7 +100,7 @@ export const getSectionsData = (t: TFunction, handlers: Handlers, options: Secti
       {
         title: t('privacyPolicy'),
         onPress: handlers.onPressPrivacyPolicy,
-        icon: Images.insurance
+        icon: Images.privacyPolicy
       },
     ]
   }

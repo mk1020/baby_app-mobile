@@ -6,6 +6,7 @@ import {req} from '../common/assistant/api';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {TLanguage} from '../common/localization/localization';
 import {Alert} from 'react-native';
+import {commonAlert} from '../common/components/CommonAlert';
 
 const initialState: TAppReducer = {
   colorScheme: ColorSchemes.light,
@@ -20,7 +21,9 @@ const initialState: TAppReducer = {
   deletedPhotos: [],
   lastSyncAt: 0,
   userEmail: '',
-  isAuthError: false
+  lastUserEmail: '',
+  isAuthError: false,
+  notificationAfterChangeAccWasShown: false
 };
 
 export const signIn = createAsyncThunk(
@@ -40,10 +43,9 @@ export const oAuthGoogle = createAsyncThunk(
   async (data: TSignInGoogle, thunkAPI) => {
     try {
       const res = await req(null).post<TSignInRes>('/oauth/google', data);
+
       return res.data;
     } catch (err) {
-      Alert.alert('', JSON.stringify(err.response, null, 2));
-      Alert.alert('', JSON.stringify(err.response?.data, null, 2));
       console.log(err.response?.data);
       console.error(err.response || err.response || err);
       return null;
@@ -57,7 +59,7 @@ export const signOut = createAsyncThunk<boolean, undefined, {state: RootStoreTyp
     try {
       await GoogleSignin.signOut();
       res = <AxiosResponse<boolean>> await req(null).delete('/signOut', {headers: {token: thunkAPI.getState().app?.userToken?.token}});
-      //await GoogleSignin.revokeAccess();
+      //await GoogleSignin.revokeAccess().catch(console.warn);
       return !!res?.data;
     } catch (err) {
       console.error(err.message);
@@ -100,6 +102,12 @@ const appSlice = createSlice({
     setLastSyncAt: (state: TAppReducer, action: PayloadAction<number>) => {
       state.lastSyncAt = action.payload;
     },
+    setLastUserEmail: (state: TAppReducer, action: PayloadAction<string>) => {
+      state.lastUserEmail = action.payload;
+    },
+    setNotificationAfterChangeAcc: (state: TAppReducer, action: PayloadAction<boolean>) => {
+      state.notificationAfterChangeAccWasShown = action.payload;
+    },
     forceUpdate: (state: TAppReducer) => {
       state.forceUpdate += 1;
     },
@@ -117,16 +125,22 @@ const appSlice = createSlice({
     });
     builder.addCase(oAuthGoogle.fulfilled, (state: TAppReducer, action: PayloadAction<TSignInRes | null>) => {
       state.userToken = action.payload?.token || null;
-      state.userId = action.payload?.userId || null;
       state.isLoading = false;
-      state.userEmail = action.payload?.email || '';
       state.isAuthError = !action.payload;
+      state.userId = action.payload?.userId || null;
+      if (action.payload?.email !== state.lastUserEmail) {
+        state.deletedPhotos = [];
+        state.lastSyncAt = 0;
+      }
+      state.userEmail = action.payload?.email || '';
     });
     builder.addCase(signOut.fulfilled, (state: TAppReducer, action: PayloadAction<boolean>) => {
       if (action.payload) {
         state.userToken = null;
-        state.userEmail = '';
+        state.lastUserEmail = state.userEmail;
         state.userId = null;
+        state.userEmail = '';
+        state.notificationAfterChangeAccWasShown = false;
       }
     });
   },
@@ -143,5 +157,7 @@ export const {
   setGoogleAccessToken,
   setDiaryId,
   addDeletedPhotos,
-  setLastSyncAt
+  setLastSyncAt,
+  setLastUserEmail,
+  setNotificationAfterChangeAcc
 } = appSlice.actions;

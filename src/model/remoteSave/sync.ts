@@ -8,9 +8,9 @@ import {SyncPullResult} from '../types';
 import {_changes, syncPullAdapter, syncPushAdapter} from '../assist';
 import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, PhotosTableName} from '../schema';
 import {deletePhotosFromS3_URI, downloadNewPhotosS3, uploadNewPhotosOnS3} from './s3Bucket';
-import {SyncActions} from '../../components/menu/ModalSaveData';
 import {Dispatch} from 'redux';
 import {setLastSyncAt} from '../../redux/appSlice';
+import {SyncActions} from "../../components/menu/IntegrationWithInternet/SyncWithServer";
 
 
 export async function syncDB(
@@ -19,6 +19,7 @@ export async function syncDB(
   userId: number | null,
   deletedPhotos: string[],
   dispatch: Dispatch,
+  isNewAccount: boolean,
   onProgress: (total: number, processed: number, action: SyncActions)=> void,
 ) {
   await synchronize({
@@ -28,7 +29,7 @@ export async function syncDB(
       try {
         console.log('pull');
         const syncRes = await req(token, dispatch).get<SyncPullResult & {diaryId: string}>('/sync', {params: {
-          lastPulledAt,
+          lastPulledAt: isNewAccount ? null : lastPulledAt,
           schemaVersion,
           migration: encodeURIComponent(JSON.stringify(migration)),
           userId

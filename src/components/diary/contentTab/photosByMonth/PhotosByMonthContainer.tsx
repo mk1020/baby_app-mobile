@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useLayoutEffect, useMemo, useState} from 'react';
+import React, {memo, useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ModalDownPhoto} from '../../../../common/components/ModalDownPhoto';
 import {ModalDown} from '../../../../common/components/ModalDown';
@@ -6,7 +6,6 @@ import {ButtonIconVert} from '../../../../common/components/ButtonIconVert';
 import {Images} from '../../../../common/imageResources';
 import {PhotosByMonth} from './PhotosByMonth';
 import {IPhoto} from '../../../../model/types';
-import {ImagePickerResponse} from 'react-native-image-picker/src/types';
 import {PhotosTableName} from '../../../../model/schema';
 import {NavigationPages} from '../../../../navigation/pages';
 import {HeaderButtonSimple} from '../../../../common/components/HeaderButtonSimple';
@@ -18,7 +17,6 @@ import {Database} from '@nozbe/watermelondb';
 import {useTranslation} from 'react-i18next';
 import {photosDataAdapter} from './assist';
 import {addNPhotos} from '../../../../model/assist';
-import {DocumentDirectoryPath} from 'react-native-fs';
 import {photoAdapterJs} from '../../../../model/adapters';
 
 type TProps = {
@@ -77,7 +75,11 @@ export const PhotosByMonthContainer_ = memo((props: TProps) => {
   };
   const onPressAddTwelveCards = async () => {
     try {
+      console.log(diaryId)
+
       if (diaryId) {
+        console.log('prepareCreatePhotos')
+
         await addNPhotos(12, diaryId, database);
         setModalAddCardsVisible(false);
       }

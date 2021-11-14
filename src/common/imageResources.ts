@@ -28,7 +28,7 @@ export const Images = {
   export: <ImageURISource>require('../../assets/images/export.png'),
   import: <ImageURISource>require('../../assets/images/import.png'),
   languages: <ImageURISource>require('../../assets/images/languages.png'),
-  insurance: <ImageURISource>require('../../assets/images/insurance.png'),
+  privacyPolicy: <ImageURISource>require('../../assets/images/privacyPolicy.png'),
   rate: <ImageURISource>require('../../assets/images/rate.png'),
   contract: <ImageURISource>require('../../assets/images/contract.png'),
   check: <ImageURISource>require('../../assets/images/check.png'),
