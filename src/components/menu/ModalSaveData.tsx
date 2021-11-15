@@ -71,7 +71,7 @@ export const ModalSaveData = memo((props: Props) => {
         <View style={{flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'}}>
           <View>
             <SaveModalItem
-              title={'Fast sync with server'}
+              title={t('syncWithServer')}
               handler={onPressSync}
               color={'#ffb300'}
               highlightColor={'#c68400'}
@@ -80,13 +80,13 @@ export const ModalSaveData = memo((props: Props) => {
           </View>
           <View>
             <SaveModalItem
-              title={'Upload all on Google'}
+              title={t('uploadToGoogle')}
               handler={onPressUploadGoogle}
               color={'#64dd17'}
               highlightColor={'#1faa00'}
             />
             <SaveModalItem
-              title={'Get from Google'}
+              title={t('getFromGoogle')}
               handler={onPressDownloadGoogle}
               color={'#039be5'}
               highlightColor={'#006db3'}

@@ -10,7 +10,7 @@ import {ChaptersTableName, DiaryTableName, NotesTableName, PagesTableName, Photo
 import {deletePhotosFromS3_URI, downloadNewPhotosS3, uploadNewPhotosOnS3} from './s3Bucket';
 import {Dispatch} from 'redux';
 import {setLastSyncAt} from '../../redux/appSlice';
-import {SyncActions} from "../../components/menu/IntegrationWithInternet/SyncWithServer";
+import {SyncActions} from '../../components/menu/IntegrationWithInternet/SyncWithServer';
 
 
 export async function syncDB(
@@ -92,7 +92,8 @@ export async function syncDB(
           [...notesPhotoCreated, ...notesPhotoUpdated, ...photoByMonthCreated, ...photoByMonthUpdated],
           onProgress
         );
-
+        console.log(syncDTO);
+        console.log(token);
         await req(token, dispatch).post('/sync', syncDTO);
       } catch (err) {
         console.error(err.response?.data || err.response || err);

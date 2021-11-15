@@ -90,9 +90,7 @@ export const ExportToGoogle = memo((props: Props) => {
                 action: ProgressActions.Upload,
               });
             });
-          //await GoogleSignin.revokeAccess().catch();
-          await GoogleSignin.signOut();
-
+          await GoogleSignin.clearCachedAccessToken(accessToken);
         } catch (e) {
           console.log('errror', e);
           setProgress({
@@ -100,6 +98,9 @@ export const ExportToGoogle = memo((props: Props) => {
             progress: 0,
             action: ProgressActions.Other,
           });
+        } finally {
+          await GoogleSignin.revokeAccess().catch();
+          await GoogleSignin.signOut();
         }
       })();
     }

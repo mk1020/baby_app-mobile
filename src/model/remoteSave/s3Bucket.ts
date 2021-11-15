@@ -6,7 +6,7 @@ import {ManagedUpload} from 'aws-sdk/clients/s3';
 import Config from 'react-native-config';
 import {AWSError} from 'aws-sdk/lib/error';
 import {NotesTableName} from '../schema';
-import {SyncActions} from '../../components/menu/ModalSaveData';
+import {SyncActions} from "../../components/menu/IntegrationWithInternet/SyncWithServer";
 
 export const uploadOnS3 = (filePath: string, contentType: string) => {
   return new Promise(async (resolve, reject) => {

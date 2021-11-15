@@ -93,12 +93,15 @@ export const ImportFromGoogle = memo((props: Props) => {
                 action: ProgressActions.Download,
               });
             });
+          await GoogleSignin.clearCachedAccessToken(accessToken);
         } catch (e) {
           setProgress({
             state: ProgressState.Error,
             progress: 0,
             action: ProgressActions.Other,
           });
+        } finally {
+          await GoogleSignin.signOut();
         }
       })();
     }

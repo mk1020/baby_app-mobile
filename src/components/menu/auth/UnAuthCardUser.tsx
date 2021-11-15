@@ -10,8 +10,8 @@ import {GoogleSignin, GoogleSigninButton, statusCodes} from '@react-native-googl
 import {oAuthGoogle, setLoadingAppStatus} from '../../../redux/appSlice';
 import {Spinner} from '../../../common/components/Spinner';
 import {commonAlert} from '../../../common/components/CommonAlert';
-import {clearDatabase} from '../../../model/assist';
-import {useDatabase} from "@nozbe/watermelondb/hooks";
+import {clearDatabase, createDiaryIfNotExist} from '../../../model/assist';
+import {useDatabase} from '@nozbe/watermelondb/hooks';
 
 type TProps = {
   diaryId: string
@@ -33,8 +33,9 @@ export const UnAuthCardUser = memo((props: TProps) => {
       //dispatch(setLoadingAppStatus(true));
       if (userInfo.user.email !== lastUserEmail) {
         commonAlert(t, t('warning'), t('warningChangeAcc'), async () => {
-          dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId}));
-          await clearDatabase(database, false);
+          await clearDatabase(database);
+          const id = await createDiaryIfNotExist(database);
+          dispatch(oAuthGoogle({oAuthIdToken: userInfo.idToken!, diaryId: id}));
         },
         async () => {
           //await GoogleSignin.revokeAccess().catch();
