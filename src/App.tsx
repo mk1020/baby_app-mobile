@@ -14,6 +14,8 @@ import {useDatabase} from '@nozbe/watermelondb/hooks';
 import {useTranslation} from 'react-i18next';
 import {fallbackLanguage, TLanguage} from './common/localization/localization';
 import {RootStoreType} from './redux/rootReducer';
+import {forModalPresentationIOS} from "@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators";
+import {children} from "@nozbe/watermelondb/decorators";
 
 (function setup() {
   if (Platform.OS === 'android') {
